@@ -17,6 +17,7 @@ by name ("use the lead-hunter to…").
 | `outreach-writer` | Cold outreach, follow-up sequences, and email campaigns — Spam Act-compliant, Australian tone | Sonnet |
 | `compliance-critic` | Final pass/fail gate on anything customer-facing: claims, licensing, spam law, brand safety | Opus |
 | `dashboard-engineer` | Builds and tests the BugBoss dashboard itself, contract-first with tests required | Sonnet |
+| `report-engine` | Creates, audits, and repairs premium ServiceM8 Word report templates — merge fields, IF field codes, conditional-collapse, three-pass engineer/design/QC workflow | Opus |
 
 ## How they work together
 
