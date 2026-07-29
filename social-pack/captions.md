@@ -107,3 +107,232 @@ Supermarket sprays kill the ones you see. We stop the thousands you don't. 🎯 
 **25 — Prevention 101**
 Make your home boring to pests. 🏠 Seal the gaps, trim branches off the roofline, fix leaking taps, seal your food — and book one professional treatment a year. Do the five, we'll handle the rest. 📞 (07) 3113 9666
 #PestPrevention #ProTips #BrisbanePestControl #SlugABug
+
+---
+
+# Posts 26–100 (generated from src/posts.html)
+
+**026 — Termite queen: 30,000 eggs a day**
+One termite queen lays up to 30,000 eggs a DAY — and keeps going for decades. 🤯 An annual inspection is the only early-warning system there is. 📞 (07) 3113 9666 #Termites #BrisbanePestControl #SlugABug
+
+**027 — Ants lift 20x their weight**
+Ants can lift 20x their own body weight — and a colony can number 500,000. 💪 When scouts find your kitchen, the rest are coming. We treat the trail AND the nest. 📞 (07) 3113 9666 #AntControl #BrisbanePestControl #SlugABug
+
+**028 — Mozzies hunt by your breath**
+Mosquitoes find you by tracking your breath — CO₂, body heat and dark clothing. 🦟 And they breed in a bottle-cap of water. A yard treatment changes your whole summer. 📞 (07) 3113 9666 #Mosquitoes #BrisbaneBackyards #SlugABug
+
+**029 — Rodent teeth never stop growing**
+Rodent teeth never stop growing — so they never stop chewing. Wiring, pipes, timber… rodent-damaged cables are a leading cause of unexplained house fires. 🔥 📞 (07) 3113 9666 #RodentControl #BrisbanePestControl #SlugABug
+
+**030 — Silverfish go a year without food**
+Silverfish can survive a YEAR without eating — but with your books, photos and clothes on the menu, they don’t have to. 📚 📞 (07) 3113 9666 #Silverfish #BrisbanePestControl #SlugABug
+
+**031 — One nest, 6,000 wasps**
+By late summer a single wasp nest can hold 6,000 residents. 🐝 Please don’t introduce it to your broom — we remove nests safely and stop the rebuild. 📞 (07) 3113 9666 #WaspRemoval #BrisbanePestControl #SlugABug
+
+**032 — Roaches run 5km/h**
+A cockroach can hit 5km/h — scaled to our size, that’s sprinting at 300km/h. 🏃 You won’t win with a thong. One treatment gets the whole family. 📞 (07) 3113 9666 #CockroachControl #BrisbanePestControl #SlugABug
+
+**033 — 500 eggs per bed bug female**
+One female bed bug can lay 500 eggs in her lifetime — a few bites becomes every-room-in-the-house within weeks. Early treatment is everything. 📞 (07) 3113 9666 #BedBugs #BrisbanePestControl #SlugABug
+
+**034 — Never far from a spider**
+Wherever you’re reading this — you’re not far from a spider. 🕷️ Most are harmless; redbacks and white-tails are the Brisbane exceptions. A perimeter treatment keeps them out of reach. 📞 (07) 3113 9666 #SpiderControl #Brisbane #SlugABug
+
+**035 — Termites never sleep**
+Termites never sleep — they eat 24/7, no weekends, no public holidays. 😳 The only defence is catching them early. 📞 (07) 3113 9666 #Termites #TermiteInspection #SlugABug
+
+**036 — Fleas jump 150x their height**
+A flea can jump 150 times its own height — straight from the lawn onto your pet, and from the carpet onto you. Treat yard + house + pet the same week. 📞 (07) 3113 9666 #FleaTreatment #BrisbanePets #SlugABug
+
+**037 — Huntsmen: the good guys, mostly**
+Huntsmen actually eat cockroaches — nature’s pest control. But if eight legs on the sun visor isn’t your vibe, we’ll keep them (and their dinner) outdoors. 🕷️ 📞 (07) 3113 9666 #Huntsman #BrisbanePestControl #SlugABug
+
+**038 — Suburb: North Lakes**
+North Lakes! 🏡 New estates + bushland edges = termite pressure from day one. Your local team covers North Lakes & Mango Hill — inspections, barriers, treatments. 📞 (07) 3113 9666 #NorthLakes #BrisbanePestControl #SlugABug
+
+**039 — Suburb: Chermside**
+Chermside! Units and townhouses share more than walls — roaches and ants travel between neighbours fast. We treat single units or whole complexes. 📞 (07) 3113 9666 #Chermside #BrisbanePestControl #SlugABug
+
+**040 — Suburb: Redcliffe Peninsula**
+Redcliffe Peninsula — Scarborough to Clontarf! 🌊 Older Queenslanders + coastal conditions are exactly what termites like. Local techs who know the peninsula. 📞 (07) 3113 9666 #Redcliffe #PeninsulaLocals #SlugABug
+
+**041 — Suburb: Strathpine**
+Strathpine, Bray Park & Warner! 🌳 Leafy blocks bring spiders to the fence line and rodents to the roof each winter. One yearly treatment keeps it all calm. 📞 (07) 3113 9666 #Strathpine #PineRivers #SlugABug
+
+**042 — Suburb: Caboolture**
+Caboolture & Morayfield! 🚜 Acreage and sheds are prime pest territory — rodents, wasps, termites in the fence posts. We handle the lot. 📞 (07) 3113 9666 #Caboolture #Morayfield #SlugABug
+
+**043 — Suburb: Logan & Springwood**
+Logan & Springwood! 🏗️ Every new development displaces pests into the established homes next door. Builders on your street? Book a check. 📞 (07) 3113 9666 #Logan #Springwood #SlugABug
+
+**044 — Suburb: Capalaba**
+Capalaba & the Redlands! Bayside humidity keeps pests active basically year-round — regular treatment matters more here than most places. 📞 (07) 3113 9666 #Capalaba #Redlands #SlugABug
+
+**045 — Suburb: Wynnum & Bayside**
+Wynnum, Manly & Lota! ⚓ Salt air doesn’t slow termites down — older bayside timber homes are their favourite menu. Annual inspections are essential. 📞 (07) 3113 9666 #Wynnum #Bayside #SlugABug
+
+**046 — Suburb: Sunnybank**
+Sunnybank! 🥟 Brisbane’s best food scene deserves audit-ready pest control — and the homes around it get the same standard. 📞 (07) 3113 9666 #Sunnybank #BrisbaneFood #SlugABug
+
+**047 — Suburb: Shailer Park**
+Shailer Park, Cornubia & Daisy Hill! 🌿 Bushland on the doorstep is beautiful — and busy. We keep the wildlife’s hangers-on out of your yard. 📞 (07) 3113 9666 #ShailerPark #LoganPestControl #SlugABug
+
+**048 — Commercial: childcare centres**
+Childcare directors: pest control should be invisible to the kids and obvious to the auditor. After-hours treatments, child-safe products, full documentation. 📞 (07) 3113 9666 #Childcare #CompliantPestControl #SlugABug
+
+**049 — Commercial: aged care**
+Aged care facilities run on zero-tolerance standards — so do we. Discreet scheduled treatments, sensitive-environment products, accreditation-ready docs. 📞 (07) 3113 9666 #AgedCare #FacilityManagement #SlugABug
+
+**050 — Commercial: schools**
+Schools: major pest work in the holidays, rapid response during term (looking at you, oval wasp nest 🐝), and records your admin will love. 📞 (07) 3113 9666 #Schools #FacilitiesManagement #SlugABug
+
+**051 — Commercial: hospitality reviews**
+Hospitality friends: one roach near a table becomes a Google review headline. Scheduled programs invisible to diners, audit-ready for inspectors. ⭐ 📞 (07) 3113 9666 #BrisbaneCafes #Hospitality #SlugABug
+
+**052 — Commercial: warehouses**
+Warehouse managers: pallets + cardboard + quiet corners = rodent paradise. A mapped, monitored baiting program costs less than one contaminated consignment. 📞 (07) 3113 9666 #Warehouse #Logistics #SlugABug
+
+**053 — Commercial: office kitchens**
+Office kitchens: crumbs by Friday, ant trails by Monday. 🐜 After-hours treatments your team never notices — easiest facilities win of the quarter. 📞 (07) 3113 9666 #OfficeLife #FacilitiesManagement #SlugABug
+
+**054 — Commercial: strata plans**
+Strata committees: one contact, one invoice, whole complex covered — common areas, bulk unit pricing, termite inspections for the block, committee-ready reports. 📞 (07) 3113 9666 #Strata #BodyCorporate #SlugABug
+
+**055 — Commercial: gyms**
+Gym owners: warm + damp change rooms are an open invitation for silverfish, roaches and drain flies. Overnight service keeps your floor open. 🏋️ 📞 (07) 3113 9666 #GymLife #BrisbaneFitness #SlugABug
+
+**056 — Commercial: medical clinics**
+Medical clinics need pest control that’s as precise as they are — sensitive products, after-hours scheduling, inspection-proof documentation. 📞 (07) 3113 9666 #MedicalClinic #PracticeManagement #SlugABug
+
+**057 — Commercial: retail stock loss**
+Retail managers: stock loss sometimes has six legs (or four, and a tail 🐀). Gnawed packaging and failed audits compound daily — scheduled monitoring stops the bleed. 📞 (07) 3113 9666 #Retail #StockLoss #SlugABug
+
+**058 — Spring clean + pest check**
+Doing the big spring clean? While everything’s pulled out anyway — check behind the fridge, under sinks, and finish with a professional treatment. One visit covers the year. 🌸 📞 (07) 3113 9666 #SpringClean #BrisbaneHomes #SlugABug
+
+**059 — Rodents love Christmas**
+Rodents love Christmas too — a December pantry full of hampers and baking supplies is their jackpot. 🎄 Get sealed and treated before the relatives arrive. 📞 (07) 3113 9666 #Christmas #BrisbaneHomes #SlugABug
+
+**060 — Lunchbox season = ant season**
+Back to school = lunchbox crumbs = ant trails by week 2. 🎒 A quick perimeter treatment now saves the whole term. 📞 (07) 3113 9666 #BackToSchool #AntControl #SlugABug
+
+**061 — EOFY: contracts are deductible**
+Business owners: commercial pest programs are a deductible operating expense. Lock yours in before June 30 and start the new FY protected. 📊 📞 (07) 3113 9666 #EOFY #BrisbaneBusiness #SlugABug
+
+**062 — Wasps at the BBQ**
+Wasps circling the BBQ? They’re not visiting — there’s a nest nearby. 🍺🐝 We find it and remove it safely before your next cook-up. 📞 (07) 3113 9666 #BBQSeason #WaspRemoval #SlugABug
+
+**063 — Going away? Pests aren’t**
+Heading away these holidays? An empty, quiet house is a pest’s dream Airbnb. 🧳 A pre-trip treatment means you come home to YOUR house — not theirs. 📞 (07) 3113 9666 #HolidayPrep #BrisbaneHomes #SlugABug
+
+**064 — Myth: clean homes don’t get pests**
+MYTH: “Clean homes don’t get pests.” FACT: pests come for warmth, water and shelter — not mess. The tidiest home in Brisbane still qualifies. 📞 (07) 3113 9666 #MythBusted #BrisbanePestControl #SlugABug
+
+**065 — Myth: the cat will handle it**
+MYTH: “The cat will handle it.” FACT: one pair of rats can produce 200+ descendants a year. Mittens is doing her best — she’s outnumbered. 🐱 📞 (07) 3113 9666 #MythBusted #RodentControl #SlugABug
+
+**066 — Myth: ultrasonic repellers**
+Those plug-in ultrasonic pest repellers? Independent testing keeps finding the same thing: pests ignore them. Put the money toward a treatment with a written guarantee. 📞 (07) 3113 9666 #MythBusted #PestControl #SlugABug
+
+**067 — Myth: termites only eat old homes**
+MYTH: “Termites only eat old homes.” FACT: new builds on cleared land face some of the highest termite pressure in QLD — and builders’ barriers expire. Know your dates. 📞 (07) 3113 9666 #MythBusted #Termites #SlugABug
+
+**068 — Myth: daddy long-legs deadly**
+MYTH: “Daddy long-legs are the deadliest spider.” FACT: schoolyard legend — they’re harmless to humans. Redbacks and white-tails are the ones worth respecting. 📞 (07) 3113 9666 #MythBusted #SpiderFacts #SlugABug
+
+**069 — Myth: coffee grounds stop ants**
+MYTH: “Coffee grounds keep ants away.” FACT: they detour around them — politely. ☕ Treat the nest and entry points; keep the coffee for yourself. 📞 (07) 3113 9666 #MythBusted #AntControl #SlugABug
+
+**070 — Myth: one spray lasts forever**
+MYTH: “One spray lasts forever.” FACT: weather and time wear every treatment down — that’s why protection runs on a yearly rhythm, backed by our 30-day guarantee. 📞 (07) 3113 9666 #MythBusted #PestControl #SlugABug
+
+**071 — Pantry moth eviction checklist**
+Little moths flying out of the pantry? Webbing in the flour? Eviction time: bin it, airtight everything, vinegar-wipe, freeze new bulk buys. Still fluttering — call us. 📞 (07) 3113 9666 #PantryMoths #KitchenTips #SlugABug
+
+**072 — Pest-proof yard in 5 moves**
+Five free yard upgrades that genuinely cut pests: no standing water, firewood off the ground, regular mowing, sealed bins, mulch pulled back from walls. Then we seal the rest. 🌱 📞 (07) 3113 9666 #YardTips #BrisbaneGardens #SlugABug
+
+**073 — Bond back, fleas gone**
+Moving out with pets? Most leases require a professional flea treatment — we do fast end-of-lease visits with the receipt your property manager wants. 🏡 📞 (07) 3113 9666 #EndOfLease #BrisbaneRentals #SlugABug
+
+**074 — Moving house? Don’t pack pests**
+Moving house? Roaches ride in cardboard and bed bugs ride in secondhand couches. Treat the new place BEFORE the furniture arrives — fresh start, actually fresh. 📦 📞 (07) 3113 9666 #MovingHouse #BrisbaneMoves #SlugABug
+
+**075 — Tough on pests, soft on paws**
+Pet households: we plan every treatment around feeding areas, tanks and cages, and tell you exactly when floors are dry. Tough on pests, soft on paws. 🐾 📞 (07) 3113 9666 #PetFriendly #BrisbanePets #SlugABug
+
+**076 — Your garage is a pest hotel**
+Your garage is running a pest hotel: cardboard bedding, roller-door entry, undisturbed corners. Five-minute audit this weekend — then add it to the yearly treatment. 🚗 📞 (07) 3113 9666 #GarageGoals #BrisbaneHomes #SlugABug
+
+**077 — Mozzie-proof your backyard**
+Want your backyard back on warm evenings? Weekly water tip-outs, clean gutters, screened tanks, a fan where you sit — and a seasonal barrier treatment does the rest. 🌇 📞 (07) 3113 9666 #MozzieSeason #BrisbaneBackyards #SlugABug
+
+**078 — Gutters are a pest highway**
+Blocked gutters: moisture for termites, nurseries for mozzies, and a rodent bridge straight into the roof void. Clean gutters are DIY pest control — we handle the rest. 🪜 📞 (07) 3113 9666 #HomeMaintenance #BrisbaneHomes #SlugABug
+
+**079 — Protect now, pay later**
+Pests don’t wait for payday — so protection doesn’t have to either. Afterpay available on every treatment, same 30-day guarantee. 📞 (07) 3113 9666 #Afterpay #BrisbanePestControl #SlugABug
+
+**080 — Termatrac radar detection**
+Our Termatrac radar literally sees termite movement through walls — no drilling, no guesswork, no “open it up and see”. Detection first, drama never. 📡 📞 (07) 3113 9666 #Termatrac #TermiteInspection #SlugABug
+
+**081 — Booked this week**
+When you call us, a Brisbane local answers — and books you in days, not weeks. Urgent swarms, wasp nests and rodent jobs get priority. ⚡ 📞 (07) 3113 9666 #FastService #BrisbanePestControl #SlugABug
+
+**082 — Free quotes, straight answers**
+Free quotes, straight answers. We’ll tell you what you need, what you DON’T, and the price before we start. If a cheaper option does the job — you’ll hear it from us first. 📞 (07) 3113 9666 #StraightShooters #BrisbanePestControl #SlugABug
+
+**083 — Family-safe by design**
+Kids, pets, veggie patch — all accounted for. We explain what we use, where it goes and when it’s dry, before we start. 20+ years of family homes. 👨‍👩‍👧 📞 (07) 3113 9666 #FamilySafe #BrisbaneFamilies #SlugABug
+
+**084 — North Brisbane to Shailer Park**
+From North Lakes and Redcliffe, through the CBD and bayside, down to Shailer Park — one local team covers the whole corridor. Your suburb? Almost certainly yes. 🗺️ 📞 (07) 3113 9666 #Brisbane #LocalBusiness #SlugABug
+
+**085 — 5 stars, every job**
+5 stars is the only rating we chase — 1,200+ reviews came from turning up on time, doing it properly, and honouring the guarantee. That’s the whole trick. ⭐ 📞 (07) 3113 9666 #FiveStars #BrisbanePestControl #SlugABug
+
+**086 — 20+ years of Brisbane backyards**
+20+ years in the same Brisbane suburbs teaches you things you can’t google — where termites press hardest, which streets get ants after storms, what a Queenslander subfloor hides. 📞 (07) 3113 9666 #LocalKnowledge #Brisbane #SlugABug
+
+**087 — Every tech licensed & insured**
+Every tech licensed, every job insured — no subcontracted mystery guests. Ask to see the licence at the door; our techs love that question. 📋 📞 (07) 3113 9666 #Licensed #BrisbanePestControl #SlugABug
+
+**088 — If they come back, so do we**
+Our promise: pests back within 30 days → we re-treat FREE. Still unhappy → refund + $25. We can only offer that because it almost never happens. 📞 (07) 3113 9666 #Guarantee #BrisbanePestControl #SlugABug
+
+**089 — Q&A: how often?**
+“How often do I actually need pest control?” For most Brisbane homes: once every 12 months — general treatment + termite inspection. We’ll remind you when it’s due. 🗓️ 📞 (07) 3113 9666 #AskSlugABug #PestControl101 #SlugABug
+
+**090 — Q&A: safe for pets?**
+“Is it safe for my pets?” Yes — pet-considerate products, bowls and tanks covered, and clear drying times before paws hit floors. Tell us about your crew when you book. 🐕 📞 (07) 3113 9666 #AskSlugABug #PetSafe #SlugABug
+
+**091 — Q&A: how long does it take?**
+“How long does a treatment take?” Most homes: about 1–2 hours, in and out — inside, outside, roof void, perimeter. Book it in a lunch break. ⏱️ 📞 (07) 3113 9666 #AskSlugABug #PestControl101 #SlugABug
+
+**092 — Q&A: do I need to leave?**
+“Do we need to leave during treatment?” Usually not — modern low-odour products mean most families stay home. If clear time is needed, we schedule around naps and school runs. 📞 (07) 3113 9666 #AskSlugABug #FamilyFriendly #SlugABug
+
+**093 — Q&A: prep checklist**
+Booked in? Prep takes five minutes: clear benches, stash toys and pet bowls, secure pets, unlock access, note where you’ve seen the action. We do the rest. ✅ 📞 (07) 3113 9666 #AskSlugABug #PestControl101 #SlugABug
+
+**094 — Q&A: inspection step-by-step**
+What actually happens in a termite inspection? Full interior + exterior, Termatrac radar and moisture readings, roof void and subfloor, same-day written report with photos, plain-English advice. 📞 (07) 3113 9666 #TermiteInspection #AskSlugABug #SlugABug
+
+**095 — $10k+ average termite repair**
+Average termite repair bill in Australia: $10,000+. Annual inspection: a few hundred. Insurance covers neither the damage nor the maths. 🧮 📞 (07) 3113 9666 #Termites #BrisbaneHomes #SlugABug
+
+**096 — Roaches trigger asthma**
+Cockroaches aren’t just gross — droppings and shed skins become airborne allergens and a recognised asthma trigger, especially for kids. A roach-free home literally breathes easier. 📞 (07) 3113 9666 #AsthmaAwareness #HealthyHome #SlugABug
+
+**097 — Insurance won’t save you**
+Read your home insurance PDS: termite damage is almost always excluded. Prevention is the only cover you can actually buy. 📄 📞 (07) 3113 9666 #Termites #HomeInsurance #SlugABug
+
+**098 — 365 days of pest activity**
+Brisbane’s subtropical climate means pests get no winter die-off — 365 days of activity a year. The upside? Year-round protection works year-round too. 🌏 📞 (07) 3113 9666 #Brisbane #PestControl #SlugABug
+
+**099 — Deadliest animal: the mozzie**
+The deadliest animal on Earth isn’t a shark or a snake — it’s the mosquito, spreader of more disease than anything alive. In QLD that includes Ross River virus. 🦟 📞 (07) 3113 9666 #Mosquitoes #QLDHealth #SlugABug
+
+**100 — Finale: one number to remember**
+Post #100! 🎉 Whatever’s crawling, scurrying, swarming or silently chewing — one call sorts it. Save the number, use it once a year. 📞 (07) 3113 9666 #SlugABug #BrisbanePestControl #FamilyOwned
