@@ -107,5 +107,26 @@ const csvEsc = s => '"' + String(s).replace(/"/g, '""') + '"';
     }
     fs.writeFileSync(path.join(OUT, name + '.csv'), csv);
   }
+  // Metricool bulk-import CSVs (their template layout: Text, Date, Time, Draft,
+  // network booleans, Picture Url 1, Shortener). Date DD/MM/YYYY — pick that
+  // format in Metricool's import dialog. Split into 50-row files as Metricool
+  // recommends. Stories aren't CSV-importable; schedule those in the planner.
+  const MC = path.join(OUT, 'metricool');
+  fs.mkdirSync(MC, { recursive: true });
+  const MC_HEADER = 'Text,Date,Time,Draft,Facebook,Twitter,Linkedin,GMB,Instagram,Pinterest,TikTok,Picture Url 1,Shortener\n';
+  const mcNets = { facebook: ['facebook', '07:30'], instagram: ['instagram-feed', '11:45'], 'google-business': ['square', '09:00'] };
+  for (const [net, [folder, time]] of Object.entries(mcNets)) {
+    const lines = rows.map(r => {
+      const [y, mo, d] = r.date.split('-');
+      const flags = { Facebook: net === 'facebook', Twitter: false, Linkedin: false, GMB: net === 'google-business', Instagram: net === 'instagram', Pinterest: false, TikTok: false };
+      return [csvEsc(r.caption), `${d}/${mo}/${y}`, time, 'FALSE',
+        ...Object.values(flags).map(v => v ? 'TRUE' : 'FALSE'),
+        `${BASE}/${folder}/post-${r.num}.jpg`, 'FALSE'].join(',');
+    });
+    for (let part = 0; part * 50 < lines.length; part++) {
+      fs.writeFileSync(path.join(MC, `${net}-part${part + 1}.csv`),
+        MC_HEADER + lines.slice(part * 50, part * 50 + 50).join('\n') + '\n');
+    }
+  }
   console.log(`campaigns/ written: ${rows.length} days from ${START}, URLs pinned to ${SHA.slice(0, 7)}`);
 })();
