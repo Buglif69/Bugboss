@@ -336,3 +336,18 @@ The deadliest animal on Earth isn’t a shark or a snake — it’s the mosquito
 
 **100 — Finale: one number to remember**
 Post #100! 🎉 Whatever’s crawling, scurrying, swarming or silently chewing — one call sorts it. Save the number, use it once a year. 📞 (07) 3113 9666 #SlugABug #BrisbanePestControl #FamilyOwned
+
+**101 — LinkedIn: strata one-contract**
+Strata managers & committees: one contract, one invoice, every lot and common area covered — with the compliance reporting your AGM actually wants to see. Bulk unit rates across the scheme. (07) 3113 9666 · info@slugabug.com.au #Strata #BodyCorporate #FacilitiesManagement
+
+**102 — LinkedIn: property managers**
+Property managers: end-of-lease flea treatments with the receipt in your inbox the same week. Entry-notice-friendly scheduling, landlord-ready reports, invoiced straight to the agency. Add us to the trades list. (07) 3113 9666 #PropertyManagement #RealEstate #BrisbaneRentals
+
+**103 — LinkedIn: audit-ready kitchens**
+For commercial kitchens, pest control is a compliance document — not a spray can under the sink. Scheduled programs invisible to diners, HACCP-aligned reporting, priority response. (07) 3113 9666 #Hospitality #FoodSafety #BrisbaneRestaurants
+
+**104 — LinkedIn: pubs & clubs**
+Publicans & venue managers: cellars, stockrooms and beer gardens are prime pest territory. Discreet early-morning service protects the licence, the reviews and the beer lines — without interrupting trade. (07) 3113 9666 #Pubs #Hospitality #VenueManagement
+
+**105 — LinkedIn: zero-fines target**
+Health inspectors don’t reschedule. A documented pest management program is the cheapest compliance line on the P&L — and the difference between a clean audit and a closure notice. Full reporting with every service. (07) 3113 9666 #Compliance #FacilitiesManagement #CommercialPestControl

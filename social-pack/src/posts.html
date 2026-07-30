@@ -290,10 +290,22 @@ function pestVis(icon, ringColor, pestColor, size, op){
 
 /* ---------- shared chrome builders ---------- */
 function topbar(scheme){
-  // scheme: {site, sub, l1}
+  // scheme: {site, sub, l1, onDark}
+  // If a real logo file is provided (window.LOGO, injected by render.js when
+  // src/logo.png exists), it replaces the written wordmark. On dark/red posts
+  // the logo sits on a white chip so any logo colourway stays readable.
+  let logo;
+  if (window.LOGO) {
+    const img = `<img src="${window.LOGO}" style="height:${scheme.onDark?84:100}px;display:block">`;
+    logo = scheme.onDark
+      ? `<div style="background:#fff;padding:12px 20px;border-radius:12px">${img}</div>`
+      : img;
+  } else {
+    logo = logoHTML(scheme.sub, scheme.l1);
+  }
   return `<div class="topbar">
     <div class="site" style="color:${scheme.site}">slugabug.com.au</div>
-    ${logoHTML(scheme.sub, scheme.l1)}
+    ${logo}
   </div>`;
 }
 function ctazone(o){
@@ -327,7 +339,7 @@ function coverLight(p, n){
   <div class="slide" style="background:${BONE}">
     ${bgLayer('light', n)}
     <div class="vis" style="right:-130px;top:420px">${pestVis(p.icon, RED, INK, 620, .8)}</div>
-    ${topbar({site:INK, sub:INK})}
+    ${topbar({site:INK, sub:INK, onDark:false})}
     <div style="position:absolute;left:64px;top:186px;bottom:300px;width:960px;z-index:10;display:flex;flex-direction:column">
       <div>${kicker(p.kick, p.tag, INK)}</div>
       <div class="display" style="font-size:${p.hSize||140}px;line-height:.95;color:${INK};margin-top:38px;width:${p.hWidth||700}px">${p.head}</div>
@@ -344,7 +356,7 @@ function coverDark(p, n){
   <div class="slide" style="background:${INK}">
     ${bgLayer('dark', n)}
     <div class="vis" style="right:-150px;top:150px">${pestVis(p.icon, RED, 'rgba(255,255,255,.25)', 700, .9)}</div>
-    ${topbar({site:'rgba(255,255,255,.85)', sub:'#fff'})}
+    ${topbar({site:'rgba(255,255,255,.85)', sub:'#fff', onDark:true})}
     <div style="position:absolute;left:64px;top:200px;bottom:310px;width:960px;z-index:10;display:flex;flex-direction:column">
       <div>${kicker(p.kick, p.tag, 'rgba(255,255,255,.85)')}</div>
       <div class="display" style="font-size:${p.hSize||120}px;line-height:.95;color:#fff;margin-top:40px;width:${p.hWidth||860}px">${p.head}</div>
@@ -360,7 +372,7 @@ function redPoster(p, n){
   return `
   <div class="slide" style="background:${RED}">
     ${bgLayer('red', n)}
-    ${topbar({site:'#fff', sub:'#fff', l1:'#fff'})}
+    ${topbar({site:'#fff', sub:'#fff', l1:'#fff', onDark:true})}
     <div style="position:absolute;left:64px;right:64px;top:186px;bottom:300px;z-index:10;display:flex;flex-direction:column;align-items:center;text-align:center">
       <div class="kicker" style="color:#fff;justify-content:center">
         <span class="tag" style="background:${INK}">${p.tag}</span><span>${p.kick}</span>
@@ -379,7 +391,7 @@ function statEd(p, n){
   return `
   <div class="slide" style="background:${p.dark?INK:PAPER}">
     ${bgLayer(p.dark?'dark':'light', n)}
-    ${topbar(p.dark?{site:'rgba(255,255,255,.85)',sub:'#fff'}:{site:INK,sub:INK})}
+    ${topbar(p.dark?{site:'rgba(255,255,255,.85)',sub:'#fff',onDark:true}:{site:INK,sub:INK,onDark:false})}
     <div class="rule" style="left:64px;right:64px;top:150px;height:6px;background:${p.dark?'#fff':INK}"></div>
     <div style="position:absolute;left:64px;top:196px;z-index:10">
       ${kicker(p.kick, p.tag, p.dark?'rgba(255,255,255,.85)':INK)}
@@ -403,7 +415,7 @@ function checklist(p, n){
   return `
   <div class="slide" style="background:${INK}">
     ${bgLayer('dark', n)}
-    ${topbar({site:'rgba(255,255,255,.85)', sub:'#fff'})}
+    ${topbar({site:'rgba(255,255,255,.85)', sub:'#fff', onDark:true})}
     <div style="position:absolute;left:64px;top:196px;z-index:10">
       ${kicker(p.kick, p.tag, 'rgba(255,255,255,.85)')}
       <div class="display" style="font-size:${p.hSize||92}px;line-height:.96;color:#fff;margin-top:38px;width:940px">${p.head}</div>
@@ -1121,6 +1133,41 @@ const POSTS = [
  body:'Whatever’s crawling, scurrying, swarming or silently chewing — one call sorts it. Family owned, 20+ years, guaranteed in writing.', bWidth:800,
  strap:'Save the number. Use it once a year.', cta:'Call (07) 3113 9666',
  caption:'Post #100! 🎉 Whatever’s crawling, scurrying, swarming or silently chewing — one call sorts it. Save the number, use it once a year. 📞 (07) 3113 9666 #SlugABug #BrisbanePestControl #FamilyOwned'},
+
+/* ======== LINKEDIN COMMERCIAL SET (101+) — B2B tone ======== */
+
+{layout:statEd, icon:'shield', dark:false, tag:'Commercial Partners', kick:'Strata & body corporate', title:'LinkedIn: strata one-contract',
+ stat:'ONE', nSize:230, head:'contract. One invoice. Every lot covered.', hSize:74,
+ body:'Common-area schedules, bulk unit rates, termite inspections for the whole scheme and committee-ready compliance reports. Strata managers get one contact who actually answers — and nothing to chase at AGM time.',
+ strap:'Committee meeting coming up? Bring a better quote.', cta:'Get a strata proposal',
+ caption:'Strata managers & committees: one contract, one invoice, every lot and common area covered — with the compliance reporting your AGM actually wants to see. Bulk unit rates across the scheme. (07) 3113 9666 · info@slugabug.com.au #Strata #BodyCorporate #FacilitiesManagement'},
+
+{layout:coverLight, icon:'house', tag:'Commercial Partners', kick:'Real estate & property managers', title:'LinkedIn: property managers',
+ head:'END-OF-LEASE PEST WORK, HANDLED.', hSize:92, hWidth:760,
+ subhead:'Flea treatments, receipts and reports — same week.', sSize:48, sWidth:640,
+ body:'Entry-notice-friendly scheduling, documentation that satisfies landlords and tenants, invoices straight to the agency. Add us to your trades list and stop chasing pest receipts.', bWidth:580,
+ strap:'One less thing on the rent roll.', cta:'Partner with Slug-A-Bug',
+ caption:'Property managers: end-of-lease flea treatments with the receipt in your inbox the same week. Entry-notice-friendly scheduling, landlord-ready reports, invoiced straight to the agency. Add us to the trades list. (07) 3113 9666 #PropertyManagement #RealEstate #BrisbaneRentals'},
+
+{layout:coverDark, icon:'cockroach', tag:'Commercial Partners', kick:'Restaurants & cafés', title:'LinkedIn: audit-ready kitchens',
+ head:'AUDIT-READY. EVERY SINGLE SERVICE.', hSize:96, hWidth:860,
+ subhead:'Pest control built for commercial kitchens.', sSize:52, sWidth:740,
+ body:'Scheduled gel-and-monitor programs invisible to diners, HACCP-aligned documentation on file, and priority call-outs when something appears mid-service.', bWidth:770,
+ strap:'Before the inspector books a table.', cta:'Get a hospitality quote',
+ caption:'For commercial kitchens, pest control is a compliance document — not a spray can under the sink. Scheduled programs invisible to diners, HACCP-aligned reporting, priority response. (07) 3113 9666 #Hospitality #FoodSafety #BrisbaneRestaurants'},
+
+{layout:redPoster, icon:'rat', tag:'Commercial Partners', kick:'Pubs, clubs & venues', title:'LinkedIn: pubs & clubs',
+ head:'NO PESTS ON TAP.', hSize:112, hWidth:920,
+ subhead:'Cellars, kitchens, beer gardens — covered.', sSize:54, sWidth:840,
+ body:'Rodents love a cellar and a stockroom. Discreet early-morning service keeps your licence, your reviews and your beer lines clean — without interrupting trade.', bWidth:800,
+ strap:'Publicans: free site walk-through.', cta:'Book a venue assessment',
+ caption:'Publicans & venue managers: cellars, stockrooms and beer gardens are prime pest territory. Discreet early-morning service protects the licence, the reviews and the beer lines — without interrupting trade. (07) 3113 9666 #Pubs #Hospitality #VenueManagement'},
+
+{layout:statEd, icon:'shield', dark:true, tag:'Commercial Partners', kick:'Industry watch — compliance', title:'LinkedIn: zero-fines target',
+ stat:'$0', nSize:250, head:'in fines, closure notices or lost stock.', hSize:74,
+ body:'Health and food-safety inspections don’t reschedule. A documented pest program is the cheapest compliance line on the P&L — and the difference between a clean audit and a very public closure.',
+ strap:'Facilities & ops managers — let’s talk.', cta:'Get a commercial quote',
+ caption:'Health inspectors don’t reschedule. A documented pest management program is the cheapest compliance line on the P&L — and the difference between a clean audit and a closure notice. Full reporting with every service. (07) 3113 9666 #Compliance #FacilitiesManagement #CommercialPestControl'},
 ];
 
 /* slug mascot mark for post 20 */

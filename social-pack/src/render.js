@@ -46,6 +46,10 @@ const START_MONDAY = '2026-08-03'; // week 1 of the posting schedule
   });
   const page = await browser.newPage({ viewport: { width: 1200, height: 2000 } });
   await page.addInitScript(map => { window.PHOTOS = map; }, photos);
+  // real logo: drop src/logo.png (or .svg) and it replaces the written wordmark
+  for (const f of ['logo.png', 'logo.svg']) {
+    if (fs.existsSync(path.join(SRC, f))) { await page.addInitScript(l => { window.LOGO = l; }, f); break; }
+  }
   await page.goto('file://' + path.resolve(SRC, 'posts.html'));
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(400);
