@@ -1,0 +1,105 @@
+SLUG-A-BUG PHOTO CHECKLIST (on-site)
+Rules: landscape - subject centre/right - uniform on - no customer faces or house numbers - phone camera fine
+Name each photo post-XXX.jpg OR just send them to Claude and say what it is
+
+=== SHOOT ONCE, USE EVERYWHERE (do these first) ===
+[ ] post-100 - HERO: whole team + van, best light (also 018, 020, 086)
+[ ] post-008 - tech spraying skirting boards inside a home (also 013, 011, 091)
+[ ] post-012 - Termatrac held against a wall (also 080, 094, 017)
+[ ] post-023 - termite mud tubes close-up (also 001, 035)
+[ ] post-038 - van parked on a nice street (covers ALL suburb posts 038-047, 084, 081)
+[ ] post-019 - handshake / friendly chat at front door (also 082, 088, 092)
+[ ] post-016 - commercial kitchen, treating along kickboards (also 051, 103, 064)
+
+=== EVERY HOUSE JOB - grab when you see it ===
+[ ] post-014 - head + torch in the roof void
+[ ] post-095 - bad termite damage, opened wall or frame
+[ ] post-026 - live termites in timber, macro
+[ ] post-015 - bait station in lawn, lid open
+[ ] post-004 - open meter box (webs = bonus)
+[ ] post-089 - dated service sticker in meter box
+[ ] post-029 - chewed electrical cable close-up
+[ ] post-005 - 20mm entry gap, thumb next to it for scale
+[ ] post-025 - caulk gun sealing a gap
+[ ] post-003 - ant trail on bench or wall
+[ ] post-032 - cockroach on tiled floor
+[ ] post-002 - torch beam under fridge, dark kitchen
+[ ] post-006 - gloved hand checking mattress seam
+[ ] post-033 - bed frame check with torch/magnifier
+[ ] post-034 - spider web in ceiling corner or eave
+[ ] post-037 - huntsman on a wall
+[ ] post-068 - daddy long-legs in a corner
+[ ] post-031 - wasp nest under eave (zoom, stay back)
+[ ] post-009 - termite wings on window sill
+[ ] post-030 - silverfish / bookshelf corner
+[ ] post-036 - pet on carpet + your gear nearby
+[ ] post-075 - dog or cat watching you work
+[ ] post-007 - spray wand on carpet
+[ ] post-010 - perimeter spray after rain
+[ ] post-014 done? also grab: droppings shot for post-014
+[ ] post-078 - ladder on gutter, wet leaves in hand
+[ ] post-077 - tipping water out of pot saucer
+[ ] post-062 - backyard BBQ area
+[ ] post-072 - tidy yard: firewood up, bins sealed
+[ ] post-076 - garage shelves, cardboard clutter
+[ ] post-091 - backpack sprayer mid-job
+[ ] post-093 - cleared kitchen bench before treatment
+[ ] post-058 - fridge pulled out for clean
+[ ] post-064 - a spotless kitchen
+[ ] post-071 - pantry with airtight containers
+[ ] post-059 - stocked pantry (xmas-ish)
+[ ] post-060 - lunchbox + school bag on bench
+[ ] post-063 - suitcases at front door
+[ ] post-074 - stacked moving boxes
+[ ] post-073 - empty rental room being treated
+[ ] post-065 - cat staring at a wall
+[ ] post-066 - plug-in ultrasonic repeller in socket
+[ ] post-069 - coffee grounds line, ants nearby
+[ ] post-022 - supermarket spray can NEXT TO your pro rig
+[ ] post-092 - family inside, you treating outside window
+[ ] post-083 - explaining products to a parent (toys visible, no kid faces)
+[ ] post-090 - pet bowls covered, dog behind gate
+[ ] post-096 - fresh clean bedroom after treatment
+[ ] post-099 - mozzie on flyscreen or skin, macro
+[ ] post-028 - dusk backyard, tipping out water
+
+=== IN THE VAN / DRIVING ===
+[ ] post-039 - van in Chermside (units behind)
+[ ] post-040 - van at Redcliffe waterfront
+[ ] post-041 - van on leafy Strathpine street
+[ ] post-042 - van at Caboolture acreage/shed
+[ ] post-043 - van in Logan/Springwood (new builds behind)
+[ ] post-044 - van on Capalaba street
+[ ] post-045 - van near water Wynnum/Manly
+[ ] post-046 - van at Sunnybank shops
+[ ] post-047 - van at Shailer Park (bush behind)
+[ ] post-067 - brand new estate street
+[ ] post-098 - sunny Queenslander street
+[ ] post-081 - you in van cab checking schedule on tablet
+[ ] post-084 - van driving/parked, Brisbane backdrop
+[ ] post-085 - thumbs up next to van
+
+=== COMMERCIAL JOBS ===
+[ ] post-052 - warehouse racking + bait station
+[ ] post-057 - retail shelves or stockroom
+[ ] post-053 - office kitchenette
+[ ] post-054 - apartment block / strata common area (also 101, 049)
+[ ] post-048 - childcare playground, EMPTY, no kids
+[ ] post-050 - school gate/oval fence, no students
+[ ] post-055 - gym floor or change room, empty
+[ ] post-056 - clinic reception, empty
+[ ] post-104 - beer taps at a bar, or kegs in cellar
+[ ] post-102 - keys + rental sign handover
+[ ] post-105 - clipboard report in commercial setting
+[ ] post-061 - report + calculator on desk
+
+=== AT THE OFFICE / EASY ONES ===
+[ ] post-021 - licence card / ID lanyard close-up (also 087)
+[ ] post-079 - phone with Afterpay + invoice (no personal details)
+[ ] post-070 - fridge calendar reminder magnet
+[ ] post-097 - house + insurance paperwork folder
+[ ] post-086 - portrait of longest-serving tech with van
+[ ] post-017 - house with for-sale sign + you with tablet
+[ ] post-094 - showing report on tablet to customer
+
+DONE A PHOTO? Tick it, send it to Claude, say the post number. Claude does the rest.
