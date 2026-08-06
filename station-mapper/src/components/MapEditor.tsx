@@ -16,7 +16,7 @@ interface View {
   ty: number
 }
 
-const MARKER_PX = 30
+const MARKER_PX = 22
 const CLICK_SLOP = 5
 
 export default function MapEditor({ siteId, onBack }: Props) {
@@ -443,7 +443,7 @@ export default function MapEditor({ siteId, onBack }: Props) {
                   top: st.y * site.mapH,
                   width: MARKER_PX,
                   height: MARKER_PX,
-                  fontSize: st.num > 99 ? 11 : 14,
+                  fontSize: st.num > 99 ? 9 : 11,
                   transform: `translate(-50%, -50%) scale(${markerScale})`,
                 }}
               >

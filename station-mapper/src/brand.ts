@@ -6,7 +6,7 @@ export const BRAND = {
   font: 'Arial, Helvetica, sans-serif',
   company: 'Slug-A-Bug',
   footerLine:
-    'Slug-A-Bug · ABN 81 644 370 825 · QLD PMT 1004307814 · QBCC 1122314 · (07) 3113 9666 · info@slugabug.com.au',
+    '10 X Pty Ltd t/a Slug A Bug · ABN 81 644 370 525 · QBCC 15315305 (Nominee: J. Cartledge QBCC 1122314) · QLD PMT 1004307814 · (07) 3113 9666 · info@slugabug.com.au',
   defaultTechnician: 'N. Navarro',
   defaultProduct: 'Solontra',
 } as const

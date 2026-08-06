@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf'
 import { BRAND } from '../brand'
 import { LAYER_META, siteSlug, type LayerType, type Site, type Station } from '../types'
+
 import { blobToDataURL, loadImage, rasterizeMap } from '../imageUtils'
 import logoUrl from '../assets/logo.png'
 
@@ -36,7 +37,7 @@ function drawMarker(doc: jsPDF, layer: LayerType, cx: number, cy: number, size: 
   if (num !== undefined) {
     setText(doc, '#ffffff')
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(num > 99 ? 6.5 : num > 9 ? 8 : 9)
+    doc.setFontSize(num > 99 ? (size < 4 ? 4.2 : 6) : num > 9 ? (size < 4 ? 5.2 : 7.5) : size < 4 ? 6 : 8.5)
     doc.text(String(num), cx, cy + 0.1, { align: 'center', baseline: 'middle' })
   }
 }
@@ -49,9 +50,15 @@ function drawFooters(doc: jsPDF) {
     doc.setLineWidth(0.5)
     doc.line(MARGIN, FOOTER_TOP + 3, PAGE_W - MARGIN, FOOTER_TOP + 3)
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(7.5)
+    let fs = 7.5
+    doc.setFontSize(fs)
+    while (fs > 5 && doc.getTextWidth(BRAND.footerLine) > CONTENT_W) {
+      fs -= 0.25
+      doc.setFontSize(fs)
+    }
     setText(doc, GREY)
     doc.text(BRAND.footerLine, PAGE_W / 2, FOOTER_TOP + 8, { align: 'center' })
+    doc.setFontSize(7.5)
     doc.text(`Page ${i} of ${TOTAL_PAGES_ALIAS}`, PAGE_W / 2, FOOTER_TOP + 12.5, { align: 'center' })
   }
 }
@@ -62,12 +69,14 @@ interface TableCtx {
 }
 
 const COLS = [
-  { title: '#', w: 12 },
-  { title: 'Type', w: 30 },
-  { title: 'Location', w: 76 },
-  { title: 'Product', w: 36 },
+  { title: '#', w: 14 },
+  { title: 'Type', w: 22 },
+  { title: 'Location', w: 66 },
+  { title: 'Product', w: 52 },
   { title: 'Condition', w: 26 },
 ]
+
+const NUM_PREFIX: Record<LayerType, string> = { rodent: 'R', trelona: 'T' }
 
 function colX(idx: number) {
   let x = MARGIN
@@ -128,10 +137,12 @@ function drawStationRow(ctx: TableCtx, st: Station, zebra: boolean) {
   doc.line(MARGIN, ctx.y + rowH, PAGE_W - MARGIN, ctx.y + rowH)
 
   const textY = ctx.y + 5.2
-  drawMarker(doc, st.layer, colX(0) + 4.6, ctx.y + rowH / 2, 4.6, st.num)
-  doc.setFont('helvetica', 'normal')
+  drawMarker(doc, st.layer, colX(0) + 4, ctx.y + rowH / 2, 2.8)
+  doc.setFont('helvetica', 'bold')
   doc.setFontSize(9)
   setText(doc, INK)
+  doc.text(`${NUM_PREFIX[st.layer]}${st.num}`, colX(0) + 7, textY)
+  doc.setFont('helvetica', 'normal')
   doc.text(LAYER_META[st.layer].name, colX(1) + 2.5, textY)
   doc.text(locLines, colX(2) + 2.5, textY)
   doc.text(prodLines, colX(3) + 2.5, textY)
@@ -206,7 +217,7 @@ export async function exportSitePdf(site: Site, mapBlob: Blob): Promise<void> {
 
   const sorted = [...site.stations].sort((a, b) => a.num - b.num)
   for (const st of sorted) {
-    drawMarker(doc, st.layer, mapX + st.x * mapW, mapTop + st.y * mapH, 4.6, st.num)
+    drawMarker(doc, st.layer, mapX + st.x * mapW, mapTop + st.y * mapH, 3.1, st.num)
   }
 
   // ---------- page 1: legend ----------
@@ -217,12 +228,17 @@ export async function exportSitePdf(site: Site, mapBlob: Blob): Promise<void> {
   doc.setFontSize(9)
   setText(doc, NAVY)
   doc.text('Legend', MARGIN, legendY)
-  drawMarker(doc, 'rodent', MARGIN + 22, legendY - 1, 4.2)
+  let lx = MARGIN + 22
+  const legendEntries: [LayerType, string][] = []
+  if (rodentCount || !trelonaCount) legendEntries.push(['rodent', `Rodent bait station (${rodentCount})`])
+  if (trelonaCount || !rodentCount) legendEntries.push(['trelona', `Trelona termite station (${trelonaCount})`])
   doc.setFont('helvetica', 'normal')
   setText(doc, INK)
-  doc.text(`Rodent bait station (${rodentCount})`, MARGIN + 26.5, legendY)
-  drawMarker(doc, 'trelona', MARGIN + 82, legendY - 1, 4.2)
-  doc.text(`Trelona termite station (${trelonaCount})`, MARGIN + 86.5, legendY)
+  for (const [layer, label] of legendEntries) {
+    drawMarker(doc, layer, lx, legendY - 1, 3.6)
+    doc.text(label, lx + 4.5, legendY)
+    lx += 10 + doc.getTextWidth(label) + 12
+  }
 
   // ---------- page 2+: register ----------
   doc.addPage()
