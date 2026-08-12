@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Specimen Lab</title>
+<style>
+  body { margin:0; background:#14090a; color:#e8e2df; font:12px ui-monospace,monospace; }
+  #grid { display:grid; grid-template-columns:repeat(3,1fr); }
+  .cell { position:relative; aspect-ratio:1; border:1px solid #331; }
+  .cell canvas { width:100%; height:100%; display:block; }
+  .cell span { position:absolute; left:6px; bottom:6px; color:#ee1c24; letter-spacing:.12em; }
+  #title { padding:8px 10px; letter-spacing:.2em; color:#ee1c24; }
+</style>
+</head>
+<body>
+<div id="title">—</div>
+<div id="grid"></div>
+
+<script src="../src/core3d.js"></script>
+<script src="../src/anatomy.js"></script>
+<script src="../src/brand.js"></script>
+<script src="../src/pests.js"></script>
+<script>
+/*
+ * Nine fixed camera angles per specimen: the fast way to catch a leg poking
+ * through the abdomen or a marking landing on the wrong plate.
+ */
+var ANGLES = [0, 40, 80, 120, 160, 200, 240, 290, 330];
+var cells = [];
+var grid = document.getElementById('grid');
+
+ANGLES.forEach(function (deg) {
+  var cell = document.createElement('div');
+  cell.className = 'cell';
+  var cv = document.createElement('canvas');
+  cell.appendChild(cv);
+  var lab = document.createElement('span');
+  lab.textContent = deg + '°';
+  cell.appendChild(lab);
+  grid.appendChild(cell);
+  var r = new BB.Renderer(cv, { tilt: 0.42, fov: 2.95 });
+  r.resize(300, 300, 2);
+  cells.push({ r: r, deg: deg });
+});
+
+window.labLoad = function (id) {
+  var pest = BB.pestById(id);
+  document.getElementById('title').textContent = pest.name + ' — ' + pest.sci;
+  var model = BB.anatomy.build(pest.spec);
+  model.scale = (pest.spec.fit || 1) * (2.4 / (model.span || 2.4));
+  cells.forEach(function (c) {
+    c.r.setModel(model);
+    c.r.render(c.deg * Math.PI / 180, 0);
+  });
+  return { faces: cells[0].r.faceCount, span: model.span };
+};
+
+window.labLoad(BB.PESTS[0].id);
+window.LAB_READY = true;
+</script>
+</body>
+</html>
