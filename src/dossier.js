@@ -23,8 +23,10 @@
   var FORMATS = {
     web: { cls: 'fmt-web' },
     wide: { cls: 'fmt-wide' },
-    reel: { cls: 'fmt-reel', items: 3, speed: 1.15 },
-    square: { cls: 'fmt-square', items: 4 }
+    // Vertical runs are paced faster: a reel wants to land under ~35 seconds,
+    // and at 1080x1920 the typing scheduler loses time to the render loop.
+    reel: { cls: 'fmt-reel', items: 3, speed: 1.75 },
+    square: { cls: 'fmt-square', items: 4, speed: 1.5 }
   };
 
   function qs(name, def) {

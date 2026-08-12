@@ -43,7 +43,7 @@ const arg = (k, d) => {
 
 const format = arg('format', 'reel');
 const size = SIZES[format] || SIZES.reel;
-const speed = arg('speed', format === 'reel' ? '1.15' : '1');
+const speed = arg('speed', format === 'reel' ? '1.75' : format === 'square' ? '1.5' : '1');
 const items = arg('items', format === 'wide' || format === 'web' ? '4' : '3');
 const outDir = path.resolve(REPO, arg('out', 'dist/video'));
 const silent = !!arg('silent', false);

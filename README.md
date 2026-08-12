@@ -22,6 +22,12 @@ numbers, every sound is synthesised in the browser, and the whole thing ships
 as a single self-contained HTML file that works offline — about 1.7 MB with
 the photographs baked in, or 120 KB if you build without them.
 
+![Twelve of the specimens](docs/samples/specimen-lineup.png)
+
+![A dossier mid-run](docs/samples/dossier-termite.png)
+
+![The cut to the field photograph](docs/samples/photo-match.png)
+
 ---
 
 ## The twenty-three specimens
@@ -141,7 +147,7 @@ terminal audio captured straight off the Web Audio graph. 1080×1920 for
 Options: `--speed=1.3` `--items=3` `--hold=3` (seconds on the end card)
 `--silent` `--out=some/dir`.
 
-A reel runs about 26 seconds. Post it as-is, or drop it into your editor and
+A reel runs about 30 seconds. Post it as-is, or drop it into your editor and
 cut a talking-head intro in front of it.
 
 ## Adding a pest
