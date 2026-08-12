@@ -20,10 +20,10 @@ const ROOT = __dirname;
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 
-const SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'photos.js', 'sfx.js', 'dossier.js'];
+const SCRIPTS = ['core3d.js', 'anatomy.js', 'glb.js', 'brand.js', 'pests.js', 'photos.js', 'sfx.js', 'dossier.js'];
 // the gallery bundle carries the dossier too, so index.html is one
 // self-contained file with no iframe to another URL
-const GALLERY_SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'photos.js', 'sfx.js', 'dossier.js', 'gallery.js'];
+const GALLERY_SCRIPTS = ['core3d.js', 'anatomy.js', 'glb.js', 'brand.js', 'pests.js', 'photos.js', 'sfx.js', 'dossier.js', 'gallery.js'];
 
 const read = f => fs.readFileSync(path.join(SRC, f), 'utf8');
 const bundle = list => list.map(f => `/* ---- ${f} ---- */\n${read(f)}`).join('\n');
@@ -119,6 +119,19 @@ for (const p of PESTS) {
 }
 
 fs.writeFileSync(path.join(DIST, 'pest-ids.json'), JSON.stringify(PESTS.map(p => p.id), null, 2));
+
+/* Real 3D models are copied, never inlined — a scan is megabytes, and base64
+ * would wreck the single-file build for everyone who never uses one. Pages
+ * fetch them from models/ beside the HTML. */
+const modelDir = path.join(ROOT, 'assets', 'models');
+if (fs.existsSync(modelDir)) {
+  const models = fs.readdirSync(modelDir).filter(f => /\.(glb|gltf)$/i.test(f));
+  if (models.length) {
+    fs.mkdirSync(path.join(DIST, 'models'), { recursive: true });
+    for (const f of models) fs.copyFileSync(path.join(modelDir, f), path.join(DIST, 'models', f));
+    console.log(`dist/models/  (${models.length} model file${models.length > 1 ? 's' : ''})`);
+  }
+}
 
 /* The photographs as loose files too — handy for social posts and print, and
  * required reading for anyone reusing them, since the credits travel with. */

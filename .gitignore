@@ -146,3 +146,8 @@ dist/video/
 
 # raw photo downloads — the processed versions are what ship
 assets/photos/.cache/
+
+# real 3D models are large third-party binaries — keep them out of git
+assets/models/*.glb
+assets/models/*.gltf
+dist/models/

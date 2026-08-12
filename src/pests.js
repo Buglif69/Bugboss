@@ -749,6 +749,12 @@
     /* ------------------------------------------------------------------ */
     {
       id: 'roof-rat',
+      // Example of the real-model hook. Point `model` at a .glb in
+      // assets/models/ — a bought scan, a photogrammetry capture of an actual
+      // specimen, or an image-to-3D generation — and the dossier swaps the
+      // generated specimen out for it once the file loads. Delete the line and
+      // it falls straight back to the generated one.
+      //   model: { file: 'roof-rat.glb', faces: 6500, yaw: 0, fit: 1 },
       name: 'Roof Rat',
       sci: 'Rattus rattus',
       aka: ['Black rat', 'Ship rat'],

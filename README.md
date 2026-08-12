@@ -168,6 +168,7 @@ wording, edit `src/brand.js`. It is the only place those strings exist.
 | File | Job |
 |---|---|
 | `src/core3d.js` | The 3D engine: matrices, mesh primitives, and a painter's-algorithm renderer on canvas 2D. Smooth vertex normals, per-face colour, alpha and unlit flags, weak perspective, ground shadow, tergite segmentation, per-face colour mottling, and scattered setae. ~600 lines, no dependencies. |
+| `src/glb.js` | Loads a real `.glb` model onto the same stage: glTF parsing, node transforms, per-triangle texture sampling, decimation, re-orientation. |
 | `src/anatomy.js` | Three body plans — insect, arachnid, rodent — assembled from ellipsoids and swept tubes. Species markings (pronotum stripes, wasp bands, the redback's blaze) are colour functions evaluated per face. Soldier features — mandibles, the nasute rostrum — are options. |
 | `src/pests.js` | The database: dossier copy plus body-plan numbers. |
 | `src/photo-sources.json` | Where the field photographs come from, with credits and crops. Hand-edited. |
@@ -176,13 +177,41 @@ wording, edit `src/brand.js`. It is the only place those strings exist.
 | `src/dossier.js` | The sequence — boot, scan, lock, identity, threat meter, sections, call to action — plus formats, drag-to-rotate and skip. |
 | `src/gallery.js` | The index page of specimens. |
 | `build.js` | Inlines everything into self-contained HTML. Concatenation is the whole build. |
-| `tools/` | Dev and export tools: `fetch-photos.mjs` (image pipeline), `shoot.mjs` (contact sheets), `preview.mjs` (screenshots + frame times), `record.mjs` (MP4). |
+| `tools/` | Dev and export tools: `fetch-photos.mjs` (image pipeline), `shoot.mjs` (contact sheets), `preview.mjs` (screenshots + frame times), `record.mjs` (MP4), `check-glb.mjs` (real-model smoke test). |
 
 Why canvas 2D and not three.js: the output has to survive being pasted into
 WordPress, opened offline, and rendered by a headless recorder. A dependency-
 free file does all three; 600 KB of WebGL library for eight bugs does not.
 
-## Why the specimens are generated rather than scanned
+## Using real 3D models
+
+Everything above is generated from numbers. If you want an actual scanned or
+purchased model for a species, `src/glb.js` loads one and the dossier uses it:
+
+```js
+// in src/pests.js, on any species
+model: { file: 'german-cockroach.glb', faces: 6500 }
+```
+
+Put the `.glb` in `assets/models/`. The generated specimen is shown first and
+the real model swaps in when it loads, so a missing file degrades to a working
+stage rather than an empty one, and the HUD label changes to `SCANNED SPECIMEN`.
+The loader handles what a turntable actually needs: node transforms, base
+colour textures sampled per triangle, re-centring and re-scaling to the shared
+frame, and **vertex-clustering decimation** down to a face budget, because a
+50k-triangle scan will not sort per frame on a phone.
+
+Verify the path with `node tools/check-glb.mjs` — it fetches a sample model,
+loads it in a real browser and reports triangles, load time and frame cost.
+
+`assets/models/README.md` covers where to get models: photogrammetry of your
+own specimens (free, best results, and no licence questions), AI image-to-3D
+services (fast, but thin legs and antennae are their known failure mode), or
+buying one. Models are copied to `dist/models/` rather than inlined — a scan is
+megabytes, and base64 would wreck the single-file build for everyone who never
+uses one.
+
+## Why the shipped specimens are generated rather than scanned
 
 The obvious question is why not use real scanned 3D models. Short version: the
 tradeoff does not pay off here.

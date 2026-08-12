@@ -90,6 +90,7 @@
       '<div class="bb-sweep"></div>' +
       '<div class="bb-readout"><span class="bb-rot">ROT 000°</span><span class="bb-scale"></span></div>' +
       '<div class="bb-stagetag">LIVE SPECIMEN SCAN · 360°</div>';
+    this.stageTagEl = hud.querySelector('.bb-stagetag');
 
     this.viewBtn = el('button', 'bb-view', stage);
     this.viewBtn.type = 'button';
@@ -224,12 +225,32 @@
   /** @param hold  build the specimen but wait for an external play() —
    *               the video recorder uses it to line audio up with frame 1 */
   Stage.prototype.load = function (id, hold) {
+    var self = this;
     var pest = BB.pestById(id) || BB.PESTS[0];
     this.pest = pest;
     var model = BB.anatomy.build(pest.spec);
     model.scale = (pest.spec.fit || 1) * (2.4 / (model.span || 2.4));
     this.renderer.setModel(model);
+
+    // A species can point at a real 3D model — a scan, a bought asset, or one
+    // an image-to-3D service built from photographs. The generated specimen is
+    // shown first and swapped out when the file arrives, so a slow or missing
+    // download degrades to a working stage instead of an empty one.
+    if (pest.model && BB.loadModelFile) {
+      var want = pest.id;
+      var url = (BB.MODEL_BASE || 'models/') + pest.model.file;
+      BB.loadModelFile(url, pest.model).then(function (real) {
+        if (self.pest.id !== want) return;              // viewer moved on
+        real.scale = (pest.model.fit || 1) * (2.4 / (real.span || 2.4));
+        self.renderer.setModel(real);
+        if (self.stageTagEl) self.stageTagEl.textContent = 'SCANNED SPECIMEN · 360°';
+      }).catch(function (e) {
+        // eslint-disable-next-line no-console
+        console.warn('[dossier] real model for ' + want + ' unavailable, using the generated specimen —', e.message);
+      });
+    }
     if (this.selectEl) this.selectEl.value = pest.id;
+    if (this.stageTagEl) this.stageTagEl.textContent = 'LIVE SPECIMEN SCAN · 360°';
     this.photoIndex = 0;
     this.photoPinned = false;
     this.showPhoto(false);
