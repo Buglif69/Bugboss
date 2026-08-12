@@ -177,7 +177,7 @@ wording, edit `src/brand.js`. It is the only place those strings exist.
 | `src/dossier.js` | The sequence — boot, scan, lock, identity, threat meter, sections, call to action — plus formats, drag-to-rotate and skip. |
 | `src/gallery.js` | The index page of specimens. |
 | `build.js` | Inlines everything into self-contained HTML. Concatenation is the whole build. |
-| `tools/` | Dev and export tools: `fetch-photos.mjs` (image pipeline), `shoot.mjs` (contact sheets), `preview.mjs` (screenshots + frame times), `record.mjs` (MP4), `check-glb.mjs` (real-model smoke test). |
+| `tools/` | Dev and export tools: `fetch-photos.mjs` (image pipeline), `shoot.mjs` (contact sheets), `preview.mjs` (screenshots + frame times), `record.mjs` (MP4), `check-glb.mjs` (real-model smoke test), `fit-specimen.mjs` (measure a specimen against its photograph). |
 
 Why canvas 2D and not three.js: the output has to survive being pasted into
 WordPress, opened offline, and rendered by a headless recorder. A dependency-
@@ -210,6 +210,56 @@ services (fast, but thin legs and antennae are their known failure mode), or
 buying one. Models are copied to `dist/models/` rather than inlined — a scan is
 megabytes, and base64 would wreck the single-file build for everyone who never
 uses one.
+
+## Fitting the specimen to the photograph
+
+`tools/fit-specimen.mjs` is the better answer to "can't you just AI-generate a
+3D model from photos". Services like Meshy and Tripo generate a mesh from an
+image with no idea what they are looking at — which is why they do well on a
+shoe and badly on a cockroach: nothing tells them there are six legs and two
+antennae, so thin structures get guessed away.
+
+This system already knows what an insect is made of. So the hard half is done,
+and what remains is measurement — analysis-by-synthesis: render a candidate,
+compare it against the photograph, adjust, repeat. Every candidate is
+anatomically correct by construction, so the output is a clean 4–6 k triangle
+model with real legs that holds up from every angle.
+
+```bash
+node tools/fit-specimen.mjs german-cockroach        # measure and report
+node tools/fit-specimen.mjs --all --write           # apply what passes
+```
+
+It segments the animal out of the photo (background model → Otsu → largest
+blob → hole fill), reads its real palette, and grades the model's colours onto
+it — matching hue and relative tone while **normalising exposure**, because a
+photo taken in shade is dark from the light that day, and the renderer applies
+its own lighting on top. It can also hill-climb body proportions against
+silhouette overlap, off by default.
+
+**A trust gate decides whether the measurement is believable.** The hand-set
+colours encode what the species *is* — a European wasp is yellow, a redback is
+black. A photograph is one animal, one light, one background. So the photo is
+allowed to refine tone and shade, and refused when it tries to change what
+colour the animal is: hue moving more than 22°, or chroma collapsing, means the
+segmentation leaked rather than the species being wrong.
+
+### What it found
+
+Across all fourteen photographs: **five passed, nine were rejected**, and of
+the five that passed, none beat the hand-set colours by enough to see. The
+results are reported, not applied.
+
+That is the input's fault, not the method's. These are wildlife snaps — a wasp
+on a green lid, an ant on a leaf, a huntsman on red bark — and without a neural
+matting model, a small animal cannot be cleanly separated from a busy
+background. One run turned the paper wasp's antennae blue. The gate catches
+that now, which is the point of having one.
+
+**Photograph a specimen on a white card with the phone flash, filling the
+frame, and this becomes worth running for real.** Segmentation is trivial on a
+plain background, and the measurement is then genuinely the animal's colour.
+Five minutes' work per species, and the tool is already built for it.
 
 ## Why the shipped specimens are generated rather than scanned
 

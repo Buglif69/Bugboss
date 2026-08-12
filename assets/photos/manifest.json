@@ -6,7 +6,7 @@
     "licence": "CC BY 4.0",
     "source": "iNaturalist",
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609862291/large.jpg",
-    "bytes": 131426
+    "bytes": 93304
   },
   {
     "pest": "american-cockroach",
@@ -15,7 +15,7 @@
     "licence": "CC BY 4.0",
     "source": "iNaturalist",
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/620180345/large.jpg",
-    "bytes": 202023
+    "bytes": 151995
   },
   {
     "pest": "coastal-brown-ant",
@@ -69,7 +69,7 @@
     "licence": "CC BY 4.0",
     "source": "iNaturalist",
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/703213795/large.jpg",
-    "bytes": 29612
+    "bytes": 28798
   },
   {
     "pest": "roof-rat",
@@ -96,7 +96,7 @@
     "licence": "CC BY 4.0",
     "source": "iNaturalist",
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/617019423/large.jpg",
-    "bytes": 36232
+    "bytes": 30645
   },
   {
     "pest": "paper-wasp",
@@ -105,7 +105,7 @@
     "licence": "CC BY 4.0",
     "source": "iNaturalist",
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604999316/large.jpg",
-    "bytes": 74141
+    "bytes": 62065
   },
   {
     "pest": "european-wasp",
@@ -123,6 +123,6 @@
     "licence": "CC BY 4.0",
     "source": "iNaturalist",
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/610859481/large.jpg",
-    "bytes": 32723
+    "bytes": 39960
   }
 ]

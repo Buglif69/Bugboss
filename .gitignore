@@ -151,3 +151,5 @@ assets/photos/.cache/
 assets/models/*.glb
 assets/models/*.gltf
 dist/models/
+
+assets/fits/
