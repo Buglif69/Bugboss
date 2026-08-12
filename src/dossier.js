@@ -273,6 +273,12 @@
     });
   };
 
+  /** Abort whatever is typing — used when a dossier is closed. */
+  Stage.prototype.stop = function () {
+    this.token++;
+    BB.sfx.drone(false);
+  };
+
   Stage.prototype.scrollDown = function () {
     this.docEl.scrollTop = this.docEl.scrollHeight;
   };

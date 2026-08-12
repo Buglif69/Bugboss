@@ -21,7 +21,9 @@ const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 
 const SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'sfx.js', 'dossier.js'];
-const GALLERY_SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'gallery.js'];
+// the gallery bundle carries the dossier too, so index.html is one
+// self-contained file with no iframe to another URL
+const GALLERY_SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'sfx.js', 'dossier.js', 'gallery.js'];
 
 const read = f => fs.readFileSync(path.join(SRC, f), 'utf8');
 const bundle = list => list.map(f => `/* ---- ${f} ---- */\n${read(f)}`).join('\n');
@@ -109,7 +111,7 @@ html, body { height: auto; min-height: 100%; }
 ${bundle(GALLERY_SCRIPTS)}
 </script>
 <script>
-BB.mountGallery('#gal', { dossierUrl: 'pest-dossier.html' });
+BB.mountGallery('#gal');
 </script>
 </body>
 </html>

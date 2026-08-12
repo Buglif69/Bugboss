@@ -29,7 +29,8 @@
       '<h1 class="gal-title">Know what you\'re dealing with</h1>' +
       '<p class="gal-sub">Eight of the pests we get called out to most across ' + B.area +
       '. Pick one to spin the specimen and read the full file — what it is, what it does, ' +
-      'where it hides and how it gets treated.</p>';
+      'where it hides and how it gets treated.</p>' +
+      '<p class="gal-hint">Drag the specimen to turn it · sound switches on at your first tap</p>';
 
     var grid = el('div', 'gal-grid', mount);
     var cards = [];
@@ -116,21 +117,38 @@
     closeBtn.addEventListener('click', close);
     doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 
+    // Two ways to show a dossier: mounted straight into the page when the
+    // dossier code is bundled alongside the gallery (one file, no iframe), or
+    // an iframe pointing at pest-dossier.html when it is hosted separately.
+    var inline = opts.inline !== false && typeof BB.mountDossier === 'function';
+    var host = null, stage = null;
+
     function openDossier(id) {
-      var src = (opts.dossierUrl || 'dossier.html') + '?pest=' + id;
-      if (!frame) {
-        frame = el('iframe', 'gal-frame', overlay);
-        frame.setAttribute('allow', 'autoplay');
-        frame.setAttribute('title', 'Pest dossier');
+      if (inline) {
+        if (!host) {
+          host = el('div', 'gal-inline', overlay);
+          stage = BB.mountDossier(host, { pest: id });
+        } else {
+          stage.load(id);
+        }
+      } else {
+        if (!frame) {
+          frame = el('iframe', 'gal-frame', overlay);
+          frame.setAttribute('allow', 'autoplay');
+          frame.setAttribute('title', 'Pest dossier');
+        }
+        frame.src = (opts.dossierUrl || 'dossier.html') + '?pest=' + id;
       }
-      frame.src = src;
       overlay.classList.add('is-open');
       doc.body.style.overflow = 'hidden';
+      if (inline && stage) requestAnimationFrame(function () { stage.resize(); });
     }
+
     function close() {
       overlay.classList.remove('is-open');
       doc.body.style.overflow = '';
       if (frame) frame.src = 'about:blank';
+      if (stage) stage.stop();
     }
 
     return { open: openDossier, close: close };
