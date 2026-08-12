@@ -73,6 +73,13 @@
     this.stageEl = stage;
     this.canvas = el('canvas', 'bb-canvas', stage);
 
+    // The field photograph sits over the turntable. The dossier cuts to it
+    // once during the run and the viewer can pin it open from the toggle.
+    this.photoEl = el('div', 'bb-photo', stage);
+    this.photoEl.innerHTML = '<img alt="" ><div class="bb-photocap"></div>';
+    this.photoImg = this.photoEl.querySelector('img');
+    this.photoCap = this.photoEl.querySelector('.bb-photocap');
+
     var hud = el('div', 'bb-hud', stage);
     hud.innerHTML =
       '<span class="bb-br tl"></span><span class="bb-br tr"></span>' +
@@ -81,6 +88,13 @@
       '<div class="bb-sweep"></div>' +
       '<div class="bb-readout"><span class="bb-rot">ROT 000°</span><span class="bb-scale"></span></div>' +
       '<div class="bb-stagetag">LIVE SPECIMEN SCAN · 360°</div>';
+
+    this.viewBtn = el('button', 'bb-view', stage);
+    this.viewBtn.type = 'button';
+    this.viewBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      self.showPhoto(!self.photoOn, true);
+    });
     this.rotEl = hud.querySelector('.bb-rot');
     this.scaleEl = hud.querySelector('.bb-scale');
     this.sweepEl = hud.querySelector('.bb-sweep');
@@ -214,6 +228,12 @@
     model.scale = (pest.spec.fit || 1) * (2.4 / (model.span || 2.4));
     this.renderer.setModel(model);
     if (this.selectEl) this.selectEl.value = pest.id;
+    this.photoIndex = 0;
+    this.photoPinned = false;
+    this.showPhoto(false);
+    if (this.viewBtn) {
+      this.viewBtn.style.display = this.photosFor(pest).length ? '' : 'none';
+    }
     if (this.scaleEl) this.scaleEl.textContent = 'ACTUAL ' + pest.actualSize;
     if (this.fileNoEl) this.fileNoEl.textContent = fileNumber(pest);
     doc.title = pest.name + ' — Pest Dossier | ' + BB.BRAND.company;
@@ -226,6 +246,41 @@
     for (var i = 0; i < pest.id.length; i++) n = (n * 31 + pest.id.charCodeAt(i)) % 9000;
     return 'SB-' + (1000 + n);
   }
+
+  /* ---------------- the field photograph ------------------------------ */
+
+  Stage.prototype.photosFor = function (pest) {
+    return (BB.PHOTOS && BB.PHOTOS[pest.id]) || [];
+  };
+
+  /**
+   * @param on      show the photograph over the turntable
+   * @param manual  true when the viewer pressed the toggle, which pins the
+   *                choice so the sequence stops flipping it back
+   */
+  Stage.prototype.showPhoto = function (on, manual) {
+    var shots = this.pest ? this.photosFor(this.pest) : [];
+    if (!shots.length) {
+      if (this.viewBtn) this.viewBtn.style.display = 'none';
+      return;
+    }
+    if (manual) this.photoPinned = on;
+    else if (this.photoPinned) return;
+
+    this.photoOn = on;
+    if (on) {
+      var shot = shots[this.photoIndex % shots.length];
+      if (this.photoImg.getAttribute('src') !== BB.photoSrc(shot.file)) {
+        this.photoImg.src = BB.photoSrc(shot.file);
+        this.photoImg.alt = 'Field photograph of a ' + this.pest.name.toLowerCase();
+      }
+      this.photoCap.innerHTML =
+        '<b>FIELD PHOTOGRAPH</b> · Photo: ' + shot.credit + ' · ' + shot.licence +
+        ' · via ' + shot.source;
+    }
+    this.photoEl.classList.toggle('is-on', on);
+    this.viewBtn.textContent = on ? '◆ VIEW 3D SPECIMEN' : '◆ VIEW REAL PHOTO';
+  };
 
   /* ---------------- typing ------------------------------------------- */
 
@@ -357,7 +412,19 @@
       await this.type(tag, '"' + pest.tagline + '"', 48);
     }
 
-    // 5. sections
+    // 5. photographic match — the cut to the real thing, which is what makes
+    //    the 3D specimen believable rather than a cartoon
+    if (this.photosFor(pest).length) {
+      BB.sfx.beep(1240, 0.05);
+      var pm = el('div', 'bb-match', this.docEl);
+      await this.type(pm, 'PHOTOGRAPHIC MATCH ON FILE', 60, true);
+      this.showPhoto(true);
+      BB.sfx.whoosh();
+      await this.pause(2600);
+      this.showPhoto(false);
+    }
+
+    // 6. sections
     var cap = this.itemCap;
     await this.section('VITAL STATISTICS', pest.vitals.slice(0, Math.max(cap, 4)), 'kv');
     await this.section('CHARGES', pest.charges.slice(0, cap), 'charge');
@@ -368,7 +435,7 @@
 
     if (!alive()) return;
 
-    // 6. call to action
+    // 7. call to action
     if (this.showCta) {
       BB.sfx.lock();
       var B = BB.BRAND;

@@ -1,0 +1,128 @@
+[
+  {
+    "pest": "german-cockroach",
+    "file": "german-cockroach-1.jpg",
+    "credit": "Terra Occ",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609862291/large.jpg",
+    "bytes": 131426
+  },
+  {
+    "pest": "american-cockroach",
+    "file": "american-cockroach-1.jpg",
+    "credit": "smathichong",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/620180345/large.jpg",
+    "bytes": 202023
+  },
+  {
+    "pest": "coastal-brown-ant",
+    "file": "coastal-brown-ant-1.jpg",
+    "credit": "Zoe Anthony Quested",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/630727037/large.jpg",
+    "bytes": 60125
+  },
+  {
+    "pest": "black-house-ant",
+    "file": "black-house-ant-1.jpg",
+    "credit": "Carl Ramirez",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/618544538/large.jpg",
+    "bytes": 47004
+  },
+  {
+    "pest": "subterranean-termite",
+    "file": "subterranean-termite-1.jpg",
+    "credit": "Scott W. Gavins",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/595585246/large.jpg",
+    "bytes": 46987
+  },
+  {
+    "pest": "redback-spider",
+    "file": "redback-spider-1.jpg",
+    "credit": "Lawrence Hylton",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605377583/large.jpg",
+    "bytes": 85291
+  },
+  {
+    "pest": "huntsman-spider",
+    "file": "huntsman-spider-1.jpg",
+    "credit": "Noah Kirkland",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/378606600/large.jpg",
+    "bytes": 121012
+  },
+  {
+    "pest": "white-tailed-spider",
+    "file": "white-tailed-spider-1.jpg",
+    "credit": "koalabi",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/703213795/large.jpg",
+    "bytes": 29612
+  },
+  {
+    "pest": "roof-rat",
+    "file": "roof-rat-1.jpg",
+    "credit": "Austen Armstrong",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/608363798/large.jpg",
+    "bytes": 100657
+  },
+  {
+    "pest": "house-mouse",
+    "file": "house-mouse-1.jpg",
+    "credit": "Tyler Anthony",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/607768446/large.jpg",
+    "bytes": 140353
+  },
+  {
+    "pest": "bed-bug",
+    "file": "bed-bug-1.jpg",
+    "credit": "Sarah Courchesne",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/617019423/large.jpg",
+    "bytes": 36232
+  },
+  {
+    "pest": "paper-wasp",
+    "file": "paper-wasp-1.jpg",
+    "credit": "Mark Clarke",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604999316/large.jpg",
+    "bytes": 74141
+  },
+  {
+    "pest": "european-wasp",
+    "file": "european-wasp-1.jpg",
+    "credit": "Lukas Clews",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605301923/large.jpg",
+    "bytes": 67747
+  },
+  {
+    "pest": "pantry-moth",
+    "file": "pantry-moth-1.jpg",
+    "credit": "smathichong",
+    "licence": "CC BY 4.0",
+    "source": "iNaturalist",
+    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/610859481/large.jpg",
+    "bytes": 32723
+  }
+]

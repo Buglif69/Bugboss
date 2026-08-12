@@ -76,6 +76,36 @@
     };
   }
 
+  /** A pale blaze on the very tip of the abdomen — the white-tailed spider. */
+  function tailSpotFn(base, mark, rz, size) {
+    // -p[2] runs from -rz at the head end to +rz at the tail tip, so the
+    // blaze starts once we are `size` of the way back
+    return function (p) {
+      var t = smoothstep(rz * (size - 0.09), rz * (size + 0.09), -p[2]);
+      return mix(base, mark, t);
+    };
+  }
+
+  /**
+   * Wing markings. The leading edge is the outer one, which is +x on the
+   * right wing and -x on the left, so these need to know which side they are
+   * painting — both wings are built from the same local mesh.
+   */
+  function wingEdgeFn(base, mark, rx, side, width) {
+    return function (p) {
+      var outer = p[0] * side;                    // >0 towards the wing tip edge
+      return mix(base, mark, smoothstep(rx * (1 - width - 0.15), rx * (1 - width), outer));
+    };
+  }
+
+  /** Two-tone wing along its length — the pantry moth's cream-to-bronze half. */
+  function wingSplitFn(inner, outer, rz, at) {
+    return function (p) {
+      var t = smoothstep(-rz * (at + 0.18), -rz * (at - 0.18), -p[2]);
+      return mix(inner, outer, t);
+    };
+  }
+
   /** Lighter underside — rodent belly, termite abdomen. */
   function bellyFn(base, belly, ry) {
     return function (p) {
@@ -106,8 +136,21 @@
           return dorsalFn(c.abdomen || c.body, mk.dorsalStripe.color, p._abdomenRx,
             p._abdomenRy, mk.dorsalStripe.width || 0.34);
         }
+        if (mk.tailSpot) {
+          return tailSpotFn(c.abdomen || c.body, mk.tailSpot.color, p._abdomenRz, mk.tailSpot.size || 0.62);
+        }
         if (mk.belly) return bellyFn(c.abdomen || c.body, mk.belly.color, p._abdomenRy);
         return c.abdomen || c.body;
+      case 'wing': {
+        var wingBase = (p.wings && p.wings.color) || c.wing || c.body;
+        if (mk.wingSplit) {
+          return wingSplitFn(wingBase, mk.wingSplit.color, p._wingRz, mk.wingSplit.at || 0.1);
+        }
+        if (mk.wingEdge) {
+          return wingEdgeFn(wingBase, mk.wingEdge.color, p._wingRx, arguments[2], mk.wingEdge.width || 0.3);
+        }
+        return wingBase;
+      }
       default:
         return c.body;
     }
@@ -224,6 +267,7 @@
     if (p.wings) {
       var wg = p.wings;
       var wLen = wg.len * L, wW = wg.w * L;
+      p._wingRx = wW; p._wingRz = wLen;
       for (var s = -1; s <= 1; s += 2) {
         parts.push({
           name: 'wing' + s,
@@ -232,7 +276,7 @@
             taperBack: wg.taperBack === undefined ? 0.55 : wg.taperBack,
             taperFront: wg.taperFront === undefined ? 0.22 : wg.taperFront,
             flatBottom: 0.5,
-            color: wg.color || c.wing || c.body, gloss: wg.gloss === undefined ? 0.55 : wg.gloss,
+            color: paletteFor('wing', p, s), gloss: wg.gloss === undefined ? 0.55 : wg.gloss,
             alpha: wg.alpha,
             matrix: m4.chain(
               m4.trans(s * wW * (wg.spread || 0.72), abY + abRy * (wg.lift || 0.85), abZ + (wg.z || 0.1) * L),
@@ -337,13 +381,22 @@
 
     // cerci — the two little tail prongs on roaches
     if (p.cerci) {
+      var cerci = typeof p.cerci === 'number' ? { len: p.cerci } : p.cerci;
       var cz = abZ - abRz * 0.9;
-      for (var cs = -1; cs <= 1; cs += 2) {
+      var spread = cerci.spread === undefined ? 0.55 : cerci.spread;
+      // three bristles (silverfish) means a straight central one as well
+      var offsets = cerci.count === 3 ? [-1, 0, 1] : [-1, 1];
+      for (var ci = 0; ci < offsets.length; ci++) {
+        var cs = offsets[ci];
+        var clen = cerci.len * L * (cs === 0 ? (cerci.midScale || 1.15) : 1);
         parts.push({
-          name: 'cercus' + cs,
+          name: 'cercus' + ci,
           mesh: M.tube({
-            path: [[cs * abRx * 0.3, abY, cz], [cs * abRx * 0.55, abY + abRy * 0.1, cz - p.cerci * L]],
-            radii: [aTh * 1.2, aTh * 0.3], sides: 5, color: c.leg || c.body, gloss: gl
+            path: M.curvePath(
+              [cs * abRx * 0.3, abY, cz],
+              [cs * abRx * spread * 0.7, abY + abRy * 0.15, cz - clen * 0.5],
+              [cs * abRx * spread * 1.6, abY + abRy * 0.1, cz - clen], 5),
+            radii: M.taper(6, aTh * 1.2, aTh * 0.2), sides: 5, color: cerci.color || c.leg || c.body, gloss: gl
           })
         });
       }

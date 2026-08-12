@@ -1,0 +1,66 @@
+{
+  "_readme": [
+    "Source list for real field photographs, fetched by tools/fetch-photos.mjs.",
+    "",
+    "Every photo here is Creative Commons and must keep its credit visible —",
+    "that is the licence condition, not a nicety. `credit` and `licence` are",
+    "required before a photo is allowed to ship: the fetcher refuses to enable",
+    "a photo with an unknown photographer, because attributing someone else's",
+    "picture to the wrong person is worse than having no picture.",
+    "",
+    "`enabled: false` means the file may download but will not be built in.",
+    "Fill in the credit, flip the flag, re-run the fetcher and the build."
+  ],
+
+  "photos": [
+    { "pest": "german-cockroach", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609862291/large.jpg", "credit": "Terra Occ", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "german-cockroach", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/627606271/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false, "note": "second photo from the ID chart — photographer not recorded there" },
+
+    { "pest": "american-cockroach", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/620180345/large.jpg", "credit": "smathichong", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "american-cockroach", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/621774617/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "australian-cockroach", "url": "https://images.ala.org.au/image/proxyImage?imageId=845e6bfa-f577-48b0-ab5a-f58d063382d4", "credit": "Anne Pickles", "licence": "CC BY 4.0", "source": "Atlas of Living Australia", "enabled": true },
+    { "pest": "australian-cockroach", "url": "https://images.ala.org.au/image/proxyImage?imageId=29980023-0417-406e-8a4f-f25e855cd1c6", "credit": null, "licence": "CC BY 4.0", "source": "Atlas of Living Australia", "enabled": false },
+
+    { "pest": "coastal-brown-ant", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/630727037/large.jpg", "credit": "Zoe Anthony Quested", "licence": "CC BY 4.0", "source": "iNaturalist", "crop": [0.15, 0.22, 0.70, 0.52], "enabled": true },
+    { "pest": "coastal-brown-ant", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/631228929/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "black-house-ant", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/618544538/large.jpg", "credit": "Carl Ramirez", "licence": "CC BY 4.0", "source": "iNaturalist", "crop": [0.16, 0.36, 0.46, 0.46], "enabled": true },
+    { "pest": "black-house-ant", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/625878133/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "subterranean-termite", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/595585246/large.jpg", "credit": "Scott W. Gavins", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+
+    { "pest": "redback-spider", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605377583/large.jpg", "credit": "Lawrence Hylton", "licence": "CC BY 4.0", "source": "iNaturalist", "crop": [0.04, 0.40, 0.76, 0.40], "enabled": true },
+    { "pest": "redback-spider", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604426928/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "huntsman-spider", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/378606600/large.jpg", "credit": "Noah Kirkland", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "huntsman-spider", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/458813025/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "white-tailed-spider", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/703213795/large.jpg", "credit": "koalabi", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "white-tailed-spider", "url": "https://images.ala.org.au/image/proxyImage?imageId=1d2f3f44-fb44-4547-9374-662520f4cae5", "credit": null, "licence": "CC BY 4.0", "source": "Atlas of Living Australia", "enabled": false },
+
+    { "pest": "roof-rat", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/608363798/large.jpg", "credit": "Austen Armstrong", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "roof-rat", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/614723224/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "house-mouse", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/607768446/large.jpg", "credit": "Tyler Anthony", "licence": "CC BY 4.0", "source": "iNaturalist", "crop": [0.16, 0.16, 0.74, 0.42], "enabled": true },
+    { "pest": "house-mouse", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/642276629/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "silverfish", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/40729444/large.jpeg", "credit": "Terra Occ", "licence": "CC BY 4.0", "source": "iNaturalist", "crop": [0.20, 0.36, 0.44, 0.44], "enabled": false, "note": "subject does not read as a silverfish at this resolution — no bristles, antennae or carrot taper visible. Needs a clearer source before it goes in an ID guide." },
+    { "pest": "silverfish", "url": "https://images.ala.org.au/image/proxyImage?imageId=67e90cf8-2c7a-4306-8fed-7c56ea4e81ee", "credit": null, "licence": "CC BY 4.0", "source": "Atlas of Living Australia", "enabled": false },
+
+    { "pest": "cat-flea", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/636308107/large.jpg", "credit": "Carlos Martínez", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false, "note": "extreme micrograph of the head — the genal comb is diagnostic but a homeowner cannot read it as a flea. Needs a whole-animal shot." },
+    { "pest": "cat-flea", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/684358817/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "bed-bug", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/617019423/large.jpg", "credit": "Sarah Courchesne", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "bed-bug", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/619681398/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "paper-wasp", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604999316/large.jpg", "credit": "Mark Clarke", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "paper-wasp", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/615149649/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "european-wasp", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605301923/large.jpg", "credit": "Lukas Clews", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "european-wasp", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605527376/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false },
+
+    { "pest": "pantry-moth", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/610859481/large.jpg", "credit": "smathichong", "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": true },
+    { "pest": "pantry-moth", "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/613867876/original.jpg", "credit": null, "licence": "CC BY 4.0", "source": "iNaturalist", "enabled": false }
+  ]
+}

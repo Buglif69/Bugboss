@@ -151,6 +151,70 @@ html, body {
   color: rgba(232, 226, 223, .45);
 }
 
+/* ---------------- field photograph ---------------- */
+.bb-photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .45s ease, visibility .45s;
+  background: #0a0506;
+  z-index: 3;
+}
+.bb-photo.is-on { opacity: 1; visibility: visible; }
+.bb-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(.92) contrast(1.04);
+}
+/* the photo is evidence in a file, so it gets a frame and a caption */
+.bb-photo::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(238, 28, 36, .5), inset 0 0 90px rgba(0, 0, 0, .6);
+}
+.bb-photocap {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 10px clamp(12px, 2vw, 22px) 14px;
+  background: linear-gradient(180deg, rgba(6, 3, 4, 0), rgba(6, 3, 4, .94) 55%);
+  color: var(--bb-mute);
+  font-size: .62em;
+  letter-spacing: .1em;
+  line-height: 1.5;
+}
+.bb-photocap b { color: var(--bb-red); letter-spacing: .2em; }
+
+/* bottom-right of the stage: the top rail already carries the controls */
+.bb-view {
+  position: absolute;
+  right: 18px; bottom: 46px;
+  z-index: 6;
+  background: rgba(10, 5, 6, .82);
+  color: var(--bb-text);
+  border: 1px solid var(--bb-line);
+  font-family: var(--bb-mono);
+  font-size: max(9.5px, .58em);
+  letter-spacing: .14em;
+  padding: 7px 10px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.bb-view:hover { border-color: var(--bb-red); color: #fff; }
+
+.bb-match {
+  display: inline-block;
+  margin: 10px 0 2px;
+  padding: 4px 10px;
+  border-left: 3px solid var(--bb-red);
+  background: rgba(238, 28, 36, .1);
+  color: #fff;
+  letter-spacing: .18em;
+  font-size: .78em;
+}
+
 /* ---------------- panel ---------------- */
 .bb-panel {
   position: relative;
@@ -961,6 +1025,36 @@ html, body {
     };
   }
 
+  /** A pale blaze on the very tip of the abdomen — the white-tailed spider. */
+  function tailSpotFn(base, mark, rz, size) {
+    // -p[2] runs from -rz at the head end to +rz at the tail tip, so the
+    // blaze starts once we are `size` of the way back
+    return function (p) {
+      var t = smoothstep(rz * (size - 0.09), rz * (size + 0.09), -p[2]);
+      return mix(base, mark, t);
+    };
+  }
+
+  /**
+   * Wing markings. The leading edge is the outer one, which is +x on the
+   * right wing and -x on the left, so these need to know which side they are
+   * painting — both wings are built from the same local mesh.
+   */
+  function wingEdgeFn(base, mark, rx, side, width) {
+    return function (p) {
+      var outer = p[0] * side;                    // >0 towards the wing tip edge
+      return mix(base, mark, smoothstep(rx * (1 - width - 0.15), rx * (1 - width), outer));
+    };
+  }
+
+  /** Two-tone wing along its length — the pantry moth's cream-to-bronze half. */
+  function wingSplitFn(inner, outer, rz, at) {
+    return function (p) {
+      var t = smoothstep(-rz * (at + 0.18), -rz * (at - 0.18), -p[2]);
+      return mix(inner, outer, t);
+    };
+  }
+
   /** Lighter underside — rodent belly, termite abdomen. */
   function bellyFn(base, belly, ry) {
     return function (p) {
@@ -991,8 +1085,21 @@ html, body {
           return dorsalFn(c.abdomen || c.body, mk.dorsalStripe.color, p._abdomenRx,
             p._abdomenRy, mk.dorsalStripe.width || 0.34);
         }
+        if (mk.tailSpot) {
+          return tailSpotFn(c.abdomen || c.body, mk.tailSpot.color, p._abdomenRz, mk.tailSpot.size || 0.62);
+        }
         if (mk.belly) return bellyFn(c.abdomen || c.body, mk.belly.color, p._abdomenRy);
         return c.abdomen || c.body;
+      case 'wing': {
+        var wingBase = (p.wings && p.wings.color) || c.wing || c.body;
+        if (mk.wingSplit) {
+          return wingSplitFn(wingBase, mk.wingSplit.color, p._wingRz, mk.wingSplit.at || 0.1);
+        }
+        if (mk.wingEdge) {
+          return wingEdgeFn(wingBase, mk.wingEdge.color, p._wingRx, arguments[2], mk.wingEdge.width || 0.3);
+        }
+        return wingBase;
+      }
       default:
         return c.body;
     }
@@ -1109,6 +1216,7 @@ html, body {
     if (p.wings) {
       var wg = p.wings;
       var wLen = wg.len * L, wW = wg.w * L;
+      p._wingRx = wW; p._wingRz = wLen;
       for (var s = -1; s <= 1; s += 2) {
         parts.push({
           name: 'wing' + s,
@@ -1117,7 +1225,7 @@ html, body {
             taperBack: wg.taperBack === undefined ? 0.55 : wg.taperBack,
             taperFront: wg.taperFront === undefined ? 0.22 : wg.taperFront,
             flatBottom: 0.5,
-            color: wg.color || c.wing || c.body, gloss: wg.gloss === undefined ? 0.55 : wg.gloss,
+            color: paletteFor('wing', p, s), gloss: wg.gloss === undefined ? 0.55 : wg.gloss,
             alpha: wg.alpha,
             matrix: m4.chain(
               m4.trans(s * wW * (wg.spread || 0.72), abY + abRy * (wg.lift || 0.85), abZ + (wg.z || 0.1) * L),
@@ -1222,13 +1330,22 @@ html, body {
 
     // cerci — the two little tail prongs on roaches
     if (p.cerci) {
+      var cerci = typeof p.cerci === 'number' ? { len: p.cerci } : p.cerci;
       var cz = abZ - abRz * 0.9;
-      for (var cs = -1; cs <= 1; cs += 2) {
+      var spread = cerci.spread === undefined ? 0.55 : cerci.spread;
+      // three bristles (silverfish) means a straight central one as well
+      var offsets = cerci.count === 3 ? [-1, 0, 1] : [-1, 1];
+      for (var ci = 0; ci < offsets.length; ci++) {
+        var cs = offsets[ci];
+        var clen = cerci.len * L * (cs === 0 ? (cerci.midScale || 1.15) : 1);
         parts.push({
-          name: 'cercus' + cs,
+          name: 'cercus' + ci,
           mesh: M.tube({
-            path: [[cs * abRx * 0.3, abY, cz], [cs * abRx * 0.55, abY + abRy * 0.1, cz - p.cerci * L]],
-            radii: [aTh * 1.2, aTh * 0.3], sides: 5, color: c.leg || c.body, gloss: gl
+            path: M.curvePath(
+              [cs * abRx * 0.3, abY, cz],
+              [cs * abRx * spread * 0.7, abY + abRy * 0.15, cz - clen * 0.5],
+              [cs * abRx * spread * 1.6, abY + abRy * 0.1, cz - clen], 5),
+            radii: M.taper(6, aTh * 1.2, aTh * 0.2), sides: 5, color: cerci.color || c.leg || c.body, gloss: gl
           })
         });
       }
@@ -1708,7 +1825,7 @@ html, body {
       order: 'Blattodea · Rhinotermitidae',
       threat: 5,
       threatLabel: 'CRITICAL — STRUCTURAL DAMAGE IN PROGRESS',
-      actualSize: '4–6 mm (soldier caste)',
+      actualSize: '4–6 mm soldier',
       tagline: 'Australia\'s most destructive timber pest. Your insurer will not cover it.',
       vitals: [
         ['SIZE', '4–6 mm soldier, pear-shaped head'],
@@ -1827,7 +1944,7 @@ html, body {
       order: 'Araneae · Theridiidae',
       threat: 4,
       threatLabel: 'HIGH — MEDICALLY SIGNIFICANT VENOM',
-      actualSize: '10 mm body (female)',
+      actualSize: '10 mm (female)',
       tagline: 'Lives exactly where kids put their hands.',
       vitals: [
         ['SIZE', 'Female 10 mm body; male 3–4 mm and harmless'],
@@ -1944,7 +2061,7 @@ html, body {
       order: 'Rodentia · Muridae',
       threat: 5,
       threatLabel: 'SEVERE — FIRE RISK AND DISEASE',
-      actualSize: '16–20 cm body, tail longer again',
+      actualSize: '16–20 cm + tail',
       tagline: 'The scratching above the bedroom ceiling at 2am.',
       vitals: [
         ['SIZE', '16–20 cm body, tail longer than the body'],
@@ -2048,12 +2165,665 @@ html, body {
         antenna: { len: 0.55, thick: 0.017, segs: 6, splay: 0.42, arch: 0.30, spread: 0.5, reach: 0.7 },
         legs: { thick: 0.018, kneeOut: 0.20, kneeUp: 0.12, footOut: 0.36, attachZ: [0.16, 0.04, -0.08], dirs: [0.6, 1.5, 2.4], scale: [0.95, 1.05, 1.2] }
       }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'australian-cockroach',
+      name: 'Australian Cockroach',
+      sci: 'Periplaneta australasiae',
+      aka: ['Garden roach'],
+      order: 'Blattodea · Blattidae',
+      threat: 3,
+      threatLabel: 'MODERATE — OUTDOOR ROACH THAT MOVES IN',
+      actualSize: '30–35 mm',
+      tagline: 'The one that lives in the mulch and comes in when it rains.',
+      vitals: [
+        ['SIZE', '30–35 mm'],
+        ['ID MARK', 'Yellow margin on the shield, yellow streaks on the wing shoulders'],
+        ['COLOUR', 'Rich brown, glossy'],
+        ['FLIGHT', 'Yes — short glides on warm nights'],
+        ['BREEDING', '20–24 eggs per case'],
+        ['HOME GROUND', 'Gardens and glasshouses more than kitchens']
+      ],
+      charges: [
+        'Moves indoors in numbers after Brisbane rain',
+        'Feeds on plants, then walks the same legs over your benches',
+        'Contaminates stored food and pet food in garages and sheds',
+        'Breeds unnoticed in mulch, ferneries and pot bases',
+        'Gets mistaken for the American roach, so the wrong treatment gets used'
+      ],
+      mo: [
+        'Lives outdoors in warm, humid, planted areas',
+        'Shelters under mulch, bark, pots, and in glasshouses',
+        'Comes inside through gaps in doors, weep holes and vents',
+        'Feeds on decaying plant matter, seedlings and food scraps',
+        'Most active at night, hides in cracks by day'
+      ],
+      evidence: [
+        'Big brown roaches in the garage, laundry or patio at night',
+        'Droppings around pot plants and garden edging',
+        'Chewed seedlings and soft plant growth',
+        'Egg cases tucked into bark, mulch or fern bases'
+      ],
+      hideouts: ['Garden mulch', 'Pot plant bases', 'Ferneries and glasshouses', 'Bark and leaf litter', 'Garage corners'],
+      verdict: 'An outside job. Perimeter and garden-edge treatment plus sealing entry points beats spraying indoors, because the population never lived indoors.',
+      spec: {
+        plan: 'insect', len: 2.2, gloss: 0.6, stand: 0.065,
+        abdomenW: 0.31, abdomenH: 0.086, abdomenL: 0.37, abdomenZ: -0.25,
+        thoraxW: 0.26, thoraxH: 0.086, thoraxL: 0.20, thoraxZ: 0.17,
+        pronotumW: 0.34, pronotumL: 0.235, pronotumH: 0.062,
+        headW: 0.155, headH: 0.085, headL: 0.135, headZ: 0.375, headY: 0.088, headPitch: -0.55,
+        eye: 0.048, cerci: 0.11,
+        colors: {
+          body: [96, 52, 26], abdomen: [104, 58, 30], thorax: [88, 46, 22],
+          pronotum: [74, 38, 18], head: [96, 50, 24], leg: [138, 78, 38],
+          antenna: [86, 44, 22], wing: [112, 62, 32], eye: [34, 24, 18]
+        },
+        markings: {
+          pronotumHalo: { color: [214, 176, 70] },
+          wingEdge: { color: [216, 178, 68], width: 0.34 }
+        },
+        wings: { len: 0.43, w: 0.235, thick: 0.022, spread: 0.26, lift: 0.22, z: -0.08, roll: 0.26, yaw: 0.03, pitch: -0.06, taperBack: 0.34, taperFront: 0.5, color: [116, 64, 32], gloss: 0.7 },
+        antenna: { len: 1.2, thick: 0.014, segs: 12, splay: 0.32, arch: 0.26, spread: 0.44, rise: 0.1, reach: 1.18 },
+        legs: { thick: 0.026, kneeOut: 0.18, kneeUp: 0.06, footOut: 0.33, attachZ: [0.21, 0.05, -0.12], dirs: [0.6, 1.5, 2.4], scale: [0.9, 1.0, 1.2] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'coastal-brown-ant',
+      name: 'Coastal Brown Ant',
+      sci: 'Pheidole megacephala',
+      aka: ['Big-headed ant', 'Paver ant'],
+      order: 'Hymenoptera · Formicidae',
+      threat: 3,
+      threatLabel: 'MODERATE — UNDERMINES PAVING, INVADES IN NUMBERS',
+      actualSize: '1.5–3 mm',
+      tagline: 'The sand piles between your pavers are its spoil heap.',
+      vitals: [
+        ['SIZE', '1.5–3 mm; soldiers have huge square heads'],
+        ['ID MARK', 'Two sizes in one nest — that is the giveaway'],
+        ['COLOUR', 'Light golden brown'],
+        ['COLONY', 'Supercolonies with many queens'],
+        ['SPREAD', 'Splits and re-nests instead of swarming'],
+        ['STATUS', 'One of the world\'s worst invasive ants']
+      ],
+      charges: [
+        'Excavates sand out from under pavers, paths and slabs',
+        'Invades kitchens and pantries in overwhelming numbers',
+        'Displaces native ants across whole suburbs',
+        'Gets into wall cavities, meter boxes and electrical fittings',
+        'Comes straight back when only the trail is sprayed'
+      ],
+      mo: [
+        'Nests in soil under pavers, edging, slabs and garden beds',
+        'Pushes excavated sand up as small piles along joints',
+        'Sends workers indoors for grease, protein and sweets',
+        'Colonies split and spread rather than flying off to mate',
+        'Peaks through warm, wet Brisbane months'
+      ],
+      evidence: [
+        'Fine sand piles along paver joints and path edges',
+        'Two clearly different ant sizes on the same trail',
+        'Trails along slab edges, weep holes and pipework',
+        'Loose, sunken pavers over a hollowed bed'
+      ],
+      hideouts: ['Under pavers', 'Path and driveway edges', 'Garden beds', 'Wall cavities', 'Under slabs'],
+      verdict: 'Baiting matched to what they are feeding on that week, plus a non-repellent perimeter — repellent sprays just split the colony and multiply the nests.',
+      spec: {
+        plan: 'insect', len: 1.8, gloss: 0.62, stand: 0.16, idle: 1.3,
+        abdomenW: 0.175, abdomenH: 0.165, abdomenL: 0.22, abdomenZ: -0.30, abdomenTaper: 0.38, flatBottom: 0.05,
+        thoraxW: 0.125, thoraxH: 0.125, thoraxL: 0.22, thoraxZ: 0.10, thoraxLift: 1.15,
+        pronotum: false,
+        waist: { r: 0.042, len: 0.10 },
+        headW: 0.215, headH: 0.185, headL: 0.20, headZ: 0.46, headY: 0.235, headPitch: -0.18,
+        eye: 0.032,
+        colors: {
+          body: [176, 116, 60], abdomen: [150, 96, 48], thorax: [186, 124, 64],
+          head: [168, 104, 50], leg: [198, 146, 88], antenna: [186, 132, 76], eye: [40, 26, 18]
+        },
+        markings: {},
+        mandibles: { len: 0.16, thick: 0.020, color: [120, 70, 30] },
+        antenna: { elbowed: true, len: 0.72, thick: 0.018 },
+        legs: { thick: 0.020, kneeOut: 0.19, kneeUp: 0.16, footOut: 0.32, attachZ: [0.16, 0.06, -0.06], dirs: [0.6, 1.45, 2.3], scale: [0.88, 0.92, 1.02] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'huntsman-spider',
+      name: 'Huntsman Spider',
+      sci: 'Heteropoda venatoria',
+      aka: ['Giant crab spider', 'Tarantula (wrongly)'],
+      order: 'Araneae · Sparassidae',
+      threat: 1,
+      threatLabel: 'LOW — ALARMING, BASICALLY HARMLESS',
+      actualSize: 'To 100 mm span',
+      tagline: 'Eats the cockroaches you have not noticed yet.',
+      vitals: [
+        ['SIZE', 'Body 20–25 mm, leg span to 100 mm+'],
+        ['ID MARK', 'Flat body, legs angled forward like a crab'],
+        ['COLOUR', 'Grey to tan, often mottled'],
+        ['WEB', 'None — it hunts on foot'],
+        ['SPEED', 'Very fast, sideways, on vertical walls'],
+        ['BITE', 'Rare and minor; no antivenom needed']
+      ],
+      charges: [
+        'Appears on the ceiling above the bed at 11pm',
+        'Hides behind curtains, picture frames and sun visors',
+        'Causes more panic per gram than any pest in Queensland',
+        'Drops into the room when the front door is opened',
+        'Guilty, mostly, of being enormous and quick'
+      ],
+      mo: [
+        'Hunts at night on walls, fences and tree trunks',
+        'Squeezes flat into gaps behind bark, cladding and frames',
+        'Comes indoors through open doors and roof gaps in summer',
+        'Females guard a flat white egg sac and get bold about it',
+        'Feeds on cockroaches, moths and other insects'
+      ],
+      evidence: [
+        'The spider itself — they do not hide subtly',
+        'Flat white silk egg sac under bark or behind a frame',
+        'Shed skins in wall gaps and behind furniture',
+        'Repeat sightings in the same room mean an insect food supply'
+      ],
+      hideouts: ['Behind picture frames', 'Curtains and pelmets', 'Under bark', 'Roof voids', 'Car sun visors'],
+      verdict: 'Honestly, most are best relocated with a container and a bit of card. Where numbers are the problem, treating the insects they hunt is what moves them on.',
+      spec: {
+        plan: 'arachnid', len: 2.5, gloss: 0.42, stand: 0.20, idle: 0.9,
+        abdomenW: 0.20, abdomenH: 0.095, abdomenL: 0.25, abdomenZ: 0.20,
+        thoraxW: 0.21, thoraxH: 0.085, thoraxL: 0.21, thoraxZ: 0.14,
+        colors: {
+          body: [150, 122, 88], abdomen: [140, 114, 82], thorax: [158, 130, 96],
+          leg: [146, 116, 82], eye: [16, 12, 10]
+        },
+        markings: {},
+        legs: { thick: 0.021, kneeOut: 0.38, kneeUp: 0.16, footOut: 0.92, attachZ: [0.16, 0.06, -0.04, -0.14], dirs: [0.85, 1.3, 1.9, 2.35], scale: [1.15, 1.25, 1.1, 1.0] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'white-tailed-spider',
+      name: 'White-Tailed Spider',
+      sci: 'Lampona cylindrata',
+      aka: ['White-tip'],
+      order: 'Araneae · Lamponidae',
+      threat: 3,
+      threatLabel: 'MODERATE — PAINFUL BITE, ROAMS INDOORS',
+      actualSize: '12–18 mm',
+      tagline: 'Hunts other spiders — through your bedroom, at night.',
+      vitals: [
+        ['SIZE', '12–18 mm body, slim and cigar-shaped'],
+        ['ID MARK', 'Single white spot on the tip of the abdomen'],
+        ['COLOUR', 'Dark grey to blackish, orange-brown legs'],
+        ['WEB', 'None — a nomadic hunter'],
+        ['PREY', 'Other spiders, including black house spiders'],
+        ['BITE', 'Painful; the necrosis claim is not supported by evidence']
+      ],
+      charges: [
+        'Wanders across floors, beds and towels after dark',
+        'Hides in clothing left on the floor and in shoes',
+        'Delivers a sharply painful bite when pressed against skin',
+        'Turns up wherever black house spiders are established',
+        'Peaks indoors exactly when the house is asleep'
+      ],
+      mo: [
+        'Hunts on foot at night, rests in a silk sac by day',
+        'Follows other spiders indoors — its food is your spider problem',
+        'Shelters in bark, wall cavities, folded washing and shoes',
+        'Most active in the warmer months, especially after rain',
+        'Does not build a web, so there is nothing to spot'
+      ],
+      evidence: [
+        'Spider sightings on the floor or wall at night, no web',
+        'Small silk retreat sacs in wall gaps and under sills',
+        'Existing black house spider webs around windows and eaves',
+        'Bites reported on skin that was against bedding or clothing'
+      ],
+      hideouts: ['Under bark', 'Wall cavities', 'Clothing on the floor', 'Shoes', 'Behind wardrobes'],
+      verdict: 'You cannot bait a hunter. Clearing the webbing spiders it feeds on, plus a treated perimeter and eave line, takes away the reason it comes in.',
+      spec: {
+        plan: 'arachnid', len: 2.05, gloss: 0.55, stand: 0.22, idle: 0.9,
+        abdomenW: 0.15, abdomenH: 0.15, abdomenL: 0.28, abdomenZ: 0.34, abdomenTaper: 0.15,
+        thoraxW: 0.145, thoraxH: 0.10, thoraxL: 0.20, thoraxZ: 0.16,
+        colors: {
+          body: [58, 54, 58], abdomen: [52, 48, 54], thorax: [70, 60, 58],
+          leg: [126, 84, 58], eye: [10, 8, 10]
+        },
+        markings: { tailSpot: { color: [230, 226, 218], size: 0.82 } },
+        legs: { thick: 0.024, kneeOut: 0.26, kneeUp: 0.28, footOut: 0.52, attachZ: [0.18, 0.08, -0.02, -0.12], dirs: [0.6, 1.2, 1.9, 2.5], scale: [1.0, 0.92, 0.9, 1.05] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'house-mouse',
+      name: 'House Mouse',
+      sci: 'Mus musculus',
+      aka: ['Field mouse (wrongly)'],
+      order: 'Rodentia · Muridae',
+      threat: 4,
+      threatLabel: 'HIGH — CONTAMINATION AND FAST BREEDING',
+      actualSize: '7–9 cm + tail',
+      tagline: 'Contaminates ten times more food than it eats.',
+      vitals: [
+        ['SIZE', '7–9 cm body, tail about the same again'],
+        ['ID MARK', 'Small, grey-brown, pointed nose, big round ears'],
+        ['GAP', 'Gets through a 6 mm hole — a biro would not fit'],
+        ['BREEDING', '5–6 pups per litter, up to 10 litters a year'],
+        ['DROPPINGS', 'Rice-grain sized, 3–6 mm, scattered'],
+        ['RANGE', 'Lives its whole life within a few metres of food']
+      ],
+      charges: [
+        'Urinates constantly as it moves — over food, benches and drawers',
+        'Spreads salmonella and other food-borne bacteria',
+        'Gnaws packaging, wiring, insulation and stored linen',
+        'Turns a pair into two hundred inside a year',
+        'Fails a food-business inspection on droppings alone'
+      ],
+      mo: [
+        'Nests within a few metres of a food source, often inside a cupboard',
+        'Runs the same routes along walls, never out in the open',
+        'Nibbles a little from many places instead of one big feed',
+        'Explores new objects readily — unlike rats, which avoid them',
+        'Moves indoors as the weather cools'
+      ],
+      evidence: [
+        'Rice-grain droppings in drawers, pantries and under the sink',
+        'Ammonia smell in an enclosed cupboard',
+        'Shredded paper, insulation or fabric pushed into a corner',
+        'Gnaw marks on packaging and small greasy smears along skirtings'
+      ],
+      hideouts: ['Inside kitchen cupboards', 'Behind the dishwasher', 'Wall cavities', 'Stored boxes', 'Garage shelving'],
+      verdict: 'Mice are curious, so stations work fast — but only alongside proofing. Every 6 mm gap you leave is an open door.',
+      spec: {
+        plan: 'rodent', len: 1.75, gloss: 0.20, stand: 0.12, idle: 1.1,
+        bodyW: 0.155, bodyH: 0.165, bodyL: 0.34,
+        headW: 0.105, headH: 0.105, headL: 0.16,
+        ear: 0.088, tail: 0.95,
+        colors: {
+          body: [126, 110, 94], nose: [206, 150, 148], ear: [172, 140, 132],
+          tail: [176, 152, 142], eye: [14, 10, 10], whisker: [232, 228, 222]
+        },
+        markings: { belly: { color: [206, 196, 178] } }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'silverfish',
+      name: 'Silverfish',
+      sci: 'Lepisma saccharinum',
+      aka: ['Fishmoth', 'Paper fish'],
+      order: 'Zygentoma · Lepismatidae',
+      threat: 2,
+      threatLabel: 'LOW-MODERATE — EATS PAPER, FABRIC AND KEEPSAKES',
+      actualSize: '12–15 mm',
+      tagline: 'Quietly eating the box of photos in the roof void.',
+      vitals: [
+        ['SIZE', '12–15 mm, carrot-shaped and flat'],
+        ['ID MARK', 'Silver scales, two long antennae, three tail bristles'],
+        ['MOVEMENT', 'Wriggles like a fish when the light hits it'],
+        ['LIFESPAN', 'Two to eight years — extraordinary for an insect'],
+        ['DIET', 'Starch: paper, glue, cotton, rayon, book bindings'],
+        ['SURVIVAL', 'Can go a year without food in the right humidity']
+      ],
+      charges: [
+        'Eats photographs, documents, books and wallpaper glue',
+        'Holes natural-fibre clothing and stored linen',
+        'Grazes the starch off wallpaper and leaves yellow stains',
+        'Damages stored archives and keepsakes that cannot be replaced',
+        'Does it all silently, over years, in boxes nobody opens'
+      ],
+      mo: [
+        'Nocturnal and light-shy — hides in the dark and the damp',
+        'Lives in roof voids, wardrobes, bookshelves and storage boxes',
+        'Thrives in humid Brisbane conditions above 75% humidity',
+        'Moults its whole life, leaving scales and skins behind',
+        'Moves slowly between rooms through wall and ceiling gaps'
+      ],
+      evidence: [
+        'Irregular holes and grazed patches on paper and fabric',
+        'Fine silvery scales, like dust, in drawers and boxes',
+        'Yellow staining on stored clothing and documents',
+        'Live ones in the bath or basin, unable to climb out'
+      ],
+      hideouts: ['Roof void', 'Wardrobes and linen presses', 'Bookshelves', 'Storage boxes', 'Behind wallpaper'],
+      verdict: 'A dust treatment through the roof void and wall cavities, where they actually live, plus fixing the humidity that keeps them there.',
+      spec: {
+        plan: 'insect', len: 2.0, gloss: 0.66, stand: 0.045, idle: 1.2,
+        abdomenW: 0.135, abdomenH: 0.052, abdomenL: 0.46, abdomenZ: -0.26, abdomenTaper: 0.72, abdomenTaperFront: 0.02, flatBottom: 0.5,
+        thoraxW: 0.155, thoraxH: 0.058, thoraxL: 0.30, thoraxZ: 0.30,
+        pronotum: false,
+        headW: 0.10, headH: 0.055, headL: 0.10, headZ: 0.56, headY: 0.065, headPitch: -0.2,
+        eye: 0.022,
+        cerci: { len: 0.72, count: 3, spread: 1.6, midScale: 1.25, color: [172, 176, 184] },
+        colors: {
+          body: [178, 182, 190], abdomen: [172, 176, 186], thorax: [188, 192, 198],
+          head: [176, 180, 188], leg: [160, 164, 172], antenna: [168, 172, 180], eye: [30, 30, 34]
+        },
+        markings: { abdomenBands: { color: [120, 128, 142], count: 9 } },
+        antenna: { len: 0.85, thick: 0.013, segs: 10, splay: 0.30, arch: 0.16, spread: 0.40, rise: 0.05, reach: 1.05 },
+        legs: { thick: 0.016, kneeOut: 0.16, kneeUp: 0.07, footOut: 0.26, attachZ: [0.30, 0.20, 0.08], dirs: [0.75, 1.45, 2.15], scale: [0.7, 0.74, 0.82] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'cat-flea',
+      name: 'Cat Flea',
+      sci: 'Ctenocephalides felis',
+      aka: ['The flea you actually have'],
+      order: 'Siphonaptera · Pulicidae',
+      threat: 4,
+      threatLabel: 'HIGH — BITES PEOPLE AND PETS, HUGE HIDDEN POPULATION',
+      actualSize: '1–2 mm',
+      tagline: 'For every one you see, the carpet is holding fifty more.',
+      vitals: [
+        ['SIZE', '1–2 mm, flattened side-to-side'],
+        ['ID MARK', 'Dark red-brown, combs of spines on the head'],
+        ['JUMP', 'Up to 200 times its own body length'],
+        ['BREEDING', '25–50 eggs a day per female'],
+        ['THE 5%', 'Adults are 5% of the population — the rest is eggs and larvae'],
+        ['DORMANCY', 'Pupae wait months for vibration and warmth']
+      ],
+      charges: [
+        'Bites people around the ankles and lower legs, in clusters',
+        'Makes pets miserable — scratching, hair loss, flea allergy dermatitis',
+        'Transmits tapeworm to cats and dogs',
+        'Ambushes the new occupants of a house the previous pet left',
+        'Survives most DIY attempts because the eggs are not touched'
+      ],
+      mo: [
+        'Adults live on the animal; eggs drop off wherever it sleeps',
+        'Larvae burrow into carpet pile, bedding, subfloor sand and mulch',
+        'Pupae sit dormant until footsteps, warmth and CO2 say a host arrived',
+        'Peaks in warm, humid Brisbane weather',
+        'Concentrates where the pet sleeps, not where you see the bites'
+      ],
+      evidence: [
+        'Itchy bite clusters around ankles and lower legs',
+        'A pet scratching, biting the tail base, or losing hair there',
+        '"Flea dirt" — black specks in the coat that go rust-red on wet paper',
+        'Bites starting the day you moved into an empty house'
+      ],
+      hideouts: ['Carpet and rug pile', 'Pet bedding', 'Sub-floor sand', 'Shaded garden soil', 'Lounge and car seats'],
+      verdict: 'Treat the environment and the animal together, vacuum daily to trigger the pupae, and expect a second treatment — anything that only kills adults is treating 5% of the problem.',
+      spec: {
+        plan: 'insect', len: 1.6, gloss: 0.72, stand: 0.08, idle: 1.3,
+        abdomenW: 0.10, abdomenH: 0.235, abdomenL: 0.28, abdomenZ: -0.22, abdomenTaper: 0.30, abdomenTaperFront: 0.18, flatBottom: 0.1,
+        thoraxW: 0.09, thoraxH: 0.185, thoraxL: 0.15, thoraxZ: 0.14, thoraxLift: 1.05,
+        pronotum: false,
+        headW: 0.075, headH: 0.135, headL: 0.13, headZ: 0.36, headY: 0.135, headPitch: -0.45,
+        eye: 0.022,
+        colors: {
+          body: [104, 52, 30], abdomen: [110, 56, 32], thorax: [96, 46, 26],
+          head: [92, 44, 24], leg: [126, 72, 40], antenna: [92, 48, 26], eye: [26, 16, 12]
+        },
+        markings: { abdomenBands: { color: [70, 32, 18], count: 6 } },
+        antenna: { len: 0.20, thick: 0.014, segs: 4, splay: 0.5, arch: 0.1, spread: 0.5, rise: 0.02, reach: 0.4 },
+        legs: { thick: 0.018, kneeOut: 0.16, kneeUp: 0.22, footOut: 0.30, attachZ: [0.14, 0.02, -0.14], dirs: [0.7, 1.5, 2.5], scale: [0.72, 0.9, 1.5] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'european-wasp',
+      name: 'European Wasp',
+      sci: 'Vespula germanica',
+      aka: ['German wasp'],
+      order: 'Hymenoptera · Vespidae',
+      threat: 4,
+      threatLabel: 'HIGH — AGGRESSIVE, STINGS REPEATEDLY, NOTIFIABLE',
+      actualSize: '12–15 mm',
+      tagline: 'Ground nests, hidden colonies, and it does not need a reason.',
+      vitals: [
+        ['SIZE', '12–15 mm, stocky, vivid yellow and black'],
+        ['ID MARK', 'Black antennae, black dots down the yellow abdomen'],
+        ['NEST', 'Hidden — in the ground, a wall cavity or a roof void'],
+        ['COLONY', 'Thousands of workers by late summer'],
+        ['FLIGHT', 'Wings folded lengthways at rest, legs tucked'],
+        ['STING', 'Repeatedly, and it recruits others when alarmed']
+      ],
+      charges: [
+        'Stings repeatedly and swarms when a nest is disturbed',
+        'Hunts at outdoor meals, bins and pet bowls, then stings the mouth or throat',
+        'Builds unseen nests in wall cavities, roof voids and the ground',
+        'Puts anyone with a sting allergy at real risk of anaphylaxis',
+        'Turns lawn mowing into an emergency when the nest is underground'
+      ],
+      mo: [
+        'Founded by one queen in spring, thousands strong by February',
+        'Scavenges protein and sweet food — unlike bees, it wants your ham',
+        'Flies in and out of a single small entry hole all day',
+        'Guards the nest for several metres and recruits nestmates to attack',
+        'Can overwinter in mild areas and restart bigger the next year'
+      ],
+      evidence: [
+        'A steady stream of wasps in and out of one hole in the ground or wall',
+        'Wasps working over bins, meat, pet food and drinks',
+        'Papery nest material visible inside a cavity or roof space',
+        'Sudden aggression while mowing or trimming'
+      ],
+      hideouts: ['Ground burrows', 'Wall cavities', 'Roof voids', 'Retaining walls', 'Compost heaps'],
+      verdict: 'Never block the entry hole — they will chew a new one, often inwards. Nest treated at dusk in full protective gear, then the entry sealed once traffic stops.',
+      spec: {
+        plan: 'insect', len: 2.05, gloss: 0.6, stand: 0.20, idle: 1.2,
+        abdomenW: 0.155, abdomenH: 0.16, abdomenL: 0.32, abdomenZ: -0.40, abdomenTaper: 0.5, abdomenTaperFront: 0.4, flatBottom: 0.05,
+        thoraxW: 0.17, thoraxH: 0.17, thoraxL: 0.20, thoraxZ: 0.10, thoraxLift: 1.1,
+        pronotum: false,
+        waist: { r: 0.032, len: 0.13 },
+        headW: 0.145, headH: 0.135, headL: 0.11, headZ: 0.36, headY: 0.25, headPitch: -0.1,
+        eye: 0.052,
+        colors: {
+          body: [242, 206, 48], abdomen: [244, 210, 50], thorax: [40, 36, 34],
+          head: [238, 202, 46], leg: [232, 190, 54], antenna: [28, 26, 26], eye: [30, 26, 22]
+        },
+        markings: { abdomenBands: { color: [30, 28, 26], count: 6, sharp: true } },
+        wings: { len: 0.44, w: 0.09, thick: 0.008, spread: 0.7, lift: 0.6, z: -0.05, roll: 0.08, yaw: 0.08, pitch: -0.05, taperBack: 0.35, taperFront: 0.45, color: [214, 210, 202], gloss: 0.8, alpha: 0.42 },
+        antenna: { len: 0.5, thick: 0.018, segs: 6, splay: 0.4, arch: 0.28, spread: 0.46, reach: 0.68 },
+        legs: { thick: 0.018, kneeOut: 0.2, kneeUp: 0.12, footOut: 0.34, attachZ: [0.16, 0.04, -0.08], dirs: [0.6, 1.5, 2.4], scale: [0.9, 1.0, 1.12] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'pantry-moth',
+      name: 'Pantry Moth',
+      sci: 'Plodia interpunctella',
+      aka: ['Indian meal moth', 'Flour moth'],
+      order: 'Lepidoptera · Pyralidae',
+      threat: 2,
+      threatLabel: 'LOW-MODERATE — SPOILS STORED FOOD, SPREADS JAR TO JAR',
+      actualSize: '8–10 mm at rest',
+      tagline: 'It came home in the birdseed and it is in everything now.',
+      vitals: [
+        ['SIZE', '8–10 mm at rest, 16 mm wingspan'],
+        ['ID MARK', 'Two-tone wings — pale cream inner half, coppery-bronze tips'],
+        ['LARVAE', 'Cream caterpillars with a dark head, in the food'],
+        ['EGGS', '100–300 per female, laid straight onto food'],
+        ['CYCLE', '4–6 weeks in a warm Brisbane pantry'],
+        ['CHEWS', 'Larvae bite through thin plastic and cardboard']
+      ],
+      charges: [
+        'Spoils flour, rice, cereal, nuts, spices, pet food and birdseed',
+        'Spins webbing and leaves droppings through the food itself',
+        'Chews into sealed packets and spreads jar to jar',
+        'Comes home already inside a bag from the shop',
+        'Costs you the whole pantry once it is established'
+      ],
+      mo: [
+        'Adults do not feed — they exist to lay eggs on your food',
+        'Larvae do the damage, then crawl to the ceiling to pupate',
+        'Spins silk webbing that mats dry goods together',
+        'Hides pupae in cupboard corners, hinges and shelf lips',
+        'Breeds year-round indoors in Brisbane warmth'
+      ],
+      evidence: [
+        'Small moths sitting flat on pantry walls and ceilings',
+        'Webbing and clumping in flour, rice or pet food',
+        'Cream caterpillars crawling on shelves or up the wall',
+        'Silk cocoons in cupboard corners and around hinges'
+      ],
+      hideouts: ['Pantry shelves', 'Cardboard packets', 'Pet food and birdseed', 'Cupboard corners', 'Shelf lips and hinges'],
+      verdict: 'Every open packet checked and binned, shelves stripped and cleaned, a residual treatment to the empty cupboard, then everything into sealed containers.',
+      spec: {
+        plan: 'insect', len: 1.8, gloss: 0.28, stand: 0.06, idle: 1.15,
+        abdomenW: 0.10, abdomenH: 0.10, abdomenL: 0.32, abdomenZ: -0.24, abdomenTaper: 0.42, abdomenTaperFront: 0.12,
+        thoraxW: 0.115, thoraxH: 0.115, thoraxL: 0.14, thoraxZ: 0.18,
+        pronotum: false,
+        headW: 0.075, headH: 0.075, headL: 0.08, headZ: 0.32, headY: 0.135, headPitch: -0.3,
+        eye: 0.03,
+        colors: {
+          body: [176, 152, 122], abdomen: [170, 148, 120], thorax: [206, 188, 158],
+          head: [206, 188, 158], leg: [180, 158, 128], antenna: [150, 128, 100], eye: [26, 20, 16]
+        },
+        markings: { wingSplit: { color: [138, 82, 40], at: 0.02 } },
+        wings: { len: 0.40, w: 0.115, thick: 0.012, spread: 0.55, lift: 0.55, z: -0.06, roll: -0.22, yaw: 0.04, pitch: -0.04, taperBack: 0.4, taperFront: 0.35, color: [216, 200, 168], gloss: 0.2 },
+        antenna: { len: 0.42, thick: 0.011, segs: 7, splay: 0.22, arch: 0.16, spread: 0.28, rise: 0.04, reach: 0.9 },
+        legs: { thick: 0.014, kneeOut: 0.16, kneeUp: 0.10, footOut: 0.26, attachZ: [0.18, 0.06, -0.06], dirs: [0.7, 1.5, 2.4], scale: [0.8, 0.86, 0.95] }
+      }
     }
   ];
 
   BB.pestById = function (id) {
     for (var i = 0; i < BB.PESTS.length; i++) if (BB.PESTS[i].id === id) return BB.PESTS[i];
     return null;
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- photos.js ---- */
+/*
+ * photos.js — GENERATED by tools/fetch-photos.mjs. Do not hand-edit.
+ * Edit src/photo-sources.json and re-run the fetcher instead.
+ *
+ * Every entry carries its photographer and licence because the pictures are
+ * Creative Commons: the credit has to stay visible wherever they appear.
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+  BB.PHOTO_BASE = 'assets/photos/';
+  BB.PHOTOS = {
+    "german-cockroach": [
+      {
+        "file": "german-cockroach-1.jpg",
+        "credit": "Terra Occ",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "american-cockroach": [
+      {
+        "file": "american-cockroach-1.jpg",
+        "credit": "smathichong",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "coastal-brown-ant": [
+      {
+        "file": "coastal-brown-ant-1.jpg",
+        "credit": "Zoe Anthony Quested",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "black-house-ant": [
+      {
+        "file": "black-house-ant-1.jpg",
+        "credit": "Carl Ramirez",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "subterranean-termite": [
+      {
+        "file": "subterranean-termite-1.jpg",
+        "credit": "Scott W. Gavins",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "redback-spider": [
+      {
+        "file": "redback-spider-1.jpg",
+        "credit": "Lawrence Hylton",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "huntsman-spider": [
+      {
+        "file": "huntsman-spider-1.jpg",
+        "credit": "Noah Kirkland",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "white-tailed-spider": [
+      {
+        "file": "white-tailed-spider-1.jpg",
+        "credit": "koalabi",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "roof-rat": [
+      {
+        "file": "roof-rat-1.jpg",
+        "credit": "Austen Armstrong",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "house-mouse": [
+      {
+        "file": "house-mouse-1.jpg",
+        "credit": "Tyler Anthony",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "bed-bug": [
+      {
+        "file": "bed-bug-1.jpg",
+        "credit": "Sarah Courchesne",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "paper-wasp": [
+      {
+        "file": "paper-wasp-1.jpg",
+        "credit": "Mark Clarke",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "european-wasp": [
+      {
+        "file": "european-wasp-1.jpg",
+        "credit": "Lukas Clews",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "pantry-moth": [
+      {
+        "file": "pantry-moth-1.jpg",
+        "credit": "smathichong",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ]
+  };
+  /** Data URI when the build inlined it, relative path otherwise. */
+  BB.photoSrc = function (file) {
+    return (BB.PHOTO_DATA && BB.PHOTO_DATA[file]) || BB.PHOTO_BASE + file;
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -2311,6 +3081,13 @@ html, body {
     this.stageEl = stage;
     this.canvas = el('canvas', 'bb-canvas', stage);
 
+    // The field photograph sits over the turntable. The dossier cuts to it
+    // once during the run and the viewer can pin it open from the toggle.
+    this.photoEl = el('div', 'bb-photo', stage);
+    this.photoEl.innerHTML = '<img alt="" ><div class="bb-photocap"></div>';
+    this.photoImg = this.photoEl.querySelector('img');
+    this.photoCap = this.photoEl.querySelector('.bb-photocap');
+
     var hud = el('div', 'bb-hud', stage);
     hud.innerHTML =
       '<span class="bb-br tl"></span><span class="bb-br tr"></span>' +
@@ -2319,6 +3096,13 @@ html, body {
       '<div class="bb-sweep"></div>' +
       '<div class="bb-readout"><span class="bb-rot">ROT 000°</span><span class="bb-scale"></span></div>' +
       '<div class="bb-stagetag">LIVE SPECIMEN SCAN · 360°</div>';
+
+    this.viewBtn = el('button', 'bb-view', stage);
+    this.viewBtn.type = 'button';
+    this.viewBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      self.showPhoto(!self.photoOn, true);
+    });
     this.rotEl = hud.querySelector('.bb-rot');
     this.scaleEl = hud.querySelector('.bb-scale');
     this.sweepEl = hud.querySelector('.bb-sweep');
@@ -2452,6 +3236,12 @@ html, body {
     model.scale = (pest.spec.fit || 1) * (2.4 / (model.span || 2.4));
     this.renderer.setModel(model);
     if (this.selectEl) this.selectEl.value = pest.id;
+    this.photoIndex = 0;
+    this.photoPinned = false;
+    this.showPhoto(false);
+    if (this.viewBtn) {
+      this.viewBtn.style.display = this.photosFor(pest).length ? '' : 'none';
+    }
     if (this.scaleEl) this.scaleEl.textContent = 'ACTUAL ' + pest.actualSize;
     if (this.fileNoEl) this.fileNoEl.textContent = fileNumber(pest);
     doc.title = pest.name + ' — Pest Dossier | ' + BB.BRAND.company;
@@ -2464,6 +3254,41 @@ html, body {
     for (var i = 0; i < pest.id.length; i++) n = (n * 31 + pest.id.charCodeAt(i)) % 9000;
     return 'SB-' + (1000 + n);
   }
+
+  /* ---------------- the field photograph ------------------------------ */
+
+  Stage.prototype.photosFor = function (pest) {
+    return (BB.PHOTOS && BB.PHOTOS[pest.id]) || [];
+  };
+
+  /**
+   * @param on      show the photograph over the turntable
+   * @param manual  true when the viewer pressed the toggle, which pins the
+   *                choice so the sequence stops flipping it back
+   */
+  Stage.prototype.showPhoto = function (on, manual) {
+    var shots = this.pest ? this.photosFor(this.pest) : [];
+    if (!shots.length) {
+      if (this.viewBtn) this.viewBtn.style.display = 'none';
+      return;
+    }
+    if (manual) this.photoPinned = on;
+    else if (this.photoPinned) return;
+
+    this.photoOn = on;
+    if (on) {
+      var shot = shots[this.photoIndex % shots.length];
+      if (this.photoImg.getAttribute('src') !== BB.photoSrc(shot.file)) {
+        this.photoImg.src = BB.photoSrc(shot.file);
+        this.photoImg.alt = 'Field photograph of a ' + this.pest.name.toLowerCase();
+      }
+      this.photoCap.innerHTML =
+        '<b>FIELD PHOTOGRAPH</b> · Photo: ' + shot.credit + ' · ' + shot.licence +
+        ' · via ' + shot.source;
+    }
+    this.photoEl.classList.toggle('is-on', on);
+    this.viewBtn.textContent = on ? '◆ VIEW 3D SPECIMEN' : '◆ VIEW REAL PHOTO';
+  };
 
   /* ---------------- typing ------------------------------------------- */
 
@@ -2595,7 +3420,19 @@ html, body {
       await this.type(tag, '"' + pest.tagline + '"', 48);
     }
 
-    // 5. sections
+    // 5. photographic match — the cut to the real thing, which is what makes
+    //    the 3D specimen believable rather than a cartoon
+    if (this.photosFor(pest).length) {
+      BB.sfx.beep(1240, 0.05);
+      var pm = el('div', 'bb-match', this.docEl);
+      await this.type(pm, 'PHOTOGRAPHIC MATCH ON FILE', 60, true);
+      this.showPhoto(true);
+      BB.sfx.whoosh();
+      await this.pause(2600);
+      this.showPhoto(false);
+    }
+
+    // 6. sections
     var cap = this.itemCap;
     await this.section('VITAL STATISTICS', pest.vitals.slice(0, Math.max(cap, 4)), 'kv');
     await this.section('CHARGES', pest.charges.slice(0, cap), 'charge');
@@ -2606,7 +3443,7 @@ html, body {
 
     if (!alive()) return;
 
-    // 6. call to action
+    // 7. call to action
     if (this.showCta) {
       BB.sfx.lock();
       var B = BB.BRAND;
@@ -2733,12 +3570,16 @@ html, body {
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
+/* ---- inlined field photographs ---- */
+window.BB.PHOTO_DATA = {"bed-bug-1.jpg":"data:image/jpeg;base64,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"};
+
 </script>
 <script>
 function qsPest() {
   var m = /[?&]pest=([\w-]+)/.exec(location.search);
   return m ? m[1] : null;
 }
+
 BB.mountDossier('#bb-mount', { pest: qsPest() || "bed-bug" });
 </script>
 </body>

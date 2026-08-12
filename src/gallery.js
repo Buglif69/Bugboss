@@ -27,7 +27,7 @@
     head.innerHTML =
       '<div class="gal-unit">' + B.unit + '</div>' +
       '<h1 class="gal-title">Know what you\'re dealing with</h1>' +
-      '<p class="gal-sub">Eight of the pests we get called out to most across ' + B.area +
+      '<p class="gal-sub">The ' + BB.PESTS.length + ' pests we get called out to most across ' + B.area +
       '. Pick one to spin the specimen and read the full file — what it is, what it does, ' +
       'where it hides and how it gets treated.</p>' +
       '<p class="gal-hint">Drag the specimen to turn it · sound switches on at your first tap</p>';
@@ -43,6 +43,18 @@
       var stage = el('div', 'gal-stage', card);
       var cv = el('canvas', null, stage);
       el('div', 'gal-spin', stage).textContent = 'DRAG / HOVER TO ROTATE';
+
+      // both truths on one card: the specimen you can turn, and the real
+      // animal photographed in the wild
+      var shots = (BB.PHOTOS && BB.PHOTOS[pest.id]) || [];
+      if (shots.length) {
+        var inset = el('div', 'gal-inset', stage);
+        var im = el('img', null, inset);
+        im.src = BB.photoSrc(shots[0].file);
+        im.alt = 'Photograph of a ' + pest.name.toLowerCase() + ' by ' + shots[0].credit;
+        im.loading = 'lazy';
+        el('span', null, inset).textContent = 'PHOTO';
+      }
 
       var body = el('div', 'gal-body', card);
       el('div', 'gal-name', body, pest.name);
@@ -106,7 +118,19 @@
       '<a class="gal-cta" href="' + B.phoneHref + '">' + B.phoneLabel + '</a>' +
       '<a class="gal-cta ghost" href="' + B.bookUrl + '" target="_blank" rel="noopener">' + B.ctaButton + '</a>' +
       '<div class="gal-fine">' + B.company + ' · ' + B.proof + '<br>' +
-      B.guarantee + ' · ' + B.licences + ' · ' + B.legal + '</div>';
+      B.guarantee + ' · ' + B.licences + ' · ' + B.legal + '</div>' +
+      photoCredits();
+
+    function photoCredits() {
+      var names = {};
+      Object.keys(BB.PHOTOS || {}).forEach(function (k) {
+        BB.PHOTOS[k].forEach(function (s) { names[s.credit + ' (' + s.licence + ')'] = 1; });
+      });
+      var list = Object.keys(names).sort();
+      if (!list.length) return '';
+      return '<div class="gal-credits">Field photographs by ' + list.join(', ') +
+        ', via iNaturalist. Reused under Creative Commons — credits stay with the images.</div>';
+    }
 
     /* ---- full-screen dossier overlay ---- */
     var overlay = el('div', 'gal-overlay', mount);

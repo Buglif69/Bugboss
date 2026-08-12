@@ -20,14 +20,44 @@ const ROOT = __dirname;
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 
-const SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'sfx.js', 'dossier.js'];
+const SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'photos.js', 'sfx.js', 'dossier.js'];
 // the gallery bundle carries the dossier too, so index.html is one
 // self-contained file with no iframe to another URL
-const GALLERY_SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'sfx.js', 'dossier.js', 'gallery.js'];
+const GALLERY_SCRIPTS = ['core3d.js', 'anatomy.js', 'brand.js', 'pests.js', 'photos.js', 'sfx.js', 'dossier.js', 'gallery.js'];
 
 const read = f => fs.readFileSync(path.join(SRC, f), 'utf8');
 const bundle = list => list.map(f => `/* ---- ${f} ---- */\n${read(f)}`).join('\n');
 const css = read('styles.css');
+
+/* The photographs go in as data URIs: the whole point of the distribution is
+ * one file that works with no server, no CDN and no broken image icons. */
+function photoData(onlyPest) {
+  const dir = path.join(ROOT, 'assets', 'photos');
+  const mf = path.join(dir, 'manifest.json');
+  if (!fs.existsSync(mf)) {
+    if (!photoData.warned) {
+      console.warn('! no assets/photos/manifest.json — run tools/fetch-photos.mjs for the real photos');
+      photoData.warned = true;
+    }
+    return '';
+  }
+  const list = JSON.parse(fs.readFileSync(mf, 'utf8')).filter(m => !onlyPest || m.pest === onlyPest);
+  const out = {};
+  let bytes = 0;
+  for (const m of list) {
+    const f = path.join(dir, m.file);
+    if (!fs.existsSync(f)) continue;
+    const b = fs.readFileSync(f);
+    bytes += b.length;
+    out[m.file] = 'data:image/jpeg;base64,' + b.toString('base64');
+  }
+  if (!onlyPest) {
+    photoData.count = Object.keys(out).length;
+    photoData.kb = Math.round(bytes / 1024);
+  }
+  return `\n/* ---- inlined field photographs ---- */\nwindow.BB.PHOTO_DATA = ${JSON.stringify(out)};\n`;
+}
+
 const js = bundle(SCRIPTS);
 
 function page(opts) {
@@ -49,13 +79,14 @@ ${css}
 <body>
 <div id="bb-mount" style="width:100%;height:100%"></div>
 <script>
-${js}
+${js}${photoData(opts.pest)}
 </script>
 <script>
 function qsPest() {
   var m = /[?&]pest=([\\w-]+)/.exec(location.search);
   return m ? m[1] : null;
 }
+
 ${boot}
 </script>
 </body>
@@ -89,6 +120,28 @@ for (const p of PESTS) {
 
 fs.writeFileSync(path.join(DIST, 'pest-ids.json'), JSON.stringify(PESTS.map(p => p.id), null, 2));
 
+/* The photographs as loose files too — handy for social posts and print, and
+ * required reading for anyone reusing them, since the credits travel with. */
+const photoDir = path.join(ROOT, 'assets', 'photos');
+if (fs.existsSync(path.join(photoDir, 'manifest.json'))) {
+  const list = JSON.parse(fs.readFileSync(path.join(photoDir, 'manifest.json'), 'utf8'));
+  fs.mkdirSync(path.join(DIST, 'photos'), { recursive: true });
+  for (const m of list) {
+    const from = path.join(photoDir, m.file);
+    if (fs.existsSync(from)) fs.copyFileSync(from, path.join(DIST, 'photos', m.file));
+  }
+  const credits = list.map(m =>
+    `${m.file}\n  ${PESTS.find(p => p.id === m.pest)?.name || m.pest}\n  Photo: ${m.credit} — ${m.licence} — via ${m.source}\n  ${m.url}`
+  ).join('\n\n');
+  fs.writeFileSync(path.join(DIST, 'photos', 'CREDITS.txt'),
+    'Field photographs used in the Pest Dossier\n' +
+    '=========================================\n\n' +
+    'These images are other people\'s work, reused under Creative Commons.\n' +
+    'The licence requires the photographer credit to stay with the image\n' +
+    'wherever it appears — including on social posts and in print.\n\n' +
+    credits + '\n');
+}
+
 /* ------------------------------------------------------------------ *
  * index.html — the gallery that fronts the dossiers
  * ------------------------------------------------------------------ */
@@ -108,7 +161,7 @@ html, body { height: auto; min-height: 100%; }
 <body>
 <div class="gal" id="gal"></div>
 <script>
-${bundle(GALLERY_SCRIPTS)}
+${bundle(GALLERY_SCRIPTS)}${photoData()}
 </script>
 <script>
 BB.mountGallery('#gal');
@@ -163,7 +216,9 @@ which is what every browser requires.</p>
 console.log('dist/index.html');
 console.log('dist/pest-dossier.html');
 for (const p of PESTS) console.log('dist/pests/' + p.id + '.html');
+console.log('dist/photos/  (' + (photoData.count || 0) + ' images + CREDITS.txt)');
 console.log('dist/embed-snippets.html');
 console.log('dist/pest-ids.json');
 const kb = (fs.statSync(path.join(DIST, 'pest-dossier.html')).size / 1024).toFixed(0);
-console.log(`\nsingle-file size: ${kb} KB (no external requests)`);
+console.log(`\n${PESTS.length} species · ${photoData.count || 0} field photos inlined (${photoData.kb || 0} KB)`);
+console.log(`single-file size: ${kb} KB (no external requests)`);

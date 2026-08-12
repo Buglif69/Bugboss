@@ -143,3 +143,6 @@ dist
 !dist/
 !dist/**
 dist/video/
+
+# raw photo downloads — the processed versions are what ship
+assets/photos/.cache/

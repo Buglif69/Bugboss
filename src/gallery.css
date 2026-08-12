@@ -39,11 +39,14 @@
 .gal-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  grid-auto-rows: 1fr;                 /* equal card heights, whatever the copy */
   gap: clamp(12px, 1.6vw, 20px);
 }
 
 .gal-card {
   appearance: none;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   font: inherit;
   color: inherit;
@@ -74,13 +77,35 @@
 .gal-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .gal-spin {
   position: absolute;
-  left: 10px; bottom: 8px;
+  left: 10px; top: 8px;                /* the photo inset owns the bottom rail */
   font-size: 9px;
   letter-spacing: .18em;
   color: rgba(232, 226, 223, .35);
 }
 
-.gal-body { padding: 12px 14px 14px; }
+.gal-inset {
+  position: absolute;
+  right: 8px; bottom: 8px;
+  width: 34%;
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgba(238, 28, 36, .5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .6);
+  overflow: hidden;
+  background: #0a0506;
+}
+.gal-inset img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gal-inset span {
+  position: absolute;
+  left: 0; bottom: 0;
+  background: rgba(6, 3, 4, .82);
+  color: var(--bb-red);
+  font-size: 8px;
+  letter-spacing: .18em;
+  padding: 2px 5px;
+}
+
+.gal-body { padding: 12px 14px 14px; display: flex; flex-direction: column; flex: 1; }
+.gal-meta { margin-top: auto; }
 .gal-name { font-family: var(--bb-sans); font-size: 17px; color: #fff; }
 .gal-sci { font-style: italic; color: var(--bb-red); font-size: 12.5px; margin-top: 2px; }
 .gal-meta {
@@ -112,6 +137,15 @@
 .gal-cta.ghost { background: transparent; color: var(--bb-red); }
 .gal-cta:hover { background: #ff2f37; color: #fff; }
 .gal-cta.ghost:hover { background: rgba(238, 28, 36, .12); }
+.gal-credits {
+  max-width: 70ch;
+  margin: 12px auto 0;
+  color: var(--bb-mute);
+  font-size: 10.5px;
+  line-height: 1.7;
+  opacity: .8;
+}
+
 .gal-fine { margin-top: 14px; color: var(--bb-mute); font-size: 11px; line-height: 1.7; letter-spacing: .05em; }
 
 .gal-overlay {

@@ -1,0 +1,3586 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="index,follow">
+<title>Pantry Moth — ID, Habits & Treatment | Slug-A-Bug Pest Control</title>
+<meta name="description" content="What a pantry moth (Plodia interpunctella) looks like in 3D, how to identify it, where it hides and how Slug-A-Bug Pest Control treats it in Brisbane & Gold Coast.">
+<style>
+/*
+ * styles.css — the "target dossier" look: black glass, brand red, scanlines.
+ * Brand palette: red #EE1C24, near-black #150404, white. Arial stack per the
+ * Slug-A-Bug brand rules; terminal copy in the system monospace so it reads
+ * like a readout, not a web page.
+ */
+
+:root {
+  --bb-red: #ee1c24;
+  --bb-red-dim: #8e1116;
+  --bb-black: #0a0405;
+  --bb-ink: #150404;
+  --bb-panel: rgba(10, 5, 6, 0.82);
+  --bb-line: rgba(238, 28, 36, 0.28);
+  --bb-text: #e8e2df;
+  --bb-mute: #9a8e8b;
+  --bb-amber: #ffb340;
+  --bb-mono: ui-monospace, "SFMono-Regular", "Roboto Mono", Menlo, Consolas, "Courier New", monospace;
+  --bb-sans: "Arial Black", Arial, Helvetica, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bb-black);
+  color: var(--bb-text);
+  font-family: var(--bb-mono);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+.bb {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  /* the type scale: everything in the panel is em-relative to this, so the
+     same markup reads correctly at 400px wide and at 1080x1920 export size */
+  font-size: clamp(12.5px, 1.22vw, 25px);
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 20% 0%, #1d0a0c 0%, #0a0405 55%, #050203 100%);
+  isolation: isolate;
+  user-select: none;
+}
+
+/* ---------------- layout per format ---------------- */
+.bb.fmt-web,
+.bb.fmt-wide { grid-template-columns: 1.05fr 1fr; }
+.bb.fmt-reel,
+.bb.fmt-square { grid-template-rows: minmax(0, 0.92fr) minmax(0, 1.08fr); }
+.bb.fmt-square { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+.bb.fmt-reel { font-size: clamp(13px, 2.45vw, 34px); }
+.bb.fmt-square { font-size: clamp(13px, 1.95vw, 30px); }
+
+@media (max-width: 820px) {
+  .bb.fmt-web { grid-template-columns: 1fr; grid-template-rows: minmax(0, 0.85fr) minmax(0, 1.15fr); }
+}
+
+/* ---------------- stage ---------------- */
+.bb-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  cursor: grab;
+  background:
+    radial-gradient(60% 55% at 50% 46%, rgba(238, 28, 36, 0.13) 0%, rgba(238, 28, 36, 0) 70%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 46px);
+}
+.bb-stage.is-dragging { cursor: grabbing; }
+.bb-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.bb-hud { position: absolute; inset: 0; pointer-events: none; }
+
+.bb-br {
+  position: absolute;
+  width: 26px; height: 26px;
+  border: 2px solid var(--bb-red);
+  opacity: 0.85;
+}
+.bb-br.tl { top: 16px; left: 16px; border-right: 0; border-bottom: 0; }
+.bb-br.tr { top: 16px; right: 16px; border-left: 0; border-bottom: 0; }
+.bb-br.bl { bottom: 16px; left: 16px; border-right: 0; border-top: 0; }
+.bb-br.br { bottom: 16px; right: 16px; border-left: 0; border-top: 0; }
+
+.bb-reticle {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: min(62%, 62vh); aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(1.35);
+  opacity: 0;
+  transition: opacity .5s ease, transform .7s cubic-bezier(.2, .8, .2, 1);
+}
+.bb.is-locked .bb-reticle { opacity: .5; transform: translate(-50%, -50%) scale(1); }
+.bb-reticle i, .bb-reticle b {
+  position: absolute; inset: 0;
+  border: 1px solid var(--bb-line);
+  border-radius: 50%;
+}
+.bb-reticle b {
+  inset: 14%;
+  border-style: dashed;
+  animation: bb-spin 26s linear infinite;
+}
+@keyframes bb-spin { to { transform: rotate(360deg); } }
+
+.bb-sweep {
+  position: absolute;
+  left: 0; right: 0; height: 2px;
+  top: -10%;
+  background: linear-gradient(90deg, transparent, var(--bb-red), transparent);
+  box-shadow: 0 0 26px 6px rgba(238, 28, 36, 0.5);
+  opacity: 0;
+}
+.bb-stage.is-scanning .bb-sweep { animation: bb-sweep .75s ease-in-out 1; }
+@keyframes bb-sweep {
+  0% { top: 4%; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { top: 96%; opacity: 0; }
+}
+
+.bb-readout {
+  position: absolute;
+  left: 22px; bottom: 20px;
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: clamp(9px, 1.1vw, 12px);
+  letter-spacing: .14em;
+  color: var(--bb-mute);
+}
+.bb-readout .bb-rot { color: var(--bb-red); }
+.bb-stagetag {
+  position: absolute;
+  right: 22px; bottom: 20px;
+  font-size: .74em;
+  letter-spacing: .22em;
+  color: rgba(232, 226, 223, .45);
+}
+
+/* ---------------- field photograph ---------------- */
+.bb-photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .45s ease, visibility .45s;
+  background: #0a0506;
+  z-index: 3;
+}
+.bb-photo.is-on { opacity: 1; visibility: visible; }
+.bb-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(.92) contrast(1.04);
+}
+/* the photo is evidence in a file, so it gets a frame and a caption */
+.bb-photo::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(238, 28, 36, .5), inset 0 0 90px rgba(0, 0, 0, .6);
+}
+.bb-photocap {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 10px clamp(12px, 2vw, 22px) 14px;
+  background: linear-gradient(180deg, rgba(6, 3, 4, 0), rgba(6, 3, 4, .94) 55%);
+  color: var(--bb-mute);
+  font-size: .62em;
+  letter-spacing: .1em;
+  line-height: 1.5;
+}
+.bb-photocap b { color: var(--bb-red); letter-spacing: .2em; }
+
+/* bottom-right of the stage: the top rail already carries the controls */
+.bb-view {
+  position: absolute;
+  right: 18px; bottom: 46px;
+  z-index: 6;
+  background: rgba(10, 5, 6, .82);
+  color: var(--bb-text);
+  border: 1px solid var(--bb-line);
+  font-family: var(--bb-mono);
+  font-size: max(9.5px, .58em);
+  letter-spacing: .14em;
+  padding: 7px 10px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.bb-view:hover { border-color: var(--bb-red); color: #fff; }
+
+.bb-match {
+  display: inline-block;
+  margin: 10px 0 2px;
+  padding: 4px 10px;
+  border-left: 3px solid var(--bb-red);
+  background: rgba(238, 28, 36, .1);
+  color: #fff;
+  letter-spacing: .18em;
+  font-size: .78em;
+}
+
+/* ---------------- panel ---------------- */
+.bb-panel {
+  position: relative;
+  min-width: 0; min-height: 0;
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, rgba(10, 5, 6, .55) 0%, rgba(10, 5, 6, .9) 22%, rgba(6, 3, 4, .96) 100%);
+  border-left: 1px solid var(--bb-line);
+}
+.bb.fmt-reel .bb-panel,
+.bb.fmt-square .bb-panel { border-left: 0; border-top: 1px solid var(--bb-line); }
+
+.bb-panelhead {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px;
+  padding: 14px clamp(16px, 2.4vw, 30px);
+  border-bottom: 1px solid var(--bb-line);
+  font-size: .72em;
+  letter-spacing: .2em;
+  color: var(--bb-mute);
+  background: rgba(238, 28, 36, .06);
+  flex: none;
+}
+.bb-unit { color: var(--bb-red); font-weight: 700; }
+.bb-file b { color: var(--bb-text); }
+
+.bb-doc {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(14px, 2.2vw, 26px) clamp(16px, 2.4vw, 30px) 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bb-red-dim) transparent;
+  font-size: 1em;
+  line-height: 1.5;
+}
+.bb-doc::-webkit-scrollbar { width: 6px; }
+.bb-doc::-webkit-scrollbar-thumb { background: var(--bb-red-dim); }
+
+.typing::after {
+  content: "";
+  display: inline-block;
+  width: .55em; height: 1em;
+  margin-left: .12em;
+  background: var(--bb-red);
+  vertical-align: -.15em;
+  animation: bb-caret .7s steps(1) infinite;
+}
+@keyframes bb-caret { 50% { opacity: 0; } }
+
+.bb-boot { color: #6f8f74; font-size: .88em; letter-spacing: .06em; margin-bottom: 10px; }
+.bb-bootline { white-space: pre-wrap; }
+
+.bb-stamp {
+  display: inline-block;
+  margin: 8px 0 14px;
+  padding: 5px 12px;
+  border: 2px solid var(--bb-red);
+  color: var(--bb-red);
+  font-weight: 700;
+  letter-spacing: .28em;
+  font-size: .82em;
+  transform: rotate(-1.6deg);
+  animation: bb-slam .35s cubic-bezier(.2, 1.4, .4, 1) 1;
+  box-shadow: 0 0 24px rgba(238, 28, 36, .25) inset;
+}
+@keyframes bb-slam {
+  0% { transform: scale(2.4) rotate(-9deg); opacity: 0; }
+  70% { opacity: 1; }
+  100% { transform: scale(1) rotate(-1.6deg); opacity: 1; }
+}
+
+.bb-name {
+  font-family: var(--bb-sans);
+  font-size: 3.1em;
+  line-height: 1.02;
+  margin: 0;
+  letter-spacing: -.01em;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(238, 28, 36, .35);
+}
+.bb.fmt-reel .bb-name { font-size: 2.85em; }
+.bb.fmt-square .bb-name { font-size: 2.9em; }
+.bb-sci { font-style: italic; color: var(--bb-red); letter-spacing: .04em; margin-top: 4px; }
+.bb-aka, .bb-order { color: var(--bb-mute); font-size: .84em; letter-spacing: .1em; margin-top: 3px; }
+
+.bb-threat { margin: 16px 0 6px; }
+.bb-threatlab { font-size: .74em; letter-spacing: .26em; color: var(--bb-mute); }
+.bb-bar {
+  height: 10px;
+  margin: 6px 0;
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid var(--bb-line);
+  position: relative;
+  overflow: hidden;
+}
+.bb-bar span {
+  position: absolute; inset: 0 auto 0 0;
+  width: 0;
+  background: repeating-linear-gradient(90deg, var(--bb-red) 0 10px, #ff5a60 10px 12px);
+  transition: width 1.1s cubic-bezier(.2, .9, .2, 1);
+  box-shadow: 0 0 18px rgba(238, 28, 36, .6);
+}
+.bb-bar span[data-lvl="3"] { background: repeating-linear-gradient(90deg, var(--bb-amber) 0 10px, #ffd48a 10px 12px); }
+.bb-threattxt { color: var(--bb-red); font-weight: 700; letter-spacing: .14em; font-size: .82em; }
+
+.bb-tagline {
+  margin: 12px 0 4px;
+  padding-left: 12px;
+  border-left: 3px solid var(--bb-red);
+  color: #fff;
+  font-size: 1.02em;
+}
+
+.bb-sec { margin-top: 20px; }
+.bb-sechead {
+  color: var(--bb-red);
+  font-weight: 700;
+  letter-spacing: .26em;
+  font-size: .78em;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--bb-line);
+  margin-bottom: 8px;
+}
+.bb-row { display: flex; gap: 10px; margin: 5px 0; align-items: baseline; }
+.bb-k { flex: 0 0 34%; color: var(--bb-mute); font-size: .82em; letter-spacing: .12em; }
+.bb-v { flex: 1 1 auto; color: var(--bb-text); }
+.bb-dot { color: var(--bb-red); flex: none; }
+.bb-t { flex: 1 1 auto; }
+.bb-n {
+  flex: none;
+  color: var(--bb-red);
+  font-weight: 700;
+  border: 1px solid var(--bb-line);
+  padding: 0 5px;
+  font-size: .78em;
+}
+.bb-sec-charge .bb-t { color: #fff; }
+.bb-sec-verdict .bb-t { color: var(--bb-text); background: rgba(238, 28, 36, .07); padding: 10px 12px; border-left: 3px solid var(--bb-red); display: block; }
+
+.bb-chipbox { display: flex; flex-wrap: wrap; gap: 6px; }
+.bb-chip {
+  border: 1px solid var(--bb-line);
+  background: rgba(238, 28, 36, .07);
+  padding: 3px 9px;
+  font-size: .8em;
+  letter-spacing: .06em;
+  color: var(--bb-text);
+}
+
+/* ---------------- CTA ---------------- */
+.bb-cta {
+  flex: none;
+  border-top: 1px solid var(--bb-line);
+  padding: 0 clamp(16px, 2.4vw, 30px);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(238, 28, 36, .1), rgba(238, 28, 36, .03));
+  transition: max-height .6s ease, opacity .5s ease, padding .4s ease;
+}
+.bb-cta.is-in { max-height: 46vh; opacity: 1; padding: clamp(12px, 1.8vw, 20px) clamp(16px, 2.4vw, 30px); }
+.bb-ctahead { font-family: var(--bb-sans); font-size: 1.45em; line-height: 1.15; color: #fff; }
+.bb-ctaline { color: var(--bb-mute); font-size: .84em; margin: 4px 0 10px; }
+.bb-ctarow { display: flex; gap: 8px; flex-wrap: wrap; }
+.bb-ctabtn {
+  display: inline-block;
+  background: var(--bb-red);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: .62em 1em;
+  font-size: .86em;
+  border: 2px solid var(--bb-red);
+  transition: transform .15s ease, background .15s ease;
+}
+.bb-ctabtn:hover { transform: translateY(-1px); background: #ff2f37; }
+.bb-ctabtn.ghost { background: transparent; color: var(--bb-red); }
+.bb-ctabtn.ghost:hover { background: rgba(238, 28, 36, .12); }
+.bb-ctafoot { margin-top: 9px; color: var(--bb-mute); font-size: .72em; line-height: 1.5; letter-spacing: .06em; }
+
+/* ---------------- controls ---------------- */
+.bb-controls {
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+  z-index: 9;
+}
+.bb.fmt-web .bb-controls,
+.bb.fmt-wide .bb-controls { left: 16px; transform: none; }
+/* vertical formats: one tight row pinned top-left so it never covers the
+   specimen (exports use ?chrome=0 and drop it entirely) */
+.bb.fmt-reel .bb-controls,
+.bb.fmt-square .bb-controls {
+  top: 10px; left: 10px; right: 10px;
+  transform: none;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 4px;
+}
+.bb.fmt-reel .bb-btn, .bb.fmt-reel .bb-select,
+.bb.fmt-square .bb-btn, .bb.fmt-square .bb-select {
+  font-size: 9px;
+  padding: 5px 6px;
+  letter-spacing: .08em;
+}
+.bb.fmt-reel .bb-select, .bb.fmt-square .bb-select { max-width: 40%; }
+.bb-btn, .bb-select {
+  background: rgba(10, 5, 6, .78);
+  color: var(--bb-text);
+  border: 1px solid var(--bb-line);
+  font-family: var(--bb-mono);
+  font-size: max(10px, .62em);
+  letter-spacing: .14em;
+  padding: 7px 10px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.bb-btn:hover, .bb-select:hover { border-color: var(--bb-red); color: #fff; }
+.bb-btn.is-on { color: var(--bb-red); border-color: var(--bb-red); }
+
+/* ---------------- overlays ---------------- */
+.bb-scanlines {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .22) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+  opacity: .55;
+  z-index: 8;
+}
+.bb-vignette {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 100% at 50% 45%, transparent 45%, rgba(0, 0, 0, .55) 100%);
+  z-index: 8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-reticle b, .bb-stamp { animation: none; }
+}
+
+</style>
+</head>
+<body>
+<div id="bb-mount" style="width:100%;height:100%"></div>
+<script>
+/* ---- core3d.js ---- */
+/*
+ * core3d.js — tiny dependency-free 3D engine (canvas 2D, painter's algorithm).
+ *
+ * Why not three.js: this has to run inside a single self-contained HTML file
+ * that gets pasted into WordPress, emailed, and rendered by an offline video
+ * capture script. No CDN, no build step, no 600 KB of library for eight bugs.
+ *
+ * Exposes BB.m4 (matrices), BB.mesh (primitive builders), BB.Renderer.
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+
+  /* ------------------------------------------------------------------ *
+   * Matrices — column-major 4x4 stored as flat 16-element arrays.
+   * ------------------------------------------------------------------ */
+  var m4 = {
+    ident: function () {
+      return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    },
+    mul: function (a, b) {
+      var o = new Array(16);
+      for (var c = 0; c < 4; c++) {
+        for (var r = 0; r < 4; r++) {
+          o[c * 4 + r] =
+            a[r] * b[c * 4] +
+            a[4 + r] * b[c * 4 + 1] +
+            a[8 + r] * b[c * 4 + 2] +
+            a[12 + r] * b[c * 4 + 3];
+        }
+      }
+      return o;
+    },
+    chain: function () {
+      var m = m4.ident();
+      for (var i = 0; i < arguments.length; i++) m = m4.mul(m, arguments[i]);
+      return m;
+    },
+    trans: function (x, y, z) {
+      return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1];
+    },
+    scale: function (x, y, z) {
+      if (y === undefined) { y = x; z = x; }
+      return [x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1];
+    },
+    rotX: function (a) {
+      var c = Math.cos(a), s = Math.sin(a);
+      return [1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1];
+    },
+    rotY: function (a) {
+      var c = Math.cos(a), s = Math.sin(a);
+      return [c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1];
+    },
+    rotZ: function (a) {
+      var c = Math.cos(a), s = Math.sin(a);
+      return [c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    },
+    /** Rotate about an arbitrary pivot point (used for antenna/leg joints). */
+    aroundPivot: function (px, py, pz, rot) {
+      return m4.chain(m4.trans(px, py, pz), rot, m4.trans(-px, -py, -pz));
+    },
+    xform: function (m, p, out) {
+      var x = p[0], y = p[1], z = p[2];
+      out = out || [0, 0, 0];
+      out[0] = m[0] * x + m[4] * y + m[8] * z + m[12];
+      out[1] = m[1] * x + m[5] * y + m[9] * z + m[13];
+      out[2] = m[2] * x + m[6] * y + m[10] * z + m[14];
+      return out;
+    }
+  };
+  BB.m4 = m4;
+
+  /* ------------------------------------------------------------------ *
+   * Mesh building
+   *
+   * A mesh is { pos: [x,y,z, ...], face: [[i0,i1,i2], ...], col: [[r,g,b], ...],
+   *             gloss: [n, ...] }.  Colours live per-face so species markings
+   *             (pronotum stripes, redback hourglass) are just a colour
+   *             function evaluated at the face centroid in local space.
+   * ------------------------------------------------------------------ */
+  function emptyMesh() {
+    return { pos: [], face: [], col: [], gloss: [], alpha: [] };
+  }
+
+  function pushVert(m, x, y, z) {
+    m.pos.push(x, y, z);
+    return m.pos.length / 3 - 1;
+  }
+
+  function pushFace(m, a, b, c, color, gloss, alpha) {
+    m.face.push([a, b, c]);
+    m.col.push(color);
+    m.gloss.push(gloss === undefined ? 0.35 : gloss);
+    m.alpha.push(alpha === undefined ? 1 : alpha);
+  }
+
+  function centroid(m, a, b, c) {
+    var p = m.pos;
+    return [
+      (p[a * 3] + p[b * 3] + p[c * 3]) / 3,
+      (p[a * 3 + 1] + p[b * 3 + 1] + p[c * 3 + 1]) / 3,
+      (p[a * 3 + 2] + p[b * 3 + 2] + p[c * 3 + 2]) / 3
+    ];
+  }
+
+  /** Resolve a colour spec that may be a flat [r,g,b] or a fn(localPos). */
+  function resolveCol(spec, pt) {
+    return typeof spec === 'function' ? spec(pt) : spec;
+  }
+
+  function merge(target, src) {
+    var base = target.pos.length / 3;
+    for (var i = 0; i < src.pos.length; i++) target.pos.push(src.pos[i]);
+    for (var f = 0; f < src.face.length; f++) {
+      var t = src.face[f];
+      target.face.push([t[0] + base, t[1] + base, t[2] + base]);
+      target.col.push(src.col[f]);
+      target.gloss.push(src.gloss[f]);
+      target.alpha.push(src.alpha ? src.alpha[f] : 1);
+    }
+    return target;
+  }
+
+  function applyMatrix(m, mat) {
+    var p = m.pos, tmp = [0, 0, 0];
+    for (var i = 0; i < p.length; i += 3) {
+      tmp[0] = p[i]; tmp[1] = p[i + 1]; tmp[2] = p[i + 2];
+      m4.xform(mat, tmp, tmp);
+      p[i] = tmp[0]; p[i + 1] = tmp[1]; p[i + 2] = tmp[2];
+    }
+    return m;
+  }
+
+  /**
+   * UV ellipsoid. `squash` lets callers flatten the top/bottom independently,
+   * which is how insect bodies get their domed-above / flat-below profile.
+   */
+  function ellipsoid(opt) {
+    var rx = opt.rx, ry = opt.ry, rz = opt.rz;
+    var su = opt.su || 14, sv = opt.sv || 9;
+    var flatBottom = opt.flatBottom === undefined ? 0 : opt.flatBottom;
+    var taperFront = opt.taperFront || 0;   // pinch the +z end
+    var taperBack = opt.taperBack || 0;     // pinch the -z end
+    var m = emptyMesh();
+    var grid = [];
+    for (var v = 0; v <= sv; v++) {
+      var phi = (v / sv) * Math.PI;          // 0 = top (+y)
+      var row = [];
+      for (var u = 0; u < su; u++) {
+        var th = (u / su) * Math.PI * 2;
+        var y = Math.cos(phi);
+        var r = Math.sin(phi);
+        var x = r * Math.cos(th);
+        var z = r * Math.sin(th);
+        // taper along z so the abdomen narrows toward the tail
+        var tz = z > 0 ? 1 - taperFront * z : 1 + taperBack * z;
+        var yy = y < 0 ? y * (1 - flatBottom) : y;
+        row.push(pushVert(m, x * rx * tz, yy * ry, z * rz));
+      }
+      grid.push(row);
+    }
+    for (var vv = 0; vv < sv; vv++) {
+      for (var uu = 0; uu < su; uu++) {
+        var a = grid[vv][uu], b = grid[vv][(uu + 1) % su];
+        var c = grid[vv + 1][(uu + 1) % su], d = grid[vv + 1][uu];
+        pushFace(m, a, b, c, resolveCol(opt.color, centroid(m, a, b, c)), opt.gloss, opt.alpha);
+        pushFace(m, a, c, d, resolveCol(opt.color, centroid(m, a, c, d)), opt.gloss, opt.alpha);
+      }
+    }
+    if (opt.matrix) applyMatrix(m, opt.matrix);
+    return m;
+  }
+
+  /**
+   * Tapered tube swept along a polyline — legs, antennae, tails, mandibles,
+   * spider spinnerets. `path` is [[x,y,z], ...], `radii` one per point.
+   */
+  function tube(opt) {
+    var path = opt.path, radii = opt.radii, sides = opt.sides || 6;
+    var m = emptyMesh();
+    var rings = [];
+    for (var i = 0; i < path.length; i++) {
+      var p = path[i];
+      var next = path[Math.min(i + 1, path.length - 1)];
+      var prev = path[Math.max(i - 1, 0)];
+      var dir = norm([next[0] - prev[0], next[1] - prev[1], next[2] - prev[2]]);
+      var up = Math.abs(dir[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0];
+      var sx = norm(cross(up, dir));
+      var sy = cross(dir, sx);
+      var ring = [];
+      for (var s = 0; s < sides; s++) {
+        var a = (s / sides) * Math.PI * 2;
+        var ca = Math.cos(a) * radii[i], sa = Math.sin(a) * radii[i];
+        ring.push(pushVert(m,
+          p[0] + sx[0] * ca + sy[0] * sa,
+          p[1] + sx[1] * ca + sy[1] * sa,
+          p[2] + sx[2] * ca + sy[2] * sa));
+      }
+      rings.push(ring);
+    }
+    for (var r = 0; r < rings.length - 1; r++) {
+      for (var k = 0; k < sides; k++) {
+        var a1 = rings[r][k], b1 = rings[r][(k + 1) % sides];
+        var c1 = rings[r + 1][(k + 1) % sides], d1 = rings[r + 1][k];
+        pushFace(m, a1, b1, c1, resolveCol(opt.color, centroid(m, a1, b1, c1)), opt.gloss, opt.alpha);
+        pushFace(m, a1, c1, d1, resolveCol(opt.color, centroid(m, a1, c1, d1)), opt.gloss, opt.alpha);
+      }
+    }
+    // cap the far end so tapered tips do not show a hole from behind
+    var last = rings[rings.length - 1];
+    if (radii[radii.length - 1] > 0.004) {
+      var tip = pushVert(m, path[path.length - 1][0], path[path.length - 1][1], path[path.length - 1][2]);
+      for (var q = 0; q < sides; q++) {
+        pushFace(m, last[q], last[(q + 1) % sides], tip,
+          resolveCol(opt.color, centroid(m, last[q], last[(q + 1) % sides], tip)), opt.gloss, opt.alpha);
+      }
+    }
+    if (opt.matrix) applyMatrix(m, opt.matrix);
+    return m;
+  }
+
+  /** Quadratic-ish smooth path through a start, bend and end point. */
+  function curvePath(from, ctrl, to, steps) {
+    var out = [];
+    for (var i = 0; i <= steps; i++) {
+      var t = i / steps, it = 1 - t;
+      out.push([
+        it * it * from[0] + 2 * it * t * ctrl[0] + t * t * to[0],
+        it * it * from[1] + 2 * it * t * ctrl[1] + t * t * to[1],
+        it * it * from[2] + 2 * it * t * ctrl[2] + t * t * to[2]
+      ]);
+    }
+    return out;
+  }
+
+  function taper(n, r0, r1, curveP) {
+    var out = [];
+    for (var i = 0; i < n; i++) {
+      var t = i / (n - 1);
+      if (curveP) t = Math.pow(t, curveP);
+      out.push(r0 + (r1 - r0) * t);
+    }
+    return out;
+  }
+
+  function cross(a, b) {
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  }
+  function norm(v) {
+    var l = Math.hypot(v[0], v[1], v[2]) || 1;
+    return [v[0] / l, v[1] / l, v[2] / l];
+  }
+
+  /**
+   * Per-vertex normals, averaged from the faces touching each vertex.
+   * Shading still happens per triangle (canvas 2D cannot interpolate a fill),
+   * but a smooth normal field turns hard facet edges into a soft gradient —
+   * the difference between "low-poly render" and "photographed specimen".
+   * Vertices are only shared inside a primitive, so separate parts keep their
+   * hard edges automatically.
+   */
+  function computeNormals(m) {
+    var n = m.pos.length / 3;
+    var vn = new Float32Array(n * 3);
+    var p = m.pos;
+    for (var f = 0; f < m.face.length; f++) {
+      var t = m.face[f], a = t[0] * 3, b = t[1] * 3, c = t[2] * 3;
+      var ux = p[b] - p[a], uy = p[b + 1] - p[a + 1], uz = p[b + 2] - p[a + 2];
+      var wx = p[c] - p[a], wy = p[c + 1] - p[a + 1], wz = p[c + 2] - p[a + 2];
+      var nx = uy * wz - uz * wy, ny = uz * wx - ux * wz, nz = ux * wy - uy * wx;
+      var area = Math.hypot(nx, ny, nz);
+      if (area < 1e-9) continue;              // pole triangles are degenerate
+      nx /= area; ny /= area; nz /= area;     // weight every face equally
+      for (var k = 0; k < 3; k++) {
+        var i3 = t[k] * 3;
+        vn[i3] += nx; vn[i3 + 1] += ny; vn[i3 + 2] += nz;
+      }
+    }
+    for (var v = 0; v < n; v++) {
+      var l = Math.hypot(vn[v * 3], vn[v * 3 + 1], vn[v * 3 + 2]) || 1;
+      vn[v * 3] /= l; vn[v * 3 + 1] /= l; vn[v * 3 + 2] /= l;
+    }
+    m.vnorm = vn;
+    return m;
+  }
+
+  BB.mesh = {
+    empty: emptyMesh, merge: merge, apply: applyMatrix, normals: computeNormals,
+    ellipsoid: ellipsoid, tube: tube, curvePath: curvePath, taper: taper,
+    cross: cross, norm: norm
+  };
+
+  /* ------------------------------------------------------------------ *
+   * Renderer
+   *
+   * A model is { parts: [{ mesh, anim(t) -> matrix | null }], scale, shadow }.
+   * Every frame each part is transformed by  view * spin * partMatrix,
+   * faces are lit, depth-sorted back-to-front and filled.
+   * ------------------------------------------------------------------ */
+  function Renderer(canvas, opts) {
+    opts = opts || {};
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d', { alpha: true });
+    this.model = null;
+    this.spin = 0;
+    this.tilt = opts.tilt === undefined ? 0.42 : opts.tilt;
+    this.dist = opts.dist || 7.4;
+    this.fov = opts.fov || 2.9;          // horizontal allowance, model units
+    this.fovY = opts.fovY || 0.92;       // vertical allowance, as a ratio
+    this.quality = 1;
+    this.light = norm(opts.light || [-0.45, 0.82, 0.5]);
+    this.fill = norm(opts.fill || [0.75, 0.1, 0.55]);
+    this.rim = norm(opts.rim || [0.35, -0.1, -0.9]);
+    this.ambient = opts.ambient === undefined ? 0.30 : opts.ambient;
+    this.keyI = opts.key === undefined ? 0.70 : opts.key;
+    this.fillI = opts.fillI === undefined ? 0.22 : opts.fillI;
+    this.rimI = opts.rimI === undefined ? 0.34 : opts.rimI;
+    this.exposure = opts.exposure === undefined ? 1.0 : opts.exposure;
+    this.tint = opts.tint || [1, 0.975, 0.95];
+    this.shadow = opts.shadow !== false;
+    this._buf = [];
+  }
+
+  Renderer.prototype.setModel = function (model) {
+    this.model = model;
+    this._cacheSize();
+  };
+
+  Renderer.prototype._cacheSize = function () {
+    var n = 0;
+    if (!this.model) return;
+    for (var i = 0; i < this.model.parts.length; i++) n += this.model.parts[i].mesh.face.length;
+    this.faceCount = n;
+  };
+
+  Renderer.prototype.resize = function (w, h, dpr) {
+    dpr = Math.min(dpr || 1, 2);
+    this.canvas.width = Math.round(w * dpr);
+    this.canvas.height = Math.round(h * dpr);
+    this.canvas.style.width = w + 'px';
+    this.canvas.style.height = h + 'px';
+    this.w = w; this.h = h; this.dpr = dpr;
+  };
+
+  /**
+   * @param spin  turntable angle, radians
+   * @param t     seconds since start, drives idle articulation
+   */
+  Renderer.prototype.render = function (spin, t) {
+    var ctx = this.ctx, w = this.w, h = this.h, dpr = this.dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    if (!this.model) return;
+
+    // Spin first (about the specimen's own vertical), then tilt the camera
+    // down over it. The other order pitches the model itself, which swings
+    // the underside into view as it turns.
+    var base = m4.chain(m4.rotX(this.tilt), m4.rotY(spin));
+    if (this.model.pre) base = m4.mul(base, this.model.pre);
+    var scale = this.model.scale || 1;
+    var px = w / 2, py = h / 2 + (this.model.offsetY || 0) * h;
+    // Fit width and height separately: a wide, short stage should fill
+    // sideways rather than being framed by its smallest dimension.
+    var f = Math.min(w / this.fov, h / (this.fov * this.fovY)) * scale;
+
+    if (this.shadow) this._groundShadow(ctx, px, py, f);
+
+    var faces = this._buf;
+    faces.length = 0;
+    var parts = this.model.parts;
+    var dist = this.dist;
+
+    for (var pi = 0; pi < parts.length; pi++) {
+      var part = parts[pi];
+      var mat = part.anim ? m4.mul(base, part.anim(t)) : base;
+      var mesh = part.mesh, pos = mesh.pos;
+      var n = pos.length / 3;
+      var sx = new Float32Array(n), sy = new Float32Array(n), vz = new Float32Array(n);
+      var vx = new Float32Array(n), vy = new Float32Array(n);
+      for (var i = 0; i < n; i++) {
+        var x = pos[i * 3], y = pos[i * 3 + 1], z = pos[i * 3 + 2];
+        var wx0 = mat[0] * x + mat[4] * y + mat[8] * z + mat[12];
+        var wy0 = mat[1] * x + mat[5] * y + mat[9] * z + mat[13];
+        var wz0 = mat[2] * x + mat[6] * y + mat[10] * z + mat[14];
+        // weak perspective: +z is toward the camera, so near legs read bigger
+        var persp = dist / (dist - wz0);
+        vx[i] = wx0; vy[i] = wy0; vz[i] = wz0;
+        sx[i] = px + wx0 * f * persp;
+        sy[i] = py - wy0 * f * persp;
+      }
+      // smooth normals if the mesh has them, geometric normals otherwise
+      var vn = mesh.vnorm, tn = null;
+      if (vn) {
+        tn = new Float32Array(n * 3);
+        for (var q = 0; q < n; q++) {
+          var ax0 = vn[q * 3], ay0 = vn[q * 3 + 1], az0 = vn[q * 3 + 2];
+          tn[q * 3] = mat[0] * ax0 + mat[4] * ay0 + mat[8] * az0;
+          tn[q * 3 + 1] = mat[1] * ax0 + mat[5] * ay0 + mat[9] * az0;
+          tn[q * 3 + 2] = mat[2] * ax0 + mat[6] * ay0 + mat[10] * az0;
+        }
+      }
+      var fs = mesh.face;
+      for (var k = 0; k < fs.length; k++) {
+        var tri = fs[k], a = tri[0], b = tri[1], c = tri[2];
+        var nx, ny, nz, nl;
+        if (tn) {
+          nx = tn[a * 3] + tn[b * 3] + tn[c * 3];
+          ny = tn[a * 3 + 1] + tn[b * 3 + 1] + tn[c * 3 + 1];
+          nz = tn[a * 3 + 2] + tn[b * 3 + 2] + tn[c * 3 + 2];
+        } else {
+          var ux = vx[b] - vx[a], uy = vy[b] - vy[a], uz = vz[b] - vz[a];
+          var wx = vx[c] - vx[a], wy = vy[c] - vy[a], wz = vz[c] - vz[a];
+          nx = uy * wz - uz * wy; ny = uz * wx - ux * wz; nz = ux * wy - uy * wx;
+        }
+        nl = Math.hypot(nx, ny, nz);
+        if (nl < 1e-7) continue;
+        nx /= nl; ny /= nl; nz /= nl;
+        if (nz < 0) { nx = -nx; ny = -ny; nz = -nz; } // always face the camera
+        faces.push([(vz[a] + vz[b] + vz[c]) / 3,
+          sx[a], sy[a], sx[b], sy[b], sx[c], sy[c],
+          nx, ny, nz, mesh.col[k], mesh.gloss[k], mesh.alpha ? mesh.alpha[k] : 1]);
+      }
+    }
+
+    faces.sort(function (p, q) { return p[0] - q[0]; });
+
+    var L = this.light, FI = this.fill, R = this.rim;
+    var amb = this.ambient, kI = this.keyI, fI = this.fillI, rI = this.rimI;
+    var tint = this.tint, ex = this.exposure;
+    for (var q2 = 0; q2 < faces.length; q2++) {
+      var F = faces[q2];
+      var lam = Math.max(0, F[7] * L[0] + F[8] * L[1] + F[9] * L[2]);
+      var fl = Math.max(0, F[7] * FI[0] + F[8] * FI[1] + F[9] * FI[2]);
+      var rimv = Math.max(0, F[7] * R[0] + F[8] * R[1] + F[9] * R[2]);
+      var gl = F[11];
+      var spec = Math.pow(lam, 6 + gl * 26) * gl * 0.85;
+      // hemisphere ambient: sky above, dark floor below, so tops read lighter
+      var hemi = amb * (0.66 + 0.34 * F[8]);
+      var shade = (hemi + lam * kI + fl * fI + rimv * rimv * rI * (0.35 + gl)) * ex;
+      var col = F[10];
+      var r = Math.min(255, (col[0] * shade + spec * 235) * tint[0]);
+      var g = Math.min(255, (col[1] * shade + spec * 235) * tint[1]);
+      var bl = Math.min(255, (col[2] * shade + spec * 235) * tint[2]);
+      var style = 'rgb(' + (r | 0) + ',' + (g | 0) + ',' + (bl | 0) + ')';
+      var alpha = F[12];
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = style;
+      ctx.strokeStyle = style;
+      ctx.lineWidth = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(F[1], F[2]);
+      ctx.lineTo(F[3], F[4]);
+      ctx.lineTo(F[5], F[6]);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();   // hides hairline seams between adjacent triangles
+    }
+    ctx.globalAlpha = 1;
+  };
+
+  Renderer.prototype._groundShadow = function (ctx, px, py, f) {
+    var s = (this.model.shadowScale || 1) * (this.model.span || 1) * 0.62;
+    var rx = f * s, ry = 0.34 * f * s;
+    // the specimen's feet sit at model.groundY; project that onto the canvas
+    var cy = py - (this.model.groundY || 0) * Math.cos(this.tilt) * f;
+    var g = ctx.createRadialGradient(px, cy, 0, px, cy, rx);
+    g.addColorStop(0, 'rgba(0,0,0,0.42)');
+    g.addColorStop(0.55, 'rgba(0,0,0,0.16)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.save();
+    ctx.translate(px, cy);
+    ctx.scale(1, ry / rx);
+    ctx.translate(-px, -cy);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(px, cy, rx, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  BB.Renderer = Renderer;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- anatomy.js ---- */
+/*
+ * anatomy.js — procedural body plans.
+ *
+ * Every specimen is generated from numbers, not a downloaded model: no asset
+ * licensing, no 20 MB GLB files, and a new species is ~30 lines of data.
+ * Three plans cover the whole Brisbane pest list:
+ *
+ *   insect   — 6 legs, 2 antennae, optional wings / waist / mandibles
+ *   arachnid — 8 legs, cephalothorax + abdomen, pedipalps
+ *   rodent   — 4 legs, snout, ears, tail
+ *
+ * Model space: +z forward (head), +y up, +x the specimen's right.
+ * Everything is built with the feet on y = 0 and re-centred at the end.
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+  var m4 = BB.m4, M = BB.mesh;
+
+  function mix(a, b, t) {
+    return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+  }
+
+  /* ---------------- marking helpers: turn data into colour functions ------- */
+
+  /**
+   * Two dark longitudinal stripes — the German cockroach's calling card.
+   * Edges are feathered: a hard threshold makes the boundary follow the
+   * triangle edges and the marking comes out with a sawtooth edge.
+   */
+  function stripeFn(base, mark, halfWidth, opt) {
+    opt = opt || {};
+    var inner = opt.inner === undefined ? 0.22 : opt.inner;
+    var outer = opt.outer === undefined ? 0.62 : opt.outer;
+    var soft = opt.soft === undefined ? 0.07 : opt.soft;
+    return function (p) {
+      var t = Math.abs(p[0]) / halfWidth;
+      if (p[1] < (opt.minY === undefined ? -1e9 : opt.minY)) return base;
+      var a = smoothstep(inner - soft, inner + soft, t);
+      var b = 1 - smoothstep(outer - soft, outer + soft, t);
+      return mix(base, mark, Math.min(a, b));
+    };
+  }
+
+  function smoothstep(e0, e1, x) {
+    var t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0 || 1e-6)));
+    return t * t * (3 - 2 * t);
+  }
+
+  /** Pale margin around a darker centre — American cockroach pronotum. */
+  function haloFn(base, edge, rx, rz) {
+    return function (p) {
+      var d = Math.hypot(p[0] / rx, p[2] / rz);
+      if (d > 0.72) return edge;
+      if (d > 0.58) return mix(base, edge, (d - 0.58) / 0.14);
+      return base;
+    };
+  }
+
+  /** Transverse bands down the abdomen — wasp stripes, bed bug segments. */
+  function bandFn(base, mark, rz, count, sharp) {
+    return function (p) {
+      var t = (p[2] / rz + 1) / 2;               // 0 tail .. 1 front
+      var s = Math.sin(t * Math.PI * count);
+      if (sharp) return s > 0 ? mark : base;
+      return mix(base, mark, Math.max(0, s) * 0.9);
+    };
+  }
+
+  /** Dorsal blaze — the redback's red stripe, feathered at both edges. */
+  function dorsalFn(base, mark, rx, ry, width) {
+    return function (p) {
+      var lift = smoothstep(ry * 0.1, ry * 0.4, p[1]);
+      var band = 1 - smoothstep(rx * width * 0.75, rx * width * 1.15, Math.abs(p[0]));
+      return mix(base, mark, lift * band);
+    };
+  }
+
+  /** A pale blaze on the very tip of the abdomen — the white-tailed spider. */
+  function tailSpotFn(base, mark, rz, size) {
+    // -p[2] runs from -rz at the head end to +rz at the tail tip, so the
+    // blaze starts once we are `size` of the way back
+    return function (p) {
+      var t = smoothstep(rz * (size - 0.09), rz * (size + 0.09), -p[2]);
+      return mix(base, mark, t);
+    };
+  }
+
+  /**
+   * Wing markings. The leading edge is the outer one, which is +x on the
+   * right wing and -x on the left, so these need to know which side they are
+   * painting — both wings are built from the same local mesh.
+   */
+  function wingEdgeFn(base, mark, rx, side, width) {
+    return function (p) {
+      var outer = p[0] * side;                    // >0 towards the wing tip edge
+      return mix(base, mark, smoothstep(rx * (1 - width - 0.15), rx * (1 - width), outer));
+    };
+  }
+
+  /** Two-tone wing along its length — the pantry moth's cream-to-bronze half. */
+  function wingSplitFn(inner, outer, rz, at) {
+    return function (p) {
+      var t = smoothstep(-rz * (at + 0.18), -rz * (at - 0.18), -p[2]);
+      return mix(inner, outer, t);
+    };
+  }
+
+  /** Lighter underside — rodent belly, termite abdomen. */
+  function bellyFn(base, belly, ry) {
+    return function (p) {
+      var t = (-p[1] / ry - 0.1) / 0.9;
+      return t <= 0 ? base : mix(base, belly, Math.min(1, t));
+    };
+  }
+
+  function paletteFor(part, p) {
+    var c = p.colors;
+    var mk = p.markings || {};
+    switch (part) {
+      case 'pronotum':
+        if (mk.pronotumStripes) {
+          return stripeFn(c.pronotum || c.body, mk.pronotumStripes.color,
+            p._pronotumRx, mk.pronotumStripes);
+        }
+        if (mk.pronotumHalo) {
+          return haloFn(c.pronotum || c.body, mk.pronotumHalo.color, p._pronotumRx, p._pronotumRz);
+        }
+        return c.pronotum || c.body;
+      case 'abdomen':
+        if (mk.abdomenBands) {
+          return bandFn(c.abdomen || c.body, mk.abdomenBands.color, p._abdomenRz,
+            mk.abdomenBands.count || 4, mk.abdomenBands.sharp);
+        }
+        if (mk.dorsalStripe) {
+          return dorsalFn(c.abdomen || c.body, mk.dorsalStripe.color, p._abdomenRx,
+            p._abdomenRy, mk.dorsalStripe.width || 0.34);
+        }
+        if (mk.tailSpot) {
+          return tailSpotFn(c.abdomen || c.body, mk.tailSpot.color, p._abdomenRz, mk.tailSpot.size || 0.62);
+        }
+        if (mk.belly) return bellyFn(c.abdomen || c.body, mk.belly.color, p._abdomenRy);
+        return c.abdomen || c.body;
+      case 'wing': {
+        var wingBase = (p.wings && p.wings.color) || c.wing || c.body;
+        if (mk.wingSplit) {
+          return wingSplitFn(wingBase, mk.wingSplit.color, p._wingRz, mk.wingSplit.at || 0.1);
+        }
+        if (mk.wingEdge) {
+          return wingEdgeFn(wingBase, mk.wingEdge.color, p._wingRx, arguments[2], mk.wingEdge.width || 0.3);
+        }
+        return wingBase;
+      }
+      default:
+        return c.body;
+    }
+  }
+
+  /* ---------------- shared limb builder ----------------------------------- */
+
+  /**
+   * One sprawled leg: coxa → femur → knee → tibia → foot → tarsus.
+   * `side` is -1 (left) or +1 (right); `dir` the splay angle in the xz plane
+   * measured from straight-ahead, so front legs reach forward and hind legs
+   * kick back the way a real roach stands.
+   */
+  function buildLeg(cfg) {
+    var side = cfg.side, L = cfg.len, col = cfg.color, gloss = cfg.gloss;
+    var ax = cfg.attach[0], ay = cfg.attach[1], az = cfg.attach[2];
+    var ang = cfg.dir;
+    var ux = Math.sin(ang) * side, uz = Math.cos(ang);
+    var kneeR = cfg.kneeOut * L, kneeY = cfg.kneeUp * L;
+    var footR = cfg.footOut * L;
+    var knee = [ax + ux * kneeR, ay + kneeY, az + uz * kneeR];
+    var foot = [ax + ux * footR, cfg.footY, az + uz * footR * (cfg.footZScale || 1)];
+    var mesh = M.empty();
+    var th = cfg.thick * L;
+
+    M.merge(mesh, M.tube({
+      path: M.curvePath([ax, ay, az], [ax + ux * kneeR * 0.5, ay + kneeY * 1.15, az + uz * kneeR * 0.5], knee, 4),
+      radii: M.taper(5, th * 1.5, th * 0.85), sides: cfg.sides || 6, color: col, gloss: gloss
+    }));
+    M.merge(mesh, M.tube({
+      path: M.curvePath(knee, [(knee[0] + foot[0]) / 2 + ux * 0.02, (knee[1] + foot[1]) / 2 + L * 0.02, (knee[2] + foot[2]) / 2], foot, 5),
+      radii: M.taper(6, th * 0.8, th * 0.34), sides: cfg.sides || 6, color: col, gloss: gloss
+    }));
+    // tarsus: the little foot segment that keeps it from looking like a stick
+    var toe = [foot[0] + ux * L * 0.07, cfg.footY, foot[2] + uz * L * 0.07 + L * 0.03];
+    M.merge(mesh, M.tube({
+      path: [foot, toe], radii: [th * 0.3, th * 0.16], sides: 4, color: col, gloss: gloss
+    }));
+    return mesh;
+  }
+
+  /* ---------------- plan: insect ------------------------------------------ */
+
+  function buildInsect(p) {
+    var L = p.len;
+    var c = p.colors;
+    var gl = p.gloss === undefined ? 0.4 : p.gloss;
+    var parts = [];
+    var stand = (p.stand || 0.16) * L;
+
+    var abRx = (p.abdomenW || 0.30) * L, abRy = (p.abdomenH || 0.115) * L, abRz = (p.abdomenL || 0.34) * L;
+    p._abdomenRx = abRx; p._abdomenRy = abRy; p._abdomenRz = abRz;
+    var abY = stand + abRy * (p.bodyLift || 1.0);
+    var abZ = (p.abdomenZ === undefined ? -0.26 : p.abdomenZ) * L;
+
+    // abdomen / gaster
+    parts.push({
+      name: 'abdomen',
+      mesh: M.ellipsoid({
+        rx: abRx, ry: abRy, rz: abRz, su: 22, sv: 13,
+        flatBottom: p.flatBottom === undefined ? 0.3 : p.flatBottom,
+        taperBack: p.abdomenTaper === undefined ? 0.42 : p.abdomenTaper,
+        taperFront: p.abdomenTaperFront || 0,
+        color: paletteFor('abdomen', p), gloss: gl,
+        matrix: m4.trans(0, abY, abZ)
+      })
+    });
+
+    // petiole — the pinched waist that reads instantly as "ant" or "wasp"
+    if (p.waist) {
+      var wz = abZ + abRz * 0.95;
+      parts.push({
+        name: 'waist',
+        mesh: M.merge(
+          M.ellipsoid({
+            rx: p.waist.r * L, ry: p.waist.r * L * 1.35, rz: p.waist.r * L, su: 8, sv: 6,
+            color: c.body, gloss: gl, matrix: m4.trans(0, abY + abRy * 0.15, wz + p.waist.r * L)
+          }),
+          M.tube({
+            path: [[0, abY, wz], [0, abY + abRy * 0.2, wz + p.waist.len * L]],
+            radii: [p.waist.r * L * 0.7, p.waist.r * L * 0.55], sides: 6, color: c.body, gloss: gl
+          })
+        )
+      });
+    }
+
+    // thorax
+    var thRx = (p.thoraxW || 0.24) * L, thRy = (p.thoraxH || 0.11) * L, thRz = (p.thoraxL || 0.19) * L;
+    var thZ = (p.thoraxZ === undefined ? 0.14 : p.thoraxZ) * L;
+    var thY = stand + thRy * (p.bodyLift || 1.0) * (p.thoraxLift || 1);
+    parts.push({
+      name: 'thorax',
+      mesh: M.ellipsoid({
+        rx: thRx, ry: thRy, rz: thRz, su: 18, sv: 10, flatBottom: 0.35,
+        color: c.thorax || c.body, gloss: gl, matrix: m4.trans(0, thY, thZ)
+      })
+    });
+
+    // pronotum — the shield plate over the thorax, where roach markings live
+    if (p.pronotum !== false) {
+      var prRx = (p.pronotumW || 0.30) * L, prRz = (p.pronotumL || 0.20) * L;
+      p._pronotumRx = prRx; p._pronotumRz = prRz;
+      parts.push({
+        name: 'pronotum',
+        mesh: M.ellipsoid({
+          rx: prRx, ry: (p.pronotumH || 0.075) * L, rz: prRz, su: 24, sv: 11, flatBottom: 0.75,
+          color: paletteFor('pronotum', p), gloss: gl + 0.15,
+          matrix: m4.chain(m4.trans(0, thY + thRy * 0.55, thZ + prRz * 0.04), m4.rotX(-0.06))
+        })
+      });
+    }
+
+    // wings / tegmina
+    if (p.wings) {
+      var wg = p.wings;
+      var wLen = wg.len * L, wW = wg.w * L;
+      p._wingRx = wW; p._wingRz = wLen;
+      for (var s = -1; s <= 1; s += 2) {
+        parts.push({
+          name: 'wing' + s,
+          mesh: M.ellipsoid({
+            rx: wW, ry: wg.thick * L, rz: wLen, su: 20, sv: 9,
+            taperBack: wg.taperBack === undefined ? 0.55 : wg.taperBack,
+            taperFront: wg.taperFront === undefined ? 0.22 : wg.taperFront,
+            flatBottom: 0.5,
+            color: paletteFor('wing', p, s), gloss: wg.gloss === undefined ? 0.55 : wg.gloss,
+            alpha: wg.alpha,
+            matrix: m4.chain(
+              m4.trans(s * wW * (wg.spread || 0.72), abY + abRy * (wg.lift || 0.85), abZ + (wg.z || 0.1) * L),
+              // positive roll droops the outer edge over the abdomen flank,
+              // negative pitch settles the wing tips down over the tail
+              m4.rotY(-s * (wg.yaw || 0.07)), m4.rotZ(-s * (wg.roll || 0.14)), m4.rotX(wg.pitch === undefined ? -0.1 : wg.pitch))
+          })
+        });
+      }
+    }
+
+    // head, tilted down under the pronotum the way roaches carry it
+    var hRx = (p.headW || 0.17) * L, hRy = (p.headH || 0.13) * L, hRz = (p.headL || 0.14) * L;
+    var hZ = (p.headZ === undefined ? 0.36 : p.headZ) * L;
+    var hY = stand + (p.headY === undefined ? 0.11 : p.headY) * L;
+    var headMat = m4.chain(m4.trans(0, hY, hZ), m4.rotX(p.headPitch === undefined ? -0.55 : p.headPitch));
+    var head = M.ellipsoid({
+      rx: hRx, ry: hRy, rz: hRz, su: 18, sv: 11, flatBottom: 0.1,
+      color: c.head || c.body, gloss: gl + 0.1, matrix: headMat
+    });
+    // compound eyes
+    var eR = (p.eye === undefined ? 0.045 : p.eye) * L;
+    if (eR > 0.001) {
+      for (var e = -1; e <= 1; e += 2) {
+        M.merge(head, M.ellipsoid({
+          rx: eR, ry: eR * 1.25, rz: eR * 1.15, su: 8, sv: 6,
+          color: c.eye || [18, 14, 12], gloss: 0.85,
+          matrix: m4.mul(headMat, m4.trans(e * hRx * 0.78, hRy * 0.25, hRz * 0.3))
+        }));
+      }
+    }
+    // mandibles — termite soldiers are basically a pair of these with a bug attached
+    if (p.mandibles) {
+      var md = p.mandibles;
+      for (var mside = -1; mside <= 1; mside += 2) {
+        var mstart = [mside * hRx * 0.55, -hRy * 0.15, hRz * 0.7];
+        var mctrl = [mside * hRx * 1.05, -hRy * 0.2, hRz * 0.7 + md.len * L * 0.55];
+        var mend = [mside * hRx * 0.12, -hRy * 0.12, hRz * 0.7 + md.len * L];
+        M.merge(head, M.tube({
+          path: M.curvePath(mstart, mctrl, mend, 7),
+          radii: M.taper(8, md.thick * L, md.thick * L * 0.18, 1.4),
+          sides: 5, color: md.color || c.head, gloss: 0.7,
+          matrix: headMat
+        }));
+      }
+    }
+    parts.push({ name: 'head', mesh: head, pivot: [0, hY, hZ] });
+
+    // antennae — long, curved, and animated; the thing that sells "alive"
+    var an = p.antenna || {};
+    var aLen = (an.len === undefined ? 1.15 : an.len) * L;
+    var aTh = (an.thick === undefined ? 0.018 : an.thick) * L;
+    for (var as = -1; as <= 1; as += 2) {
+      var base = [as * hRx * 0.5, hY + hRy * 0.35, hZ + hRz * 0.55];
+      var mesh;
+      if (an.elbowed) {
+        // ants: a long straight scape, then a bend into the funiculus
+        var elbow = [as * (hRx * 0.5 + aLen * 0.38), base[1] + aLen * 0.16, base[2] + aLen * 0.30];
+        var tip = [as * (hRx * 0.5 + aLen * 0.52), base[1] + aLen * 0.02, base[2] + aLen * 0.78];
+        mesh = M.merge(
+          M.tube({ path: [base, elbow], radii: [aTh, aTh * 0.8], sides: 5, color: c.antenna || c.body, gloss: gl }),
+          M.tube({
+            path: M.curvePath(elbow, [(elbow[0] + tip[0]) / 2, elbow[1] - aLen * 0.02, (elbow[2] + tip[2]) / 2], tip, 6),
+            radii: M.taper(7, aTh * 0.8, aTh * 0.5), sides: 5, color: c.antenna || c.body, gloss: gl
+          })
+        );
+      } else {
+        var ctrl = [as * aLen * (an.splay === undefined ? 0.42 : an.splay), base[1] + aLen * (an.arch === undefined ? 0.34 : an.arch), base[2] + aLen * 0.45];
+        var end = [as * aLen * (an.spread === undefined ? 0.62 : an.spread), base[1] + aLen * (an.rise === undefined ? 0.06 : an.rise), base[2] + aLen * (an.reach === undefined ? 0.86 : an.reach)];
+        mesh = M.tube({
+          path: M.curvePath(base, ctrl, end, an.segs || 9),
+          radii: M.taper((an.segs || 9) + 1, aTh, aTh * 0.22, 1.2),
+          sides: 5, color: c.antenna || c.body, gloss: gl
+        });
+      }
+      parts.push({ name: 'antenna' + as, mesh: mesh, pivot: base, side: as, kind: 'antenna' });
+    }
+
+    // legs
+    var lg = p.legs || {};
+    var zs = lg.attachZ || [0.20, 0.04, -0.13];
+    var dirs = lg.dirs || [0.62, 1.5, 2.35];
+    var lens = lg.scale || [0.9, 1.0, 1.22];
+    for (var pair = 0; pair < 3; pair++) {
+      for (var sd = -1; sd <= 1; sd += 2) {
+        var legMesh = buildLeg({
+          side: sd,
+          attach: [sd * thRx * 0.72, thY - thRy * 0.45, zs[pair] * L],
+          len: L * lens[pair],
+          dir: dirs[pair],
+          kneeOut: lg.kneeOut === undefined ? 0.24 : lg.kneeOut,
+          kneeUp: lg.kneeUp === undefined ? 0.13 : lg.kneeUp,
+          footOut: lg.footOut === undefined ? 0.40 : lg.footOut,
+          footY: 0,
+          thick: lg.thick === undefined ? 0.026 : lg.thick,
+          color: c.leg || c.body,
+          gloss: gl
+        });
+        parts.push({ name: 'leg' + pair + sd, mesh: legMesh, kind: 'leg', side: sd, pair: pair });
+      }
+    }
+
+    // cerci — the two little tail prongs on roaches
+    if (p.cerci) {
+      var cerci = typeof p.cerci === 'number' ? { len: p.cerci } : p.cerci;
+      var cz = abZ - abRz * 0.9;
+      var spread = cerci.spread === undefined ? 0.55 : cerci.spread;
+      // three bristles (silverfish) means a straight central one as well
+      var offsets = cerci.count === 3 ? [-1, 0, 1] : [-1, 1];
+      for (var ci = 0; ci < offsets.length; ci++) {
+        var cs = offsets[ci];
+        var clen = cerci.len * L * (cs === 0 ? (cerci.midScale || 1.15) : 1);
+        parts.push({
+          name: 'cercus' + ci,
+          mesh: M.tube({
+            path: M.curvePath(
+              [cs * abRx * 0.3, abY, cz],
+              [cs * abRx * spread * 0.7, abY + abRy * 0.15, cz - clen * 0.5],
+              [cs * abRx * spread * 1.6, abY + abRy * 0.1, cz - clen], 5),
+            radii: M.taper(6, aTh * 1.2, aTh * 0.2), sides: 5, color: cerci.color || c.leg || c.body, gloss: gl
+          })
+        });
+      }
+    }
+
+    return finish(parts, p);
+  }
+
+  /* ---------------- plan: arachnid ---------------------------------------- */
+
+  function buildArachnid(p) {
+    var L = p.len, c = p.colors, gl = p.gloss === undefined ? 0.6 : p.gloss;
+    var parts = [];
+    var stand = (p.stand || 0.30) * L;
+
+    var abRx = (p.abdomenW || 0.30) * L, abRy = (p.abdomenH || 0.30) * L, abRz = (p.abdomenL || 0.32) * L;
+    p._abdomenRx = abRx; p._abdomenRy = abRy; p._abdomenRz = abRz;
+    var abY = stand + abRy * 0.15, abZ = -(p.abdomenZ || 0.30) * L;
+    parts.push({
+      name: 'abdomen',
+      mesh: M.ellipsoid({
+        rx: abRx, ry: abRy, rz: abRz, su: 26, sv: 16,
+        color: paletteFor('abdomen', p), gloss: gl,
+        matrix: m4.trans(0, abY, abZ)
+      })
+    });
+    // ventral hourglass, drawn as a small red patch on the underside
+    if (p.markings && p.markings.hourglass) {
+      parts.push({
+        name: 'hourglass',
+        mesh: M.ellipsoid({
+          rx: abRx * 0.26, ry: abRy * 0.1, rz: abRz * 0.42, su: 10, sv: 5,
+          color: p.markings.hourglass.color, gloss: 0.5,
+          matrix: m4.trans(0, abY - abRy * 0.94, abZ)
+        })
+      });
+    }
+
+    var ctRx = (p.thoraxW || 0.20) * L, ctRy = (p.thoraxH || 0.13) * L, ctRz = (p.thoraxL || 0.24) * L;
+    var ctY = stand + ctRy * 0.2, ctZ = (p.thoraxZ === undefined ? 0.12 : p.thoraxZ) * L;
+    var ceph = M.ellipsoid({
+      rx: ctRx, ry: ctRy, rz: ctRz, su: 18, sv: 12, flatBottom: 0.3,
+      color: c.thorax || c.body, gloss: gl + 0.15, matrix: m4.trans(0, ctY, ctZ)
+    });
+    // eye cluster
+    for (var ex = -1; ex <= 1; ex += 2) {
+      for (var ei = 0; ei < 2; ei++) {
+        M.merge(ceph, M.ellipsoid({
+          rx: L * 0.018, ry: L * 0.018, rz: L * 0.018, su: 6, sv: 4,
+          color: c.eye || [10, 8, 8], gloss: 0.9,
+          matrix: m4.trans(ex * ctRx * (0.25 + ei * 0.3), ctY + ctRy * 0.55, ctZ + ctRz * (0.82 - ei * 0.12))
+        }));
+      }
+    }
+    parts.push({ name: 'cephalothorax', mesh: ceph });
+
+    // pedipalps
+    for (var ps = -1; ps <= 1; ps += 2) {
+      parts.push({
+        name: 'palp' + ps,
+        mesh: M.tube({
+          path: M.curvePath(
+            [ps * ctRx * 0.5, ctY - ctRy * 0.2, ctZ + ctRz * 0.7],
+            [ps * ctRx * 1.0, ctY - ctRy * 0.5, ctZ + ctRz * 1.15],
+            [ps * ctRx * 0.9, stand * 0.35, ctZ + ctRz * 1.5], 5),
+          radii: M.taper(6, L * 0.024, L * 0.014), sides: 5, color: c.leg || c.body, gloss: gl
+        })
+      });
+    }
+
+    // eight legs, knees high above the body — unmistakably spider
+    var lg = p.legs || {};
+    var zs = lg.attachZ || [0.22, 0.10, -0.02, -0.14];
+    var dirs = lg.dirs || [0.55, 1.15, 1.85, 2.5];
+    var lens = lg.scale || [1.05, 0.95, 0.92, 1.15];
+    for (var pr = 0; pr < 4; pr++) {
+      for (var sd = -1; sd <= 1; sd += 2) {
+        parts.push({
+          name: 'leg' + pr + sd, kind: 'leg', side: sd, pair: pr,
+          mesh: buildLeg({
+            side: sd,
+            attach: [sd * ctRx * 0.8, ctY - ctRy * 0.1, ctZ + zs[pr] * L],
+            len: L * lens[pr],
+            dir: dirs[pr],
+            kneeOut: lg.kneeOut === undefined ? 0.30 : lg.kneeOut,
+            kneeUp: lg.kneeUp === undefined ? 0.42 : lg.kneeUp,
+            footOut: lg.footOut === undefined ? 0.62 : lg.footOut,
+            footY: 0,
+            thick: lg.thick === undefined ? 0.030 : lg.thick,
+            color: c.leg || c.body, gloss: gl
+          })
+        });
+      }
+    }
+    return finish(parts, p);
+  }
+
+  /* ---------------- plan: rodent ------------------------------------------ */
+
+  function buildRodent(p) {
+    var L = p.len, c = p.colors, gl = p.gloss === undefined ? 0.22 : p.gloss;
+    var parts = [];
+    var stand = (p.stand || 0.13) * L;
+    var bRx = (p.bodyW || 0.17) * L, bRy = (p.bodyH || 0.18) * L, bRz = (p.bodyL || 0.40) * L;
+    p._abdomenRx = bRx; p._abdomenRy = bRy; p._abdomenRz = bRz;
+    var bY = stand + bRy * 0.92;
+    var bodyCol = paletteFor('abdomen', p);
+
+    // two overlapping masses give the hunched rat silhouette
+    parts.push({
+      name: 'body',
+      mesh: M.merge(
+        M.ellipsoid({
+          rx: bRx, ry: bRy, rz: bRz, su: 22, sv: 15, taperFront: 0.30, taperBack: 0.25,
+          color: bodyCol, gloss: gl, matrix: m4.trans(0, bY, -bRz * 0.08)
+        }),
+        M.ellipsoid({
+          rx: bRx * 0.92, ry: bRy * 0.86, rz: bRz * 0.5, su: 14, sv: 9,
+          color: bodyCol, gloss: gl, matrix: m4.trans(0, bY + bRy * 0.12, -bRz * 0.45)
+        })
+      )
+    });
+
+    var hRx = (p.headW || 0.115) * L, hRy = (p.headH || 0.115) * L, hRz = (p.headL || 0.17) * L;
+    var hZ = bRz * 0.82, hY = bY + bRy * 0.05;
+    var head = M.ellipsoid({
+      rx: hRx, ry: hRy, rz: hRz, su: 18, sv: 13, taperFront: 0.55,
+      color: bodyCol, gloss: gl, matrix: m4.trans(0, hY, hZ)
+    });
+    // snout
+    M.merge(head, M.tube({
+      path: [[0, hY - hRy * 0.15, hZ + hRz * 0.5], [0, hY - hRy * 0.42, hZ + hRz * 1.12]],
+      radii: [hRx * 0.62, hRx * 0.16], sides: 8, color: bodyCol, gloss: gl
+    }));
+    M.merge(head, M.ellipsoid({
+      rx: hRx * 0.17, ry: hRx * 0.14, rz: hRx * 0.14, su: 6, sv: 5,
+      color: c.nose || [196, 132, 138], gloss: 0.7,
+      matrix: m4.trans(0, hY - hRy * 0.46, hZ + hRz * 1.16)
+    }));
+    // ears — big thin discs, the giveaway between roof rat and mouse
+    for (var es = -1; es <= 1; es += 2) {
+      M.merge(head, M.ellipsoid({
+        rx: (p.ear || 0.075) * L, ry: (p.ear || 0.075) * L * 0.95, rz: L * 0.012, su: 12, sv: 6,
+        color: c.ear || mix(bodyCol.length ? bodyCol : [120, 100, 90], [214, 170, 166], 0.45), gloss: 0.35,
+        matrix: m4.chain(
+          m4.trans(es * hRx * 0.82, hY + hRy * 0.95, hZ - hRz * 0.22),
+          m4.rotY(es * 0.5), m4.rotZ(es * 0.25))
+      }));
+    }
+    for (var ys = -1; ys <= 1; ys += 2) {
+      M.merge(head, M.ellipsoid({
+        rx: hRx * 0.17, ry: hRx * 0.17, rz: hRx * 0.17, su: 8, sv: 6,
+        color: c.eye || [16, 12, 12], gloss: 0.9,
+        matrix: m4.trans(ys * hRx * 0.66, hY + hRy * 0.28, hZ + hRz * 0.42)
+      }));
+    }
+    // whiskers
+    for (var ws = -1; ws <= 1; ws += 2) {
+      for (var wi = 0; wi < 3; wi++) {
+        M.merge(head, M.tube({
+          path: M.curvePath(
+            [ws * hRx * 0.3, hY - hRy * 0.3, hZ + hRz * 0.95],
+            [ws * hRx * 1.3, hY - hRy * 0.05 + wi * L * 0.02, hZ + hRz * 1.2],
+            [ws * hRx * 2.4, hY - hRy * 0.5 + wi * L * 0.05, hZ + hRz * 1.15], 4),
+          radii: [L * 0.006, L * 0.004, L * 0.003, L * 0.002, L * 0.001],
+          sides: 3, color: c.whisker || [225, 220, 215], gloss: 0.1
+        }));
+      }
+    }
+    parts.push({ name: 'head', mesh: head, pivot: [0, hY, hZ] });
+
+    // legs — short, tucked, four of them
+    var lg = p.legs || {};
+    var zs = lg.attachZ || [0.30, -0.26];
+    for (var pr = 0; pr < 2; pr++) {
+      for (var sd = -1; sd <= 1; sd += 2) {
+        parts.push({
+          name: 'leg' + pr + sd, kind: 'leg', side: sd, pair: pr,
+          mesh: buildLeg({
+            side: sd,
+            attach: [sd * bRx * 0.72, bY - bRy * 0.55, zs[pr] * L],
+            len: L,
+            dir: pr === 0 ? 0.5 : 2.6,
+            kneeOut: 0.10, kneeUp: -0.02, footOut: 0.14,
+            footY: 0, thick: 0.045,
+            color: bodyCol, gloss: gl, sides: 6
+          })
+        });
+      }
+    }
+
+    // tail
+    var tl = (p.tail || 1.0) * L;
+    parts.push({
+      name: 'tail',
+      mesh: M.tube({
+        path: M.curvePath(
+          [0, bY - bRy * 0.25, -bRz * 1.0],
+          [0, bY - bRy * 0.1, -bRz - tl * 0.45],
+          [tl * 0.22, stand * 0.4, -bRz - tl * 0.92], 10),
+        radii: M.taper(11, bRx * 0.30, bRx * 0.05, 0.8),
+        sides: 7, color: c.tail || [176, 150, 146], gloss: 0.4
+      }),
+      pivot: [0, bY, -bRz]
+    });
+
+    return finish(parts, p);
+  }
+
+  /* ---------------- assembly ---------------------------------------------- */
+
+  /**
+   * Re-centre on the origin, attach idle animation, and hand back a model the
+   * renderer can spin. Idle motion is per-part matrices, not a rebuilt mesh,
+   * so it costs nothing per frame.
+   */
+  function finish(parts, p) {
+    // Two bounding boxes: everything, and everything except the antennae.
+    // Framing follows the body box, otherwise a long-whiskered roach gets
+    // shrunk to a dot to make room for two hairs.
+    var all = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity, minZ: Infinity, maxZ: -Infinity };
+    var core = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity, minZ: Infinity, maxZ: -Infinity };
+    function grow(box, x, y, z) {
+      if (x < box.minX) box.minX = x;
+      if (x > box.maxX) box.maxX = x;
+      if (y < box.minY) box.minY = y;
+      if (y > box.maxY) box.maxY = y;
+      if (z < box.minZ) box.minZ = z;
+      if (z > box.maxZ) box.maxZ = z;
+    }
+    for (var i = 0; i < parts.length; i++) {
+      var pos = parts[i].mesh.pos;
+      var isWhisker = parts[i].kind === 'antenna' || parts[i].name === 'tail';
+      for (var j = 0; j < pos.length; j += 3) {
+        grow(all, pos[j], pos[j + 1], pos[j + 2]);
+        if (!isWhisker) grow(core, pos[j], pos[j + 1], pos[j + 2]);
+      }
+    }
+    var minY = all.minY;
+    var cy = (core.minY + core.maxY) / 2;
+    var czc = (core.minZ + core.maxZ) / 2;
+    var coreSpan = Math.max(core.maxX - core.minX, core.maxZ - core.minZ, (core.maxY - core.minY) * 1.7);
+    var fullSpan = Math.max(all.maxX - all.minX, all.maxZ - all.minZ);
+    // let extremities overhang, but never more than a third out of frame
+    var span = Math.max(coreSpan, fullSpan * 0.66);
+
+    var model = {
+      parts: parts,
+      pre: m4.trans(0, -cy, -czc),
+      groundY: minY - cy,
+      span: span,
+      shadowScale: 1,
+      shadowDrop: 1
+    };
+
+    var idle = p.idle === undefined ? 1 : p.idle;
+    for (var k = 0; k < parts.length; k++) {
+      M.normals(parts[k].mesh);
+      attachIdle(parts[k], idle, p);
+    }
+    return model;
+  }
+
+  function attachIdle(part, amt, p) {
+    if (!amt) return;
+    var pivot = part.pivot;
+    if (part.kind === 'antenna') {
+      var side = part.side, ph = side > 0 ? 0 : 1.7;
+      part.anim = function (t) {
+        var a = Math.sin(t * 2.1 + ph) * 0.13 * amt;
+        var b = Math.cos(t * 1.4 + ph) * 0.09 * amt;
+        return m4.aroundPivot(pivot[0], pivot[1], pivot[2], m4.mul(m4.rotY(a), m4.rotX(b)));
+      };
+    } else if (part.kind === 'leg') {
+      var ph2 = part.pair * 1.9 + (part.side > 0 ? 0 : 0.9);
+      part.anim = function (t) {
+        var a = Math.sin(t * 1.6 + ph2) * 0.022 * amt;
+        return m4.rotY(a);
+      };
+    } else if (part.name === 'head' && pivot) {
+      part.anim = function (t) {
+        var a = Math.sin(t * 0.9) * 0.05 * amt;
+        return m4.aroundPivot(pivot[0], pivot[1], pivot[2], m4.rotY(a));
+      };
+    } else if (part.name === 'tail' && pivot) {
+      part.anim = function (t) {
+        var a = Math.sin(t * 1.1) * 0.10 * amt;
+        return m4.aroundPivot(pivot[0], pivot[1], pivot[2], m4.rotY(a));
+      };
+    }
+  }
+
+  BB.anatomy = {
+    build: function (spec) {
+      var p = JSON.parse(JSON.stringify(spec));
+      // colour functions are lost by the clone above, so copy them back
+      p.colors = spec.colors;
+      p.markings = spec.markings;
+      if (spec.plan === 'arachnid') return buildArachnid(p);
+      if (spec.plan === 'rodent') return buildRodent(p);
+      return buildInsect(p);
+    },
+    mix: mix
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- brand.js ---- */
+/*
+ * brand.js — every business-specific string in one place.
+ * Change it here once and every dossier, reel and embed updates.
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+
+  BB.BRAND = {
+    unit: 'SLUG-A-BUG // PEST INTELLIGENCE UNIT',
+    company: 'Slug-A-Bug Pest Control',
+    phoneLabel: '(07) 3113 9666',
+    phoneHref: 'tel:0731139666',
+    bookUrl: 'https://book.servicem8.com/request_service_online_booking_start?uuid=b4f8e2f7-eb3d-45c0-ae32-d2ea1d5be1eb',
+    site: 'slugabug.com.au',
+    area: 'Brisbane & Gold Coast',
+    licences: 'QLD Pest PMT 1004307814 · QBCC 1122314',
+    legal: '10X Pty Ltd · ABN 81 644 370 525',
+    guarantee: '30-day guarantee — not happy, we re-treat free',
+    proof: '20+ years · 1,200+ 5-star reviews · family owned',
+    ctaHead: 'GOT THIS ONE AT YOUR PLACE?',
+    ctaLine: 'Licensed, insured, and we treat the nest — not just what you can see.',
+    ctaButton: 'BOOK AN INSPECTION',
+    logo: 'https://slugabug.com.au/wp-content/uploads/2022/12/slug_a_bug_logo-copy.png'
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- pests.js ---- */
+/*
+ * pests.js — the dossier database.
+ *
+ * Each entry is two things at once:
+ *   `spec`   the numbers anatomy.js turns into a rotating 3D specimen
+ *   the copy the typewriter reads out — vitals, charges, method, evidence
+ *
+ * Adding a pest is a data edit. Nothing else in the system needs to change.
+ * Facts here are pitched at Brisbane / SE QLD conditions.
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+
+  BB.PESTS = [
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'german-cockroach',
+      name: 'German Cockroach',
+      sci: 'Blattella germanica',
+      aka: ['Kitchen roach', 'Steam fly'],
+      order: 'Blattodea · Ectobiidae',
+      threat: 5,
+      threatLabel: 'SEVERE — BREEDING INFESTATION RISK',
+      actualSize: '12–15 mm',
+      tagline: 'The one that turns a clean kitchen into a colony.',
+      vitals: [
+        ['SIZE', '12–15 mm — thumbnail sized'],
+        ['ID MARK', 'Two dark parallel stripes on the shield'],
+        ['COLOUR', 'Tan to light brown'],
+        ['LIFESPAN', '100–200 days as an adult'],
+        ['BREEDING', '30–40 eggs per case, 4–6 cases per female'],
+        ['SPEED', 'Egg to adult in 6–12 weeks']
+      ],
+      charges: [
+        'Carries salmonella, E. coli and staph across your benchtops',
+        'Triggers asthma and eczema in kids — droppings and shed skins',
+        'Contaminates food, cutlery and prep surfaces overnight',
+        'Turns one hitchhiked female into 300+ roaches in a season',
+        'Fails you on a food-safety audit in a single inspection'
+      ],
+      mo: [
+        'Nocturnal — you see one by day only when the harbourage is full',
+        'Lives inside the warmth: dishwasher, kettle base, fridge motor, microwave',
+        'Never leaves the kitchen or bathroom if it can help it',
+        'Female carries the egg case until hours before it hatches, so sprays miss it',
+        'Arrives in cardboard boxes, second-hand appliances and grocery crates'
+      ],
+      evidence: [
+        'Black pepper-like specks in drawer corners and hinges',
+        'Sweet, oily, musty smell in the cupboard under the sink',
+        'Pale-brown 6 mm egg cases glued into cracks',
+        'A live one in daylight — that means heavy numbers'
+      ],
+      hideouts: ['Dishwasher seals', 'Kettle and toaster bases', 'Fridge motor housing', 'Cupboard hinges', 'Bin cupboards'],
+      verdict: 'Aerosols scatter them and make it worse. This one needs gel bait plus an insect growth regulator, hitting the harbourage — not the floor.',
+      spec: {
+        plan: 'insect', len: 2.0, gloss: 0.5, stand: 0.06,
+        abdomenW: 0.30, abdomenH: 0.082, abdomenL: 0.38, abdomenZ: -0.26,
+        thoraxW: 0.25, thoraxH: 0.082, thoraxL: 0.20, thoraxZ: 0.16,
+        pronotumW: 0.31, pronotumL: 0.22, pronotumH: 0.062,
+        headW: 0.15, headH: 0.085, headL: 0.135, headZ: 0.355, headY: 0.085, headPitch: -0.55,
+        eye: 0.042, cerci: 0.09,
+        colors: {
+          body: [148, 104, 58], abdomen: [154, 112, 64], thorax: [138, 96, 54],
+          pronotum: [212, 176, 112], head: [150, 106, 58], leg: [186, 144, 88],
+          antenna: [126, 88, 50], wing: [164, 120, 68], eye: [40, 28, 20]
+        },
+        markings: { pronotumStripes: { color: [52, 33, 20], inner: 0.10, outer: 0.58 } },
+        wings: { len: 0.40, w: 0.23, thick: 0.020, spread: 0.26, lift: 0.22, z: -0.09, roll: 0.26, yaw: 0.03, pitch: -0.06, taperBack: 0.34, taperFront: 0.50, color: [168, 124, 72], gloss: 0.6 },
+        antenna: { len: 1.0, thick: 0.014, segs: 11, splay: 0.30, arch: 0.24, spread: 0.40, rise: 0.10, reach: 1.15 },
+        legs: { thick: 0.026, kneeOut: 0.17, kneeUp: 0.05, footOut: 0.30, attachZ: [0.20, 0.04, -0.13], dirs: [0.6, 1.5, 2.4], scale: [0.86, 0.98, 1.16] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'american-cockroach',
+      name: 'American Cockroach',
+      sci: 'Periplaneta americana',
+      aka: ['Sewer roach', 'Palmetto bug', 'The big one'],
+      order: 'Blattodea · Blattidae',
+      threat: 4,
+      threatLabel: 'HIGH — SEWER TRAFFIC INTO LIVING SPACE',
+      actualSize: '35–40 mm',
+      tagline: 'The dinner-plate flier that comes up the drain line.',
+      vitals: [
+        ['SIZE', '35–40 mm — largest pest roach in Brisbane'],
+        ['ID MARK', 'Pale yellow figure-8 ring on the shield'],
+        ['COLOUR', 'Glossy reddish brown'],
+        ['LIFESPAN', 'Over a year as an adult'],
+        ['BREEDING', '14–16 eggs per case, one case a week'],
+        ['FLIGHT', 'Yes — glides when it is warm, usually at you']
+      ],
+      charges: [
+        'Commutes from sewers and grease traps straight onto your bench',
+        'Tracks pathogens on its legs from the drain to the dinner plate',
+        'Spoils food and packaging with droppings and regurgitate',
+        'Costs Brisbane cafés their reputation in one customer photo',
+        'Breeds in the sub-floor and roof void where you never look'
+      ],
+      mo: [
+        'Lives in the wet, warm dark: sewer pits, grease traps, sub-floors',
+        'Travels the pipework and comes up through dry floor wastes',
+        'Feeds on decaying matter, pet food, grease film and glue',
+        'Most active on humid Brisbane summer nights',
+        'Shelters in garden mulch and palm trees, then moves inside'
+      ],
+      evidence: [
+        'Droppings the size of mouse pellets with blunt ridged ends',
+        'Strong musty odour near drains and laundries',
+        'Dark 8 mm egg cases stuck near pipe penetrations',
+        'Sightings at night in the laundry, garage or bathroom'
+      ],
+      hideouts: ['Sewer and stormwater pits', 'Grease traps', 'Sub-floor voids', 'Roof voids', 'Garden mulch and palms'],
+      verdict: 'Treat the source, not the sighting — pits, drains, sub-floor and perimeter, with a residual barrier at every entry point.',
+      spec: {
+        plan: 'insect', len: 2.35, gloss: 0.62, stand: 0.065,
+        abdomenW: 0.32, abdomenH: 0.088, abdomenL: 0.38, abdomenZ: -0.25,
+        thoraxW: 0.27, thoraxH: 0.088, thoraxL: 0.20, thoraxZ: 0.17,
+        pronotumW: 0.35, pronotumL: 0.24, pronotumH: 0.062,
+        headW: 0.16, headH: 0.085, headL: 0.135, headZ: 0.375, headY: 0.088, headPitch: -0.55,
+        eye: 0.05, cerci: 0.12,
+        colors: {
+          body: [104, 46, 26], abdomen: [112, 52, 28], thorax: [96, 42, 24],
+          pronotum: [86, 36, 20], head: [104, 46, 24], leg: [140, 70, 38],
+          antenna: [92, 40, 22], wing: [116, 54, 30], eye: [34, 22, 18]
+        },
+        markings: { pronotumHalo: { color: [206, 168, 74 ] } },
+        wings: { len: 0.44, w: 0.24, thick: 0.022, spread: 0.26, lift: 0.22, z: -0.08, roll: 0.26, yaw: 0.03, pitch: -0.06, taperBack: 0.34, taperFront: 0.50, color: [122, 58, 32], gloss: 0.72 },
+        antenna: { len: 1.25, thick: 0.014, segs: 12, splay: 0.32, arch: 0.26, spread: 0.44, rise: 0.10, reach: 1.2 },
+        legs: { thick: 0.026, kneeOut: 0.18, kneeUp: 0.06, footOut: 0.33, attachZ: [0.21, 0.05, -0.12], dirs: [0.6, 1.5, 2.4], scale: [0.9, 1.0, 1.2] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'subterranean-termite',
+      name: 'Subterranean Termite',
+      sci: 'Coptotermes acinaciformis',
+      aka: ['White ant (wrongly)', 'The silent destroyer'],
+      order: 'Blattodea · Rhinotermitidae',
+      threat: 5,
+      threatLabel: 'CRITICAL — STRUCTURAL DAMAGE IN PROGRESS',
+      actualSize: '4–6 mm soldier',
+      tagline: 'Australia\'s most destructive timber pest. Your insurer will not cover it.',
+      vitals: [
+        ['SIZE', '4–6 mm soldier, pear-shaped head'],
+        ['ID MARK', 'Milky body, orange head, snapping mandibles'],
+        ['COLONY', 'Up to a million workers from one nest'],
+        ['RANGE', 'Forages up to 100 m from the nest'],
+        ['DIET', '24 hours a day, 7 days a week, no dormancy'],
+        ['EYESIGHT', 'Blind — navigates by scent and moisture']
+      ],
+      charges: [
+        'Eats the structural timber out of a Brisbane home from the inside',
+        'Causes more damage nationally than fire, storm and flood combined',
+        'Not covered by standard home insurance — you wear the repair bill',
+        'Hollows out a wall frame while the paint stays perfectly smooth',
+        'Rides a single untreated garden sleeper into the house slab'
+      ],
+      mo: [
+        'Travels underground and through mud tubes to stay out of the light',
+        'Enters through slab penetrations, cracks and bridged weep holes',
+        'Keeps the nest humid — moisture around your home is the invitation',
+        'Works silently for years before the first visible sign',
+        'Attacks skirtings, door jambs, roof timbers and decking first'
+      ],
+      evidence: [
+        'Mud leads up piers, walls or slab edges',
+        'Skirting or architrave that sounds hollow or dents under a thumb',
+        'Bubbling or rippled paint that looks like water damage',
+        'Discarded wings on window sills after a summer storm',
+        'A clicking or rustling sound inside a quiet wall'
+      ],
+      hideouts: ['Under the slab', 'Wall cavities', 'Sub-floor timbers', 'Old stumps and sleepers', 'Damp bathroom walls'],
+      verdict: 'Never spray them — you split the colony and lose it. Termatrac inspection first, then a baiting system or an Australian-Standard barrier to take the whole nest.',
+      spec: {
+        plan: 'insect', len: 1.9, gloss: 0.34, stand: 0.11, idle: 1.2,
+        abdomenW: 0.20, abdomenH: 0.155, abdomenL: 0.38, abdomenZ: -0.28, abdomenTaper: 0.32, flatBottom: 0.15,
+        thoraxW: 0.175, thoraxH: 0.135, thoraxL: 0.19, thoraxZ: 0.08,
+        pronotum: false,
+        headW: 0.20, headH: 0.155, headL: 0.24, headZ: 0.365, headY: 0.135, headPitch: -0.08,
+        eye: 0,
+        colors: {
+          body: [232, 214, 186], abdomen: [236, 220, 194], thorax: [226, 206, 176],
+          head: [186, 106, 44], leg: [226, 202, 168], antenna: [214, 188, 152]
+        },
+        markings: {},
+        mandibles: { len: 0.30, thick: 0.030, color: [122, 62, 26] },
+        antenna: { len: 0.45, thick: 0.020, segs: 6, splay: 0.5, arch: 0.22, spread: 0.68, reach: 0.72 },
+        legs: { thick: 0.028, kneeOut: 0.16, kneeUp: 0.06, footOut: 0.30, attachZ: [0.16, 0.02, -0.14], dirs: [0.65, 1.5, 2.35], scale: [0.78, 0.82, 0.9] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'black-house-ant',
+      name: 'Black House Ant',
+      sci: 'Ochetellus glaber',
+      aka: ['Sugar ant (wrongly)', 'The kitchen trail'],
+      order: 'Hymenoptera · Formicidae',
+      threat: 3,
+      threatLabel: 'MODERATE — HYGIENE AND FOOD CONTAMINATION',
+      actualSize: '2.5–3 mm',
+      tagline: 'Kill the trail and you have killed nothing. The nest is in the wall.',
+      vitals: [
+        ['SIZE', '2.5–3 mm, shiny jet black'],
+        ['ID MARK', 'Glossy body, elbowed antennae, single waist node'],
+        ['COLONY', 'Thousands of workers, often several queens'],
+        ['DIET', 'Sweet first, then grease and protein'],
+        ['NESTING', 'Wall cavities, pavers, pot plants, roof void'],
+        ['SPREAD', 'Budding — a split colony becomes two nests']
+      ],
+      charges: [
+        'Walks bin juice and drain scum onto food prep surfaces',
+        'Contaminates pantry goods, pet bowls and baby bottles',
+        'Farms aphids and scale on your garden plants',
+        'Nests in wall cavities and roof voids where the spray never reaches',
+        'Turns one squashed trail into two colonies when disturbed'
+      ],
+      mo: [
+        'Lays a chemical trail so every worker copies the first scout',
+        'Follows pipework, wiring and weep holes indoors',
+        'Peaks after Brisbane rain when the nest floods',
+        'Forages hardest at dawn and dusk in warm weather',
+        'Sends winged reproductives out on humid evenings'
+      ],
+      evidence: [
+        'A defined line of ants along a bench edge or skirting',
+        'Fine soil pellets pushed up between pavers or tiles',
+        'Ants appearing after rain in the kitchen or bathroom',
+        'Winged ants at a window in summer'
+      ],
+      hideouts: ['Wall cavities', 'Under pavers and edging', 'Pot plants', 'Roof void', 'Behind the splashback'],
+      verdict: 'Surface sprays kill the workers and hide the problem. Non-repellent treatment plus transferable bait so the foragers carry the dose back to the queens.',
+      spec: {
+        plan: 'insect', len: 1.75, gloss: 0.72, stand: 0.16, idle: 1.3,
+        abdomenW: 0.175, abdomenH: 0.165, abdomenL: 0.22, abdomenZ: -0.30, abdomenTaper: 0.38, flatBottom: 0.05,
+        thoraxW: 0.13, thoraxH: 0.13, thoraxL: 0.22, thoraxZ: 0.10, thoraxLift: 1.15,
+        pronotum: false,
+        waist: { r: 0.045, len: 0.10 },
+        headW: 0.16, headH: 0.15, headL: 0.16, headZ: 0.40, headY: 0.22, headPitch: -0.2,
+        eye: 0.035,
+        colors: {
+          body: [62, 56, 60], abdomen: [58, 52, 56], thorax: [70, 62, 64],
+          head: [64, 57, 60], leg: [96, 84, 78], antenna: [92, 80, 74], eye: [14, 12, 14]
+        },
+        markings: {},
+        antenna: { elbowed: true, len: 0.80, thick: 0.020 },
+        legs: { thick: 0.021, kneeOut: 0.19, kneeUp: 0.16, footOut: 0.32, attachZ: [0.16, 0.06, -0.06], dirs: [0.6, 1.45, 2.3], scale: [0.9, 0.95, 1.05] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'redback-spider',
+      name: 'Redback Spider',
+      sci: 'Latrodectus hasselti',
+      aka: ['Australian black widow'],
+      order: 'Araneae · Theridiidae',
+      threat: 4,
+      threatLabel: 'HIGH — MEDICALLY SIGNIFICANT VENOM',
+      actualSize: '10 mm (female)',
+      tagline: 'Lives exactly where kids put their hands.',
+      vitals: [
+        ['SIZE', 'Female 10 mm body; male 3–4 mm and harmless'],
+        ['ID MARK', 'Red or orange stripe on top, hourglass beneath'],
+        ['WEB', 'Messy funnel with sticky ground lines'],
+        ['EGGS', '250 eggs per sac, up to 10 sacs'],
+        ['BITES', 'Around 2,000 people a year in Australia'],
+        ['ANTIVENOM', 'Available since 1956 — always call 000 for a child']
+      ],
+      charges: [
+        'Sets up in letterboxes, meter boxes and under outdoor seats',
+        'Bites cause severe pain, sweating and nausea for hours to days',
+        'Puts children and pets at real risk in the back yard',
+        'Colonises kids\' play equipment, trampolines and sandpit edges',
+        'Rebuilds within weeks if only the web is knocked down'
+      ],
+      mo: [
+        'Hides in dry, sheltered, undisturbed spots — never out in the open',
+        'Hangs upside down in the web, red stripe facing down',
+        'Traps prey with sticky vertical ground lines, then hauls it up',
+        'Most active through warm Brisbane months, and after rain',
+        'Female stays put for life; males and spiderlings balloon in on the wind'
+      ],
+      evidence: [
+        'Untidy tangled web in a corner with debris in it',
+        'Round pale-cream egg sacs the size of a pea',
+        'Webbing under outdoor furniture, BBQ, kids\' equipment',
+        'Webs in the letterbox, meter box or pool pump housing'
+      ],
+      hideouts: ['Letterbox', 'Meter box', 'Under outdoor furniture', 'Pool pump housing', 'Retaining walls', 'Kids\' play gear'],
+      verdict: 'Full external web-brush and a residual treatment to eaves, fences, boxes and play areas — timed so newly hatched spiderlings walk into it too.',
+      spec: {
+        plan: 'arachnid', len: 2.0, gloss: 0.72, stand: 0.34, idle: 0.8,
+        abdomenW: 0.30, abdomenH: 0.31, abdomenL: 0.31, abdomenZ: 0.30,
+        thoraxW: 0.17, thoraxH: 0.11, thoraxL: 0.20, thoraxZ: 0.16,
+        colors: {
+          body: [52, 47, 52], abdomen: [48, 43, 48], thorax: [60, 54, 58],
+          leg: [56, 50, 54], eye: [10, 8, 10]
+        },
+        markings: {
+          dorsalStripe: { color: [204, 32, 34], width: 0.30 },
+          hourglass: { color: [206, 38, 36] }
+        },
+        legs: { thick: 0.024, kneeOut: 0.30, kneeUp: 0.46, footOut: 0.66, attachZ: [0.20, 0.09, -0.02, -0.13], dirs: [0.5, 1.1, 1.9, 2.55], scale: [1.15, 1.0, 0.95, 1.25] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'bed-bug',
+      name: 'Bed Bug',
+      sci: 'Cimex lectularius',
+      aka: ['Mattress bug', 'The hitchhiker'],
+      order: 'Hemiptera · Cimicidae',
+      threat: 4,
+      threatLabel: 'HIGH — BLOOD FEEDER, RAPID SPREAD',
+      actualSize: '4–5 mm',
+      tagline: 'Apple-seed sized, feeds while you sleep, travels in your suitcase.',
+      vitals: [
+        ['SIZE', '4–5 mm — flat oval, apple-seed shaped'],
+        ['COLOUR', 'Rust brown; deep red and swollen after feeding'],
+        ['FEEDING', '5–10 minutes on you, every 3–7 nights'],
+        ['SURVIVAL', 'Months without a blood meal'],
+        ['BREEDING', '200–500 eggs per female'],
+        ['HIDING', 'Fits in a crack the thickness of a credit card']
+      ],
+      charges: [
+        'Feeds on you and your children while you sleep',
+        'Leaves itchy welts in lines and clusters on exposed skin',
+        'Causes real anxiety, insomnia and loss of income for hosts',
+        'Spreads room to room through power points and skirting gaps',
+        'Rides home in luggage, second-hand furniture and school bags'
+      ],
+      mo: [
+        'Hides within two metres of the bed and comes out pre-dawn',
+        'Shelters in mattress seams, bed slats, bedheads and power points',
+        'Detects your body heat and exhaled CO2 to find you',
+        'Spreads fast in units, share houses, hotels and aged care',
+        'Survives ordinary cleaning — vacuuming alone will not do it'
+      ],
+      evidence: [
+        'Small dark blood spots on sheets and mattress piping',
+        'Rusty-black faecal specks in seams and screw holes',
+        'Translucent shed skins near the bedhead',
+        'Bites in a line of three — breakfast, lunch and dinner',
+        'A sweet, sickly smell in a heavy infestation'
+      ],
+      hideouts: ['Mattress seams', 'Bed slats and frame joints', 'Bedhead backing', 'Power points', 'Skirting behind the bed'],
+      verdict: 'One room is never one room. Full-room treatment of every harbourage, all bedding heat-treated, then a mandatory follow-up to catch the hatch.',
+      spec: {
+        plan: 'insect', len: 1.55, gloss: 0.42, stand: 0.045, idle: 1.1,
+        abdomenW: 0.36, abdomenH: 0.075, abdomenL: 0.36, abdomenZ: -0.14, abdomenTaper: 0.22, abdomenTaperFront: 0.10, flatBottom: 0.45,
+        thoraxW: 0.28, thoraxH: 0.062, thoraxL: 0.15, thoraxZ: 0.24,
+        pronotumW: 0.33, pronotumL: 0.145, pronotumH: 0.038,
+        headW: 0.115, headH: 0.05, headL: 0.10, headZ: 0.40, headY: 0.055, headPitch: -0.25,
+        eye: 0.028,
+        colors: {
+          body: [138, 74, 46], abdomen: [146, 80, 50], thorax: [128, 68, 42],
+          pronotum: [124, 66, 40], head: [120, 62, 38], leg: [150, 88, 56],
+          antenna: [136, 76, 46], eye: [40, 22, 16]
+        },
+        markings: { abdomenBands: { color: [92, 44, 26], count: 5 } },
+        antenna: { len: 0.42, thick: 0.016, segs: 5, splay: 0.5, arch: 0.14, spread: 0.66, reach: 0.7 },
+        legs: { thick: 0.021, kneeOut: 0.15, kneeUp: 0.04, footOut: 0.26, attachZ: [0.22, 0.10, -0.04], dirs: [0.7, 1.5, 2.3], scale: [0.72, 0.76, 0.86] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'roof-rat',
+      name: 'Roof Rat',
+      sci: 'Rattus rattus',
+      aka: ['Black rat', 'Ship rat'],
+      order: 'Rodentia · Muridae',
+      threat: 5,
+      threatLabel: 'SEVERE — FIRE RISK AND DISEASE',
+      actualSize: '16–20 cm + tail',
+      tagline: 'The scratching above the bedroom ceiling at 2am.',
+      vitals: [
+        ['SIZE', '16–20 cm body, tail longer than the body'],
+        ['ID MARK', 'Large thin ears, pointed nose, slender build'],
+        ['CLIMBING', 'Expert — power lines, downpipes, palm trees'],
+        ['GAP', 'Squeezes through a hole the size of a 20c coin'],
+        ['BREEDING', '5–10 pups per litter, up to 6 litters a year'],
+        ['TEETH', 'Grow continuously — it must gnaw to survive']
+      ],
+      charges: [
+        'Gnaws electrical wiring in the roof void — a genuine house-fire cause',
+        'Spreads leptospirosis, salmonella and rat-bite fever through urine',
+        'Fouls insulation, water tanks and stored goods',
+        'Chews irrigation, solar cabling, pool hoses and dishwasher lines',
+        'Doubles its numbers in weeks once it has food and shelter'
+      ],
+      mo: [
+        'Lives high — roof voids, wall cavities, palms and dense vines',
+        'Travels the same route nightly along beams and pipes',
+        'Enters through gaps at eaves, weep holes and roof-sheet ends',
+        'Cautious of anything new for several nights before touching it',
+        'Feeds on fruit trees, chook feed, pet food and compost'
+      ],
+      evidence: [
+        'Scratching and scurrying overhead after dark',
+        'Dark 12–18 mm droppings with pointed ends in the roof or cupboards',
+        'Gnaw marks on timber, plastic pipe or cabling',
+        'Greasy dark rub marks along beams and pipe runs',
+        'Half-eaten fruit on the ground under the tree'
+      ],
+      hideouts: ['Roof void', 'Wall cavities', 'Palm crowns', 'Dense vines and bougainvillea', 'Under the deck'],
+      verdict: 'Baiting alone just feeds them. Lockable stations plus proofing every entry point, and a check of the roof void for damaged wiring.',
+      spec: {
+        plan: 'rodent', len: 2.4, gloss: 0.22, stand: 0.12, idle: 1.0,
+        bodyW: 0.17, bodyH: 0.175, bodyL: 0.40,
+        headW: 0.115, headH: 0.115, headL: 0.17,
+        ear: 0.082, tail: 1.05,
+        colors: {
+          body: [74, 64, 58], nose: [198, 138, 140], ear: [124, 100, 100],
+          tail: [128, 110, 106], eye: [14, 10, 10], whisker: [228, 224, 218]
+        },
+        markings: { belly: { color: [176, 166, 150 ] } }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'paper-wasp',
+      name: 'Paper Wasp',
+      sci: 'Polistes humilis',
+      aka: ['Eave wasp'],
+      order: 'Hymenoptera · Vespidae',
+      threat: 3,
+      threatLabel: 'MODERATE — STING RISK, DEFENDS THE NEST',
+      actualSize: '10–15 mm',
+      tagline: 'Builds the grey papery umbrella right where you reach.',
+      vitals: [
+        ['SIZE', '10–15 mm, slender with a pinched waist'],
+        ['ID MARK', 'Tan-brown with yellow bands, long trailing legs'],
+        ['NEST', 'Open grey paper comb on a single stalk'],
+        ['COLONY', '12–30 wasps on a mature nest'],
+        ['SEASON', 'Spring build-up, peak aggression late summer'],
+        ['STING', 'Can sting repeatedly — no barb']
+      ],
+      charges: [
+        'Stings repeatedly when the nest is disturbed',
+        'Nests at head height on eaves, pergolas and clotheslines',
+        'Risks anaphylaxis in sensitive family members',
+        'Turns a ladder, gutter clean or hedge trim into a hospital trip',
+        'Rebuilds on the same spot season after season'
+      ],
+      mo: [
+        'Founds a nest in spring, then grows it all summer',
+        'Guards a defensive zone of a few metres around the comb',
+        'Hunts caterpillars and chews timber fibre into paper',
+        'Favours sheltered north and east faces out of the rain',
+        'Most reactive on hot, still afternoons'
+      ],
+      evidence: [
+        'Grey papery comb with open cells under an eave or rail',
+        'Wasps hovering the same flight line to one spot',
+        'Nests in the BBQ, letterbox, pool box or kids\' cubby',
+        'Repeated wasps at the same window or vent'
+      ],
+      hideouts: ['Eaves and gutters', 'Pergolas', 'Clothesline frames', 'BBQ and pool boxes', 'Fence rails'],
+      verdict: 'Never knock it down in daylight. Treated and removed at the right time of day, then the eave line dusted so it is not rebuilt.',
+      spec: {
+        plan: 'insect', len: 2.0, gloss: 0.55, stand: 0.20, idle: 1.2,
+        abdomenW: 0.125, abdomenH: 0.135, abdomenL: 0.36, abdomenZ: -0.42, abdomenTaper: 0.55, abdomenTaperFront: 0.50, flatBottom: 0.05,
+        thoraxW: 0.16, thoraxH: 0.16, thoraxL: 0.20, thoraxZ: 0.10, thoraxLift: 1.1,
+        pronotum: false,
+        waist: { r: 0.030, len: 0.16 },
+        headW: 0.14, headH: 0.13, headL: 0.11, headZ: 0.36, headY: 0.24, headPitch: -0.1,
+        eye: 0.05,
+        colors: {
+          body: [156, 96, 34], abdomen: [162, 100, 36], thorax: [126, 74, 28],
+          head: [186, 140, 44], leg: [178, 122, 42], antenna: [86, 54, 22], eye: [46, 34, 20]
+        },
+        markings: { abdomenBands: { color: [236, 198, 64], count: 5, sharp: true } },
+        wings: { len: 0.46, w: 0.105, thick: 0.008, spread: 0.75, lift: 0.55, z: -0.06, roll: 0.10, yaw: 0.10, pitch: -0.06, taperBack: 0.35, taperFront: 0.45, color: [226, 222, 216], gloss: 0.8, alpha: 0.42 },
+        antenna: { len: 0.55, thick: 0.017, segs: 6, splay: 0.42, arch: 0.30, spread: 0.5, reach: 0.7 },
+        legs: { thick: 0.018, kneeOut: 0.20, kneeUp: 0.12, footOut: 0.36, attachZ: [0.16, 0.04, -0.08], dirs: [0.6, 1.5, 2.4], scale: [0.95, 1.05, 1.2] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'australian-cockroach',
+      name: 'Australian Cockroach',
+      sci: 'Periplaneta australasiae',
+      aka: ['Garden roach'],
+      order: 'Blattodea · Blattidae',
+      threat: 3,
+      threatLabel: 'MODERATE — OUTDOOR ROACH THAT MOVES IN',
+      actualSize: '30–35 mm',
+      tagline: 'The one that lives in the mulch and comes in when it rains.',
+      vitals: [
+        ['SIZE', '30–35 mm'],
+        ['ID MARK', 'Yellow margin on the shield, yellow streaks on the wing shoulders'],
+        ['COLOUR', 'Rich brown, glossy'],
+        ['FLIGHT', 'Yes — short glides on warm nights'],
+        ['BREEDING', '20–24 eggs per case'],
+        ['HOME GROUND', 'Gardens and glasshouses more than kitchens']
+      ],
+      charges: [
+        'Moves indoors in numbers after Brisbane rain',
+        'Feeds on plants, then walks the same legs over your benches',
+        'Contaminates stored food and pet food in garages and sheds',
+        'Breeds unnoticed in mulch, ferneries and pot bases',
+        'Gets mistaken for the American roach, so the wrong treatment gets used'
+      ],
+      mo: [
+        'Lives outdoors in warm, humid, planted areas',
+        'Shelters under mulch, bark, pots, and in glasshouses',
+        'Comes inside through gaps in doors, weep holes and vents',
+        'Feeds on decaying plant matter, seedlings and food scraps',
+        'Most active at night, hides in cracks by day'
+      ],
+      evidence: [
+        'Big brown roaches in the garage, laundry or patio at night',
+        'Droppings around pot plants and garden edging',
+        'Chewed seedlings and soft plant growth',
+        'Egg cases tucked into bark, mulch or fern bases'
+      ],
+      hideouts: ['Garden mulch', 'Pot plant bases', 'Ferneries and glasshouses', 'Bark and leaf litter', 'Garage corners'],
+      verdict: 'An outside job. Perimeter and garden-edge treatment plus sealing entry points beats spraying indoors, because the population never lived indoors.',
+      spec: {
+        plan: 'insect', len: 2.2, gloss: 0.6, stand: 0.065,
+        abdomenW: 0.31, abdomenH: 0.086, abdomenL: 0.37, abdomenZ: -0.25,
+        thoraxW: 0.26, thoraxH: 0.086, thoraxL: 0.20, thoraxZ: 0.17,
+        pronotumW: 0.34, pronotumL: 0.235, pronotumH: 0.062,
+        headW: 0.155, headH: 0.085, headL: 0.135, headZ: 0.375, headY: 0.088, headPitch: -0.55,
+        eye: 0.048, cerci: 0.11,
+        colors: {
+          body: [96, 52, 26], abdomen: [104, 58, 30], thorax: [88, 46, 22],
+          pronotum: [74, 38, 18], head: [96, 50, 24], leg: [138, 78, 38],
+          antenna: [86, 44, 22], wing: [112, 62, 32], eye: [34, 24, 18]
+        },
+        markings: {
+          pronotumHalo: { color: [214, 176, 70] },
+          wingEdge: { color: [216, 178, 68], width: 0.34 }
+        },
+        wings: { len: 0.43, w: 0.235, thick: 0.022, spread: 0.26, lift: 0.22, z: -0.08, roll: 0.26, yaw: 0.03, pitch: -0.06, taperBack: 0.34, taperFront: 0.5, color: [116, 64, 32], gloss: 0.7 },
+        antenna: { len: 1.2, thick: 0.014, segs: 12, splay: 0.32, arch: 0.26, spread: 0.44, rise: 0.1, reach: 1.18 },
+        legs: { thick: 0.026, kneeOut: 0.18, kneeUp: 0.06, footOut: 0.33, attachZ: [0.21, 0.05, -0.12], dirs: [0.6, 1.5, 2.4], scale: [0.9, 1.0, 1.2] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'coastal-brown-ant',
+      name: 'Coastal Brown Ant',
+      sci: 'Pheidole megacephala',
+      aka: ['Big-headed ant', 'Paver ant'],
+      order: 'Hymenoptera · Formicidae',
+      threat: 3,
+      threatLabel: 'MODERATE — UNDERMINES PAVING, INVADES IN NUMBERS',
+      actualSize: '1.5–3 mm',
+      tagline: 'The sand piles between your pavers are its spoil heap.',
+      vitals: [
+        ['SIZE', '1.5–3 mm; soldiers have huge square heads'],
+        ['ID MARK', 'Two sizes in one nest — that is the giveaway'],
+        ['COLOUR', 'Light golden brown'],
+        ['COLONY', 'Supercolonies with many queens'],
+        ['SPREAD', 'Splits and re-nests instead of swarming'],
+        ['STATUS', 'One of the world\'s worst invasive ants']
+      ],
+      charges: [
+        'Excavates sand out from under pavers, paths and slabs',
+        'Invades kitchens and pantries in overwhelming numbers',
+        'Displaces native ants across whole suburbs',
+        'Gets into wall cavities, meter boxes and electrical fittings',
+        'Comes straight back when only the trail is sprayed'
+      ],
+      mo: [
+        'Nests in soil under pavers, edging, slabs and garden beds',
+        'Pushes excavated sand up as small piles along joints',
+        'Sends workers indoors for grease, protein and sweets',
+        'Colonies split and spread rather than flying off to mate',
+        'Peaks through warm, wet Brisbane months'
+      ],
+      evidence: [
+        'Fine sand piles along paver joints and path edges',
+        'Two clearly different ant sizes on the same trail',
+        'Trails along slab edges, weep holes and pipework',
+        'Loose, sunken pavers over a hollowed bed'
+      ],
+      hideouts: ['Under pavers', 'Path and driveway edges', 'Garden beds', 'Wall cavities', 'Under slabs'],
+      verdict: 'Baiting matched to what they are feeding on that week, plus a non-repellent perimeter — repellent sprays just split the colony and multiply the nests.',
+      spec: {
+        plan: 'insect', len: 1.8, gloss: 0.62, stand: 0.16, idle: 1.3,
+        abdomenW: 0.175, abdomenH: 0.165, abdomenL: 0.22, abdomenZ: -0.30, abdomenTaper: 0.38, flatBottom: 0.05,
+        thoraxW: 0.125, thoraxH: 0.125, thoraxL: 0.22, thoraxZ: 0.10, thoraxLift: 1.15,
+        pronotum: false,
+        waist: { r: 0.042, len: 0.10 },
+        headW: 0.215, headH: 0.185, headL: 0.20, headZ: 0.46, headY: 0.235, headPitch: -0.18,
+        eye: 0.032,
+        colors: {
+          body: [176, 116, 60], abdomen: [150, 96, 48], thorax: [186, 124, 64],
+          head: [168, 104, 50], leg: [198, 146, 88], antenna: [186, 132, 76], eye: [40, 26, 18]
+        },
+        markings: {},
+        mandibles: { len: 0.16, thick: 0.020, color: [120, 70, 30] },
+        antenna: { elbowed: true, len: 0.72, thick: 0.018 },
+        legs: { thick: 0.020, kneeOut: 0.19, kneeUp: 0.16, footOut: 0.32, attachZ: [0.16, 0.06, -0.06], dirs: [0.6, 1.45, 2.3], scale: [0.88, 0.92, 1.02] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'huntsman-spider',
+      name: 'Huntsman Spider',
+      sci: 'Heteropoda venatoria',
+      aka: ['Giant crab spider', 'Tarantula (wrongly)'],
+      order: 'Araneae · Sparassidae',
+      threat: 1,
+      threatLabel: 'LOW — ALARMING, BASICALLY HARMLESS',
+      actualSize: 'To 100 mm span',
+      tagline: 'Eats the cockroaches you have not noticed yet.',
+      vitals: [
+        ['SIZE', 'Body 20–25 mm, leg span to 100 mm+'],
+        ['ID MARK', 'Flat body, legs angled forward like a crab'],
+        ['COLOUR', 'Grey to tan, often mottled'],
+        ['WEB', 'None — it hunts on foot'],
+        ['SPEED', 'Very fast, sideways, on vertical walls'],
+        ['BITE', 'Rare and minor; no antivenom needed']
+      ],
+      charges: [
+        'Appears on the ceiling above the bed at 11pm',
+        'Hides behind curtains, picture frames and sun visors',
+        'Causes more panic per gram than any pest in Queensland',
+        'Drops into the room when the front door is opened',
+        'Guilty, mostly, of being enormous and quick'
+      ],
+      mo: [
+        'Hunts at night on walls, fences and tree trunks',
+        'Squeezes flat into gaps behind bark, cladding and frames',
+        'Comes indoors through open doors and roof gaps in summer',
+        'Females guard a flat white egg sac and get bold about it',
+        'Feeds on cockroaches, moths and other insects'
+      ],
+      evidence: [
+        'The spider itself — they do not hide subtly',
+        'Flat white silk egg sac under bark or behind a frame',
+        'Shed skins in wall gaps and behind furniture',
+        'Repeat sightings in the same room mean an insect food supply'
+      ],
+      hideouts: ['Behind picture frames', 'Curtains and pelmets', 'Under bark', 'Roof voids', 'Car sun visors'],
+      verdict: 'Honestly, most are best relocated with a container and a bit of card. Where numbers are the problem, treating the insects they hunt is what moves them on.',
+      spec: {
+        plan: 'arachnid', len: 2.5, gloss: 0.42, stand: 0.20, idle: 0.9,
+        abdomenW: 0.20, abdomenH: 0.095, abdomenL: 0.25, abdomenZ: 0.20,
+        thoraxW: 0.21, thoraxH: 0.085, thoraxL: 0.21, thoraxZ: 0.14,
+        colors: {
+          body: [150, 122, 88], abdomen: [140, 114, 82], thorax: [158, 130, 96],
+          leg: [146, 116, 82], eye: [16, 12, 10]
+        },
+        markings: {},
+        legs: { thick: 0.021, kneeOut: 0.38, kneeUp: 0.16, footOut: 0.92, attachZ: [0.16, 0.06, -0.04, -0.14], dirs: [0.85, 1.3, 1.9, 2.35], scale: [1.15, 1.25, 1.1, 1.0] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'white-tailed-spider',
+      name: 'White-Tailed Spider',
+      sci: 'Lampona cylindrata',
+      aka: ['White-tip'],
+      order: 'Araneae · Lamponidae',
+      threat: 3,
+      threatLabel: 'MODERATE — PAINFUL BITE, ROAMS INDOORS',
+      actualSize: '12–18 mm',
+      tagline: 'Hunts other spiders — through your bedroom, at night.',
+      vitals: [
+        ['SIZE', '12–18 mm body, slim and cigar-shaped'],
+        ['ID MARK', 'Single white spot on the tip of the abdomen'],
+        ['COLOUR', 'Dark grey to blackish, orange-brown legs'],
+        ['WEB', 'None — a nomadic hunter'],
+        ['PREY', 'Other spiders, including black house spiders'],
+        ['BITE', 'Painful; the necrosis claim is not supported by evidence']
+      ],
+      charges: [
+        'Wanders across floors, beds and towels after dark',
+        'Hides in clothing left on the floor and in shoes',
+        'Delivers a sharply painful bite when pressed against skin',
+        'Turns up wherever black house spiders are established',
+        'Peaks indoors exactly when the house is asleep'
+      ],
+      mo: [
+        'Hunts on foot at night, rests in a silk sac by day',
+        'Follows other spiders indoors — its food is your spider problem',
+        'Shelters in bark, wall cavities, folded washing and shoes',
+        'Most active in the warmer months, especially after rain',
+        'Does not build a web, so there is nothing to spot'
+      ],
+      evidence: [
+        'Spider sightings on the floor or wall at night, no web',
+        'Small silk retreat sacs in wall gaps and under sills',
+        'Existing black house spider webs around windows and eaves',
+        'Bites reported on skin that was against bedding or clothing'
+      ],
+      hideouts: ['Under bark', 'Wall cavities', 'Clothing on the floor', 'Shoes', 'Behind wardrobes'],
+      verdict: 'You cannot bait a hunter. Clearing the webbing spiders it feeds on, plus a treated perimeter and eave line, takes away the reason it comes in.',
+      spec: {
+        plan: 'arachnid', len: 2.05, gloss: 0.55, stand: 0.22, idle: 0.9,
+        abdomenW: 0.15, abdomenH: 0.15, abdomenL: 0.28, abdomenZ: 0.34, abdomenTaper: 0.15,
+        thoraxW: 0.145, thoraxH: 0.10, thoraxL: 0.20, thoraxZ: 0.16,
+        colors: {
+          body: [58, 54, 58], abdomen: [52, 48, 54], thorax: [70, 60, 58],
+          leg: [126, 84, 58], eye: [10, 8, 10]
+        },
+        markings: { tailSpot: { color: [230, 226, 218], size: 0.82 } },
+        legs: { thick: 0.024, kneeOut: 0.26, kneeUp: 0.28, footOut: 0.52, attachZ: [0.18, 0.08, -0.02, -0.12], dirs: [0.6, 1.2, 1.9, 2.5], scale: [1.0, 0.92, 0.9, 1.05] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'house-mouse',
+      name: 'House Mouse',
+      sci: 'Mus musculus',
+      aka: ['Field mouse (wrongly)'],
+      order: 'Rodentia · Muridae',
+      threat: 4,
+      threatLabel: 'HIGH — CONTAMINATION AND FAST BREEDING',
+      actualSize: '7–9 cm + tail',
+      tagline: 'Contaminates ten times more food than it eats.',
+      vitals: [
+        ['SIZE', '7–9 cm body, tail about the same again'],
+        ['ID MARK', 'Small, grey-brown, pointed nose, big round ears'],
+        ['GAP', 'Gets through a 6 mm hole — a biro would not fit'],
+        ['BREEDING', '5–6 pups per litter, up to 10 litters a year'],
+        ['DROPPINGS', 'Rice-grain sized, 3–6 mm, scattered'],
+        ['RANGE', 'Lives its whole life within a few metres of food']
+      ],
+      charges: [
+        'Urinates constantly as it moves — over food, benches and drawers',
+        'Spreads salmonella and other food-borne bacteria',
+        'Gnaws packaging, wiring, insulation and stored linen',
+        'Turns a pair into two hundred inside a year',
+        'Fails a food-business inspection on droppings alone'
+      ],
+      mo: [
+        'Nests within a few metres of a food source, often inside a cupboard',
+        'Runs the same routes along walls, never out in the open',
+        'Nibbles a little from many places instead of one big feed',
+        'Explores new objects readily — unlike rats, which avoid them',
+        'Moves indoors as the weather cools'
+      ],
+      evidence: [
+        'Rice-grain droppings in drawers, pantries and under the sink',
+        'Ammonia smell in an enclosed cupboard',
+        'Shredded paper, insulation or fabric pushed into a corner',
+        'Gnaw marks on packaging and small greasy smears along skirtings'
+      ],
+      hideouts: ['Inside kitchen cupboards', 'Behind the dishwasher', 'Wall cavities', 'Stored boxes', 'Garage shelving'],
+      verdict: 'Mice are curious, so stations work fast — but only alongside proofing. Every 6 mm gap you leave is an open door.',
+      spec: {
+        plan: 'rodent', len: 1.75, gloss: 0.20, stand: 0.12, idle: 1.1,
+        bodyW: 0.155, bodyH: 0.165, bodyL: 0.34,
+        headW: 0.105, headH: 0.105, headL: 0.16,
+        ear: 0.088, tail: 0.95,
+        colors: {
+          body: [126, 110, 94], nose: [206, 150, 148], ear: [172, 140, 132],
+          tail: [176, 152, 142], eye: [14, 10, 10], whisker: [232, 228, 222]
+        },
+        markings: { belly: { color: [206, 196, 178] } }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'silverfish',
+      name: 'Silverfish',
+      sci: 'Lepisma saccharinum',
+      aka: ['Fishmoth', 'Paper fish'],
+      order: 'Zygentoma · Lepismatidae',
+      threat: 2,
+      threatLabel: 'LOW-MODERATE — EATS PAPER, FABRIC AND KEEPSAKES',
+      actualSize: '12–15 mm',
+      tagline: 'Quietly eating the box of photos in the roof void.',
+      vitals: [
+        ['SIZE', '12–15 mm, carrot-shaped and flat'],
+        ['ID MARK', 'Silver scales, two long antennae, three tail bristles'],
+        ['MOVEMENT', 'Wriggles like a fish when the light hits it'],
+        ['LIFESPAN', 'Two to eight years — extraordinary for an insect'],
+        ['DIET', 'Starch: paper, glue, cotton, rayon, book bindings'],
+        ['SURVIVAL', 'Can go a year without food in the right humidity']
+      ],
+      charges: [
+        'Eats photographs, documents, books and wallpaper glue',
+        'Holes natural-fibre clothing and stored linen',
+        'Grazes the starch off wallpaper and leaves yellow stains',
+        'Damages stored archives and keepsakes that cannot be replaced',
+        'Does it all silently, over years, in boxes nobody opens'
+      ],
+      mo: [
+        'Nocturnal and light-shy — hides in the dark and the damp',
+        'Lives in roof voids, wardrobes, bookshelves and storage boxes',
+        'Thrives in humid Brisbane conditions above 75% humidity',
+        'Moults its whole life, leaving scales and skins behind',
+        'Moves slowly between rooms through wall and ceiling gaps'
+      ],
+      evidence: [
+        'Irregular holes and grazed patches on paper and fabric',
+        'Fine silvery scales, like dust, in drawers and boxes',
+        'Yellow staining on stored clothing and documents',
+        'Live ones in the bath or basin, unable to climb out'
+      ],
+      hideouts: ['Roof void', 'Wardrobes and linen presses', 'Bookshelves', 'Storage boxes', 'Behind wallpaper'],
+      verdict: 'A dust treatment through the roof void and wall cavities, where they actually live, plus fixing the humidity that keeps them there.',
+      spec: {
+        plan: 'insect', len: 2.0, gloss: 0.66, stand: 0.045, idle: 1.2,
+        abdomenW: 0.135, abdomenH: 0.052, abdomenL: 0.46, abdomenZ: -0.26, abdomenTaper: 0.72, abdomenTaperFront: 0.02, flatBottom: 0.5,
+        thoraxW: 0.155, thoraxH: 0.058, thoraxL: 0.30, thoraxZ: 0.30,
+        pronotum: false,
+        headW: 0.10, headH: 0.055, headL: 0.10, headZ: 0.56, headY: 0.065, headPitch: -0.2,
+        eye: 0.022,
+        cerci: { len: 0.72, count: 3, spread: 1.6, midScale: 1.25, color: [172, 176, 184] },
+        colors: {
+          body: [178, 182, 190], abdomen: [172, 176, 186], thorax: [188, 192, 198],
+          head: [176, 180, 188], leg: [160, 164, 172], antenna: [168, 172, 180], eye: [30, 30, 34]
+        },
+        markings: { abdomenBands: { color: [120, 128, 142], count: 9 } },
+        antenna: { len: 0.85, thick: 0.013, segs: 10, splay: 0.30, arch: 0.16, spread: 0.40, rise: 0.05, reach: 1.05 },
+        legs: { thick: 0.016, kneeOut: 0.16, kneeUp: 0.07, footOut: 0.26, attachZ: [0.30, 0.20, 0.08], dirs: [0.75, 1.45, 2.15], scale: [0.7, 0.74, 0.82] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'cat-flea',
+      name: 'Cat Flea',
+      sci: 'Ctenocephalides felis',
+      aka: ['The flea you actually have'],
+      order: 'Siphonaptera · Pulicidae',
+      threat: 4,
+      threatLabel: 'HIGH — BITES PEOPLE AND PETS, HUGE HIDDEN POPULATION',
+      actualSize: '1–2 mm',
+      tagline: 'For every one you see, the carpet is holding fifty more.',
+      vitals: [
+        ['SIZE', '1–2 mm, flattened side-to-side'],
+        ['ID MARK', 'Dark red-brown, combs of spines on the head'],
+        ['JUMP', 'Up to 200 times its own body length'],
+        ['BREEDING', '25–50 eggs a day per female'],
+        ['THE 5%', 'Adults are 5% of the population — the rest is eggs and larvae'],
+        ['DORMANCY', 'Pupae wait months for vibration and warmth']
+      ],
+      charges: [
+        'Bites people around the ankles and lower legs, in clusters',
+        'Makes pets miserable — scratching, hair loss, flea allergy dermatitis',
+        'Transmits tapeworm to cats and dogs',
+        'Ambushes the new occupants of a house the previous pet left',
+        'Survives most DIY attempts because the eggs are not touched'
+      ],
+      mo: [
+        'Adults live on the animal; eggs drop off wherever it sleeps',
+        'Larvae burrow into carpet pile, bedding, subfloor sand and mulch',
+        'Pupae sit dormant until footsteps, warmth and CO2 say a host arrived',
+        'Peaks in warm, humid Brisbane weather',
+        'Concentrates where the pet sleeps, not where you see the bites'
+      ],
+      evidence: [
+        'Itchy bite clusters around ankles and lower legs',
+        'A pet scratching, biting the tail base, or losing hair there',
+        '"Flea dirt" — black specks in the coat that go rust-red on wet paper',
+        'Bites starting the day you moved into an empty house'
+      ],
+      hideouts: ['Carpet and rug pile', 'Pet bedding', 'Sub-floor sand', 'Shaded garden soil', 'Lounge and car seats'],
+      verdict: 'Treat the environment and the animal together, vacuum daily to trigger the pupae, and expect a second treatment — anything that only kills adults is treating 5% of the problem.',
+      spec: {
+        plan: 'insect', len: 1.6, gloss: 0.72, stand: 0.08, idle: 1.3,
+        abdomenW: 0.10, abdomenH: 0.235, abdomenL: 0.28, abdomenZ: -0.22, abdomenTaper: 0.30, abdomenTaperFront: 0.18, flatBottom: 0.1,
+        thoraxW: 0.09, thoraxH: 0.185, thoraxL: 0.15, thoraxZ: 0.14, thoraxLift: 1.05,
+        pronotum: false,
+        headW: 0.075, headH: 0.135, headL: 0.13, headZ: 0.36, headY: 0.135, headPitch: -0.45,
+        eye: 0.022,
+        colors: {
+          body: [104, 52, 30], abdomen: [110, 56, 32], thorax: [96, 46, 26],
+          head: [92, 44, 24], leg: [126, 72, 40], antenna: [92, 48, 26], eye: [26, 16, 12]
+        },
+        markings: { abdomenBands: { color: [70, 32, 18], count: 6 } },
+        antenna: { len: 0.20, thick: 0.014, segs: 4, splay: 0.5, arch: 0.1, spread: 0.5, rise: 0.02, reach: 0.4 },
+        legs: { thick: 0.018, kneeOut: 0.16, kneeUp: 0.22, footOut: 0.30, attachZ: [0.14, 0.02, -0.14], dirs: [0.7, 1.5, 2.5], scale: [0.72, 0.9, 1.5] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'european-wasp',
+      name: 'European Wasp',
+      sci: 'Vespula germanica',
+      aka: ['German wasp'],
+      order: 'Hymenoptera · Vespidae',
+      threat: 4,
+      threatLabel: 'HIGH — AGGRESSIVE, STINGS REPEATEDLY, NOTIFIABLE',
+      actualSize: '12–15 mm',
+      tagline: 'Ground nests, hidden colonies, and it does not need a reason.',
+      vitals: [
+        ['SIZE', '12–15 mm, stocky, vivid yellow and black'],
+        ['ID MARK', 'Black antennae, black dots down the yellow abdomen'],
+        ['NEST', 'Hidden — in the ground, a wall cavity or a roof void'],
+        ['COLONY', 'Thousands of workers by late summer'],
+        ['FLIGHT', 'Wings folded lengthways at rest, legs tucked'],
+        ['STING', 'Repeatedly, and it recruits others when alarmed']
+      ],
+      charges: [
+        'Stings repeatedly and swarms when a nest is disturbed',
+        'Hunts at outdoor meals, bins and pet bowls, then stings the mouth or throat',
+        'Builds unseen nests in wall cavities, roof voids and the ground',
+        'Puts anyone with a sting allergy at real risk of anaphylaxis',
+        'Turns lawn mowing into an emergency when the nest is underground'
+      ],
+      mo: [
+        'Founded by one queen in spring, thousands strong by February',
+        'Scavenges protein and sweet food — unlike bees, it wants your ham',
+        'Flies in and out of a single small entry hole all day',
+        'Guards the nest for several metres and recruits nestmates to attack',
+        'Can overwinter in mild areas and restart bigger the next year'
+      ],
+      evidence: [
+        'A steady stream of wasps in and out of one hole in the ground or wall',
+        'Wasps working over bins, meat, pet food and drinks',
+        'Papery nest material visible inside a cavity or roof space',
+        'Sudden aggression while mowing or trimming'
+      ],
+      hideouts: ['Ground burrows', 'Wall cavities', 'Roof voids', 'Retaining walls', 'Compost heaps'],
+      verdict: 'Never block the entry hole — they will chew a new one, often inwards. Nest treated at dusk in full protective gear, then the entry sealed once traffic stops.',
+      spec: {
+        plan: 'insect', len: 2.05, gloss: 0.6, stand: 0.20, idle: 1.2,
+        abdomenW: 0.155, abdomenH: 0.16, abdomenL: 0.32, abdomenZ: -0.40, abdomenTaper: 0.5, abdomenTaperFront: 0.4, flatBottom: 0.05,
+        thoraxW: 0.17, thoraxH: 0.17, thoraxL: 0.20, thoraxZ: 0.10, thoraxLift: 1.1,
+        pronotum: false,
+        waist: { r: 0.032, len: 0.13 },
+        headW: 0.145, headH: 0.135, headL: 0.11, headZ: 0.36, headY: 0.25, headPitch: -0.1,
+        eye: 0.052,
+        colors: {
+          body: [242, 206, 48], abdomen: [244, 210, 50], thorax: [40, 36, 34],
+          head: [238, 202, 46], leg: [232, 190, 54], antenna: [28, 26, 26], eye: [30, 26, 22]
+        },
+        markings: { abdomenBands: { color: [30, 28, 26], count: 6, sharp: true } },
+        wings: { len: 0.44, w: 0.09, thick: 0.008, spread: 0.7, lift: 0.6, z: -0.05, roll: 0.08, yaw: 0.08, pitch: -0.05, taperBack: 0.35, taperFront: 0.45, color: [214, 210, 202], gloss: 0.8, alpha: 0.42 },
+        antenna: { len: 0.5, thick: 0.018, segs: 6, splay: 0.4, arch: 0.28, spread: 0.46, reach: 0.68 },
+        legs: { thick: 0.018, kneeOut: 0.2, kneeUp: 0.12, footOut: 0.34, attachZ: [0.16, 0.04, -0.08], dirs: [0.6, 1.5, 2.4], scale: [0.9, 1.0, 1.12] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'pantry-moth',
+      name: 'Pantry Moth',
+      sci: 'Plodia interpunctella',
+      aka: ['Indian meal moth', 'Flour moth'],
+      order: 'Lepidoptera · Pyralidae',
+      threat: 2,
+      threatLabel: 'LOW-MODERATE — SPOILS STORED FOOD, SPREADS JAR TO JAR',
+      actualSize: '8–10 mm at rest',
+      tagline: 'It came home in the birdseed and it is in everything now.',
+      vitals: [
+        ['SIZE', '8–10 mm at rest, 16 mm wingspan'],
+        ['ID MARK', 'Two-tone wings — pale cream inner half, coppery-bronze tips'],
+        ['LARVAE', 'Cream caterpillars with a dark head, in the food'],
+        ['EGGS', '100–300 per female, laid straight onto food'],
+        ['CYCLE', '4–6 weeks in a warm Brisbane pantry'],
+        ['CHEWS', 'Larvae bite through thin plastic and cardboard']
+      ],
+      charges: [
+        'Spoils flour, rice, cereal, nuts, spices, pet food and birdseed',
+        'Spins webbing and leaves droppings through the food itself',
+        'Chews into sealed packets and spreads jar to jar',
+        'Comes home already inside a bag from the shop',
+        'Costs you the whole pantry once it is established'
+      ],
+      mo: [
+        'Adults do not feed — they exist to lay eggs on your food',
+        'Larvae do the damage, then crawl to the ceiling to pupate',
+        'Spins silk webbing that mats dry goods together',
+        'Hides pupae in cupboard corners, hinges and shelf lips',
+        'Breeds year-round indoors in Brisbane warmth'
+      ],
+      evidence: [
+        'Small moths sitting flat on pantry walls and ceilings',
+        'Webbing and clumping in flour, rice or pet food',
+        'Cream caterpillars crawling on shelves or up the wall',
+        'Silk cocoons in cupboard corners and around hinges'
+      ],
+      hideouts: ['Pantry shelves', 'Cardboard packets', 'Pet food and birdseed', 'Cupboard corners', 'Shelf lips and hinges'],
+      verdict: 'Every open packet checked and binned, shelves stripped and cleaned, a residual treatment to the empty cupboard, then everything into sealed containers.',
+      spec: {
+        plan: 'insect', len: 1.8, gloss: 0.28, stand: 0.06, idle: 1.15,
+        abdomenW: 0.10, abdomenH: 0.10, abdomenL: 0.32, abdomenZ: -0.24, abdomenTaper: 0.42, abdomenTaperFront: 0.12,
+        thoraxW: 0.115, thoraxH: 0.115, thoraxL: 0.14, thoraxZ: 0.18,
+        pronotum: false,
+        headW: 0.075, headH: 0.075, headL: 0.08, headZ: 0.32, headY: 0.135, headPitch: -0.3,
+        eye: 0.03,
+        colors: {
+          body: [176, 152, 122], abdomen: [170, 148, 120], thorax: [206, 188, 158],
+          head: [206, 188, 158], leg: [180, 158, 128], antenna: [150, 128, 100], eye: [26, 20, 16]
+        },
+        markings: { wingSplit: { color: [138, 82, 40], at: 0.02 } },
+        wings: { len: 0.40, w: 0.115, thick: 0.012, spread: 0.55, lift: 0.55, z: -0.06, roll: -0.22, yaw: 0.04, pitch: -0.04, taperBack: 0.4, taperFront: 0.35, color: [216, 200, 168], gloss: 0.2 },
+        antenna: { len: 0.42, thick: 0.011, segs: 7, splay: 0.22, arch: 0.16, spread: 0.28, rise: 0.04, reach: 0.9 },
+        legs: { thick: 0.014, kneeOut: 0.16, kneeUp: 0.10, footOut: 0.26, attachZ: [0.18, 0.06, -0.06], dirs: [0.7, 1.5, 2.4], scale: [0.8, 0.86, 0.95] }
+      }
+    }
+  ];
+
+  BB.pestById = function (id) {
+    for (var i = 0; i < BB.PESTS.length; i++) if (BB.PESTS[i].id === id) return BB.PESTS[i];
+    return null;
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- photos.js ---- */
+/*
+ * photos.js — GENERATED by tools/fetch-photos.mjs. Do not hand-edit.
+ * Edit src/photo-sources.json and re-run the fetcher instead.
+ *
+ * Every entry carries its photographer and licence because the pictures are
+ * Creative Commons: the credit has to stay visible wherever they appear.
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+  BB.PHOTO_BASE = 'assets/photos/';
+  BB.PHOTOS = {
+    "german-cockroach": [
+      {
+        "file": "german-cockroach-1.jpg",
+        "credit": "Terra Occ",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "american-cockroach": [
+      {
+        "file": "american-cockroach-1.jpg",
+        "credit": "smathichong",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "coastal-brown-ant": [
+      {
+        "file": "coastal-brown-ant-1.jpg",
+        "credit": "Zoe Anthony Quested",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "black-house-ant": [
+      {
+        "file": "black-house-ant-1.jpg",
+        "credit": "Carl Ramirez",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "subterranean-termite": [
+      {
+        "file": "subterranean-termite-1.jpg",
+        "credit": "Scott W. Gavins",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "redback-spider": [
+      {
+        "file": "redback-spider-1.jpg",
+        "credit": "Lawrence Hylton",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "huntsman-spider": [
+      {
+        "file": "huntsman-spider-1.jpg",
+        "credit": "Noah Kirkland",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "white-tailed-spider": [
+      {
+        "file": "white-tailed-spider-1.jpg",
+        "credit": "koalabi",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "roof-rat": [
+      {
+        "file": "roof-rat-1.jpg",
+        "credit": "Austen Armstrong",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "house-mouse": [
+      {
+        "file": "house-mouse-1.jpg",
+        "credit": "Tyler Anthony",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "bed-bug": [
+      {
+        "file": "bed-bug-1.jpg",
+        "credit": "Sarah Courchesne",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "paper-wasp": [
+      {
+        "file": "paper-wasp-1.jpg",
+        "credit": "Mark Clarke",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "european-wasp": [
+      {
+        "file": "european-wasp-1.jpg",
+        "credit": "Lukas Clews",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ],
+    "pantry-moth": [
+      {
+        "file": "pantry-moth-1.jpg",
+        "credit": "smathichong",
+        "licence": "CC BY 4.0",
+        "source": "iNaturalist"
+      }
+    ]
+  };
+  /** Data URI when the build inlined it, relative path otherwise. */
+  BB.photoSrc = function (file) {
+    return (BB.PHOTO_DATA && BB.PHOTO_DATA[file]) || BB.PHOTO_BASE + file;
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- sfx.js ---- */
+/*
+ * sfx.js — the terminal soundtrack, synthesised in the browser.
+ *
+ * Every sound is generated with the Web Audio API: no mp3s to license, host,
+ * or wait on, and the whole dossier still ships as one HTML file. Nothing is
+ * created until enable() runs off a real user gesture, so autoplay policy
+ * never leaves a page silently broken.
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+
+  function Sfx() {
+    this.ctx = null;
+    this.on = false;
+    this.master = null;
+    this._droneNodes = null;
+    this._lastKey = 0;
+  }
+
+  Sfx.prototype.enable = function () {
+    if (!this.ctx) {
+      var AC = root.AudioContext || root.webkitAudioContext;
+      if (!AC) return false;
+      this.ctx = new AC();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.0;
+      this.master.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    this.on = true;
+    this.master.gain.cancelScheduledValues(this.ctx.currentTime);
+    this.master.gain.setTargetAtTime(0.85, this.ctx.currentTime, 0.1);
+    return true;
+  };
+
+  Sfx.prototype.disable = function () {
+    this.on = false;
+    if (this.master) this.master.gain.setTargetAtTime(0, this.ctx.currentTime, 0.05);
+  };
+
+  Sfx.prototype.toggle = function () {
+    if (this.on) { this.disable(); return false; }
+    return this.enable();
+  };
+
+  /** Short burst of filtered noise — the raw material for clicks and thuds. */
+  Sfx.prototype._noise = function (dur, freq, q, gain, type) {
+    if (!this.on || !this.ctx) return null;
+    var ctx = this.ctx, t = ctx.currentTime;
+    var len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+    var buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    var d = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    var src = ctx.createBufferSource();
+    src.buffer = buf;
+    var f = ctx.createBiquadFilter();
+    f.type = type || 'bandpass';
+    f.frequency.value = freq;
+    f.Q.value = q;
+    var g = ctx.createGain();
+    g.gain.value = gain;
+    g.gain.setTargetAtTime(0, t + dur * 0.35, dur * 0.4);
+    src.connect(f); f.connect(g); g.connect(this.master);
+    src.start(t);
+    src.stop(t + dur + 0.05);
+    return g;
+  };
+
+  Sfx.prototype._tone = function (freq, dur, gain, type, slideTo) {
+    if (!this.on || !this.ctx) return null;
+    var ctx = this.ctx, t = ctx.currentTime;
+    var o = ctx.createOscillator();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(gain, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.master);
+    o.start(t); o.stop(t + dur + 0.02);
+    return g;
+  };
+
+  /** The typewriter click. Pitch jitters so a line of text does not buzz. */
+  Sfx.prototype.key = function () {
+    if (!this.on || !this.ctx) return;
+    var now = this.ctx.currentTime;
+    if (now - this._lastKey < 0.018) return;      // never machine-gun
+    this._lastKey = now;
+    this._noise(0.035, 1500 + Math.random() * 1700, 1.6, 0.16);
+    this._tone(160 + Math.random() * 60, 0.03, 0.05, 'square');
+  };
+
+  /** Heavier key for headings. */
+  Sfx.prototype.keyHard = function () {
+    this._noise(0.06, 900 + Math.random() * 500, 1.1, 0.3);
+    this._tone(120, 0.05, 0.09, 'square');
+  };
+
+  Sfx.prototype.beep = function (f, dur) {
+    this._tone(f || 1180, dur || 0.07, 0.11, 'square');
+  };
+
+  /** Rising sweep used while the specimen is being "acquired". */
+  Sfx.prototype.scan = function () {
+    this._tone(220, 0.55, 0.06, 'sawtooth', 1400);
+    this._noise(0.5, 2600, 0.8, 0.05, 'highpass');
+  };
+
+  /** Chunky confirmation — target locked, section stamped. */
+  Sfx.prototype.stamp = function () {
+    this._noise(0.22, 220, 0.7, 0.5, 'lowpass');
+    this._tone(70, 0.3, 0.35, 'sine', 42);
+    this._tone(340, 0.09, 0.1, 'square');
+  };
+
+  Sfx.prototype.lock = function () {
+    var self = this;
+    this._tone(880, 0.06, 0.12, 'square');
+    setTimeout(function () { self._tone(1320, 0.12, 0.12, 'square'); }, 90);
+  };
+
+  Sfx.prototype.whoosh = function () {
+    this._noise(0.65, 700, 0.5, 0.22, 'lowpass');
+    this._tone(300, 0.6, 0.05, 'sawtooth', 90);
+  };
+
+  Sfx.prototype.alarm = function () {
+    var self = this;
+    [0, 200, 400].forEach(function (d) {
+      setTimeout(function () { self._tone(660, 0.1, 0.1, 'square'); }, d);
+    });
+  };
+
+  /** Low bed that runs under the whole dossier. Two detuned saws + slow LFO. */
+  Sfx.prototype.drone = function (start) {
+    if (!this.ctx) return;
+    if (!start) {
+      if (this._droneNodes) {
+        this._droneNodes.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.4);
+        this._droneNodes = null;
+      }
+      return;
+    }
+    if (this._droneNodes) return;
+    var ctx = this.ctx, t = ctx.currentTime;
+    var g = ctx.createGain();
+    g.gain.value = 0;
+    g.gain.setTargetAtTime(0.035, t, 1.2);
+    var filt = ctx.createBiquadFilter();
+    filt.type = 'lowpass';
+    filt.frequency.value = 320;
+    var oscs = [];
+    [55, 55.4, 82.5].forEach(function (f) {
+      var o = ctx.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.value = f;
+      o.connect(filt);
+      o.start(t);
+      oscs.push(o);
+    });
+    var lfo = ctx.createOscillator();
+    lfo.frequency.value = 0.09;
+    var lg = ctx.createGain();
+    lg.gain.value = 120;
+    lfo.connect(lg); lg.connect(filt.frequency);
+    lfo.start(t);
+    oscs.push(lfo);
+    filt.connect(g); g.connect(this.master);
+    this._droneNodes = { gain: g, oscs: oscs };
+  };
+
+  BB.sfx = new Sfx();
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- dossier.js ---- */
+/*
+ * dossier.js — the show.
+ *
+ * Boots a stage, spins up the specimen, then types the dossier down the side
+ * with the terminal clatter under it. Everything is driven by URL parameters
+ * so one file serves the website embed, the vertical reel and the headless
+ * video capture:
+ *
+ *   ?pest=german-cockroach   which specimen (or `random`)
+ *   ?format=web|reel|square|wide
+ *   ?speed=1.4               typing speed multiplier
+ *   ?items=3                 cap list lengths (reels want fewer)
+ *   ?sound=1                 arm audio immediately (capture only — browsers
+ *                            block it without a gesture)
+ *   ?autoplay=1  ?loop=1  ?chrome=0  ?cta=0
+ *   ?hold=1                  build but wait for BBStage.play() (recorder)
+ */
+(function (root) {
+  'use strict';
+  var BB = (root.BB = root.BB || {});
+  var doc = root.document;
+
+  var FORMATS = {
+    web: { cls: 'fmt-web' },
+    wide: { cls: 'fmt-wide' },
+    reel: { cls: 'fmt-reel', items: 3, speed: 1.15 },
+    square: { cls: 'fmt-square', items: 4 }
+  };
+
+  function qs(name, def) {
+    var m = new RegExp('[?&]' + name + '=([^&]*)').exec(root.location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : def;
+  }
+  function el(tag, cls, parent) {
+    var e = doc.createElement(tag);
+    if (cls) e.className = cls;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function sleep(ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Stage
+   * ------------------------------------------------------------------ */
+  function Stage(mount, opts) {
+    opts = opts || {};
+    this.opts = opts;
+    this.mount = mount;
+    this.format = FORMATS[opts.format] ? opts.format : 'web';
+    var f = FORMATS[this.format];
+    this.speed = parseFloat(opts.speed || f.speed || 1);
+    this.itemCap = parseInt(opts.items || f.items || 99, 10);
+    this.showCta = opts.cta !== '0' && opts.cta !== false;
+    this.showChrome = opts.chrome !== '0' && opts.chrome !== false;
+    this.loop = opts.loop === '1' || opts.loop === true;
+    this.token = 0;
+    this.skip = false;
+    this.spin = 0;
+    this.spinRate = 0.55;
+    this.dragging = false;
+    this.build();
+  }
+
+  Stage.prototype.build = function () {
+    var self = this;
+    var wrap = el('div', 'bb ' + FORMATS[this.format].cls, this.mount);
+    this.root = wrap;
+    wrap.setAttribute('data-format', this.format);
+
+    var stage = el('div', 'bb-stage', wrap);
+    this.stageEl = stage;
+    this.canvas = el('canvas', 'bb-canvas', stage);
+
+    // The field photograph sits over the turntable. The dossier cuts to it
+    // once during the run and the viewer can pin it open from the toggle.
+    this.photoEl = el('div', 'bb-photo', stage);
+    this.photoEl.innerHTML = '<img alt="" ><div class="bb-photocap"></div>';
+    this.photoImg = this.photoEl.querySelector('img');
+    this.photoCap = this.photoEl.querySelector('.bb-photocap');
+
+    var hud = el('div', 'bb-hud', stage);
+    hud.innerHTML =
+      '<span class="bb-br tl"></span><span class="bb-br tr"></span>' +
+      '<span class="bb-br bl"></span><span class="bb-br br"></span>' +
+      '<div class="bb-reticle"><i></i><b></b></div>' +
+      '<div class="bb-sweep"></div>' +
+      '<div class="bb-readout"><span class="bb-rot">ROT 000°</span><span class="bb-scale"></span></div>' +
+      '<div class="bb-stagetag">LIVE SPECIMEN SCAN · 360°</div>';
+
+    this.viewBtn = el('button', 'bb-view', stage);
+    this.viewBtn.type = 'button';
+    this.viewBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      self.showPhoto(!self.photoOn, true);
+    });
+    this.rotEl = hud.querySelector('.bb-rot');
+    this.scaleEl = hud.querySelector('.bb-scale');
+    this.sweepEl = hud.querySelector('.bb-sweep');
+
+    var panel = el('div', 'bb-panel', wrap);
+    this.panelEl = panel;
+    var head = el('div', 'bb-panelhead', panel);
+    head.innerHTML =
+      '<span class="bb-unit">' + BB.BRAND.unit + '</span>' +
+      '<span class="bb-file">FILE <b class="bb-fileno">—</b></span>';
+    this.fileNoEl = head.querySelector('.bb-fileno');
+
+    this.docEl = el('div', 'bb-doc', panel);
+    this.ctaEl = el('div', 'bb-cta', panel);
+
+    if (this.showChrome) this.buildControls(wrap);
+
+    el('div', 'bb-scanlines', wrap);
+    el('div', 'bb-vignette', wrap);
+
+    this.renderer = new BB.Renderer(this.canvas, {
+      tilt: 0.40, fov: 2.95, fovY: 0.92, ambient: 0.30,
+      light: [-0.42, 0.86, 0.42], rim: [0.7, -0.1, -0.7]
+    });
+
+    this.resize();
+    root.addEventListener('resize', function () { self.resize(); });
+
+    // drag to inspect — people always try it on a spinning object
+    var lastX = 0;
+    function down(e) {
+      self.dragging = true;
+      lastX = (e.touches ? e.touches[0].clientX : e.clientX);
+      stage.classList.add('is-dragging');
+    }
+    function move(e) {
+      if (!self.dragging) return;
+      var x = (e.touches ? e.touches[0].clientX : e.clientX);
+      self.spin += (x - lastX) * 0.012;
+      lastX = x;
+      if (e.cancelable) e.preventDefault();
+    }
+    function up() { self.dragging = false; stage.classList.remove('is-dragging'); }
+    stage.addEventListener('mousedown', down);
+    stage.addEventListener('touchstart', down, { passive: true });
+    root.addEventListener('mousemove', move);
+    root.addEventListener('touchmove', move, { passive: false });
+    root.addEventListener('mouseup', up);
+    root.addEventListener('touchend', up);
+
+    // click / space skips the current typing pass
+    wrap.addEventListener('click', function (e) {
+      if (e.target.closest('.bb-controls') || e.target.closest('a')) return;
+      self.skip = true;
+    });
+    doc.addEventListener('keydown', function (e) {
+      if (e.code === 'Space') { self.skip = true; e.preventDefault(); }
+      if (e.key === 'r' || e.key === 'R') self.play();
+    });
+
+    this.startLoop();
+  };
+
+  Stage.prototype.buildControls = function (wrap) {
+    var self = this;
+    var c = el('div', 'bb-controls', wrap);
+
+    var sel = el('select', 'bb-select', c);
+    BB.PESTS.forEach(function (p) {
+      var o = el('option', null, sel);
+      o.value = p.id;
+      o.textContent = p.name;
+    });
+    sel.addEventListener('change', function () { self.load(sel.value); });
+    this.selectEl = sel;
+
+    var replay = el('button', 'bb-btn', c);
+    replay.innerHTML = '&#9654; REPLAY';
+    replay.addEventListener('click', function () { self.play(); });
+
+    var snd = el('button', 'bb-btn', c);
+    snd.innerHTML = '&#128266; SOUND: OFF';
+    snd.addEventListener('click', function () {
+      var on = BB.sfx.toggle();
+      snd.innerHTML = on ? '&#128266; SOUND: ON' : '&#128264; SOUND: OFF';
+      snd.classList.toggle('is-on', !!on);
+      if (on) BB.sfx.drone(true);
+    });
+    this.soundBtn = snd;
+
+    var spd = el('button', 'bb-btn', c);
+    var speeds = [1, 1.5, 2, 0.75];
+    var si = 0;
+    spd.textContent = '1× SPEED';
+    spd.addEventListener('click', function () {
+      si = (si + 1) % speeds.length;
+      self.speed = speeds[si];
+      spd.textContent = speeds[si] + '× SPEED';
+    });
+  };
+
+  Stage.prototype.resize = function () {
+    var r = this.stageEl.getBoundingClientRect();
+    this.renderer.resize(r.width, r.height, root.devicePixelRatio || 1);
+  };
+
+  Stage.prototype.startLoop = function () {
+    var self = this, last = performance.now(), t0 = last;
+    function frame(now) {
+      var dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (!self.dragging) self.spin += self.spinRate * dt;
+      self.renderer.render(self.spin, (now - t0) / 1000);
+      if (self.rotEl) {
+        var deg = ((self.spin * 180 / Math.PI) % 360 + 360) % 360;
+        self.rotEl.textContent = 'ROT ' + ('00' + Math.round(deg)).slice(-3) + '°';
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  };
+
+  /* ---------------- loading a specimen ------------------------------- */
+
+  /** @param hold  build the specimen but wait for an external play() —
+   *               the video recorder uses it to line audio up with frame 1 */
+  Stage.prototype.load = function (id, hold) {
+    var pest = BB.pestById(id) || BB.PESTS[0];
+    this.pest = pest;
+    var model = BB.anatomy.build(pest.spec);
+    model.scale = (pest.spec.fit || 1) * (2.4 / (model.span || 2.4));
+    this.renderer.setModel(model);
+    if (this.selectEl) this.selectEl.value = pest.id;
+    this.photoIndex = 0;
+    this.photoPinned = false;
+    this.showPhoto(false);
+    if (this.viewBtn) {
+      this.viewBtn.style.display = this.photosFor(pest).length ? '' : 'none';
+    }
+    if (this.scaleEl) this.scaleEl.textContent = 'ACTUAL ' + pest.actualSize;
+    if (this.fileNoEl) this.fileNoEl.textContent = fileNumber(pest);
+    doc.title = pest.name + ' — Pest Dossier | ' + BB.BRAND.company;
+    this.renderer.render(0, 0);
+    if (!hold) this.play();
+  };
+
+  function fileNumber(pest) {
+    var n = 0;
+    for (var i = 0; i < pest.id.length; i++) n = (n * 31 + pest.id.charCodeAt(i)) % 9000;
+    return 'SB-' + (1000 + n);
+  }
+
+  /* ---------------- the field photograph ------------------------------ */
+
+  Stage.prototype.photosFor = function (pest) {
+    return (BB.PHOTOS && BB.PHOTOS[pest.id]) || [];
+  };
+
+  /**
+   * @param on      show the photograph over the turntable
+   * @param manual  true when the viewer pressed the toggle, which pins the
+   *                choice so the sequence stops flipping it back
+   */
+  Stage.prototype.showPhoto = function (on, manual) {
+    var shots = this.pest ? this.photosFor(this.pest) : [];
+    if (!shots.length) {
+      if (this.viewBtn) this.viewBtn.style.display = 'none';
+      return;
+    }
+    if (manual) this.photoPinned = on;
+    else if (this.photoPinned) return;
+
+    this.photoOn = on;
+    if (on) {
+      var shot = shots[this.photoIndex % shots.length];
+      if (this.photoImg.getAttribute('src') !== BB.photoSrc(shot.file)) {
+        this.photoImg.src = BB.photoSrc(shot.file);
+        this.photoImg.alt = 'Field photograph of a ' + this.pest.name.toLowerCase();
+      }
+      this.photoCap.innerHTML =
+        '<b>FIELD PHOTOGRAPH</b> · Photo: ' + shot.credit + ' · ' + shot.licence +
+        ' · via ' + shot.source;
+    }
+    this.photoEl.classList.toggle('is-on', on);
+    this.viewBtn.textContent = on ? '◆ VIEW 3D SPECIMEN' : '◆ VIEW REAL PHOTO';
+  };
+
+  /* ---------------- typing ------------------------------------------- */
+
+  /**
+   * Type `text` into `node` one character at a time. Resolves early if the
+   * viewer skips or the run token moves on (replay / new specimen).
+   */
+  Stage.prototype.type = function (node, text, cps, hard) {
+    var self = this;
+    var my = this.token;
+    return new Promise(function (resolve) {
+      var i = 0;
+      var perChar = 1000 / (cps * self.speed);
+      node.classList.add('typing');
+      function step() {
+        if (my !== self.token) { node.classList.remove('typing'); return resolve(); }
+        if (self.skip) {
+          node.textContent = text;
+          node.classList.remove('typing');
+          return resolve();
+        }
+        var batch = perChar < 8 ? Math.ceil(8 / perChar) : 1;
+        for (var b = 0; b < batch && i < text.length; b++) {
+          node.textContent += text.charAt(i++);
+        }
+        if (text.charAt(i - 1) !== ' ') (hard ? BB.sfx.keyHard() : BB.sfx.key());
+        self.scrollDown();
+        if (i < text.length) setTimeout(step, perChar * batch);
+        else { node.classList.remove('typing'); resolve(); }
+      }
+      step();
+    });
+  };
+
+  Stage.prototype.pause = function (ms) {
+    var self = this, my = this.token;
+    return new Promise(function (resolve) {
+      var waited = 0, tick = 30;
+      (function step() {
+        if (my !== self.token || self.skip) return resolve();
+        waited += tick;
+        if (waited >= ms / self.speed) return resolve();
+        setTimeout(step, tick);
+      })();
+    });
+  };
+
+  /** Abort whatever is typing — used when a dossier is closed. */
+  Stage.prototype.stop = function () {
+    this.token++;
+    BB.sfx.drone(false);
+  };
+
+  Stage.prototype.scrollDown = function () {
+    this.docEl.scrollTop = this.docEl.scrollHeight;
+  };
+
+  /* ---------------- the sequence ------------------------------------- */
+
+  Stage.prototype.play = async function () {
+    var self = this;
+    var pest = this.pest;
+    if (!pest) return;
+    this.token++;
+    var my = this.token;
+    this.skip = false;
+    this.docEl.innerHTML = '';
+    this.ctaEl.innerHTML = '';
+    this.ctaEl.classList.remove('is-in');
+    this.root.classList.remove('is-locked');
+    this.spinRate = 3.4;                       // spin up, then settle
+    var alive = function () { return my === self.token; };
+
+    // 1. boot handshake
+    var boot = el('div', 'bb-boot', this.docEl);
+    var lines = [
+      BB.BRAND.unit,
+      'ESTABLISHING LINK ................ OK',
+      'DATABASE: ' + BB.PESTS.length + ' SPECIES ON FILE',
+      'SCANNING SPECIMEN ...'
+    ];
+    for (var i = 0; i < lines.length; i++) {
+      if (!alive()) return;
+      var ln = el('div', 'bb-bootline', boot);
+      await this.type(ln, lines[i], 90);
+      await this.pause(70);
+    }
+    if (!alive()) return;
+    BB.sfx.scan();
+    this.stageEl.classList.add('is-scanning');
+    await this.pause(700);
+    this.stageEl.classList.remove('is-scanning');
+    if (!alive()) return;
+
+    // 2. lock
+    BB.sfx.stamp();
+    this.root.classList.add('is-locked');
+    var stamp = el('div', 'bb-stamp', this.docEl);
+    stamp.textContent = 'SPECIMEN IDENTIFIED';
+    await this.pause(320);
+    if (!alive()) return;
+
+    // 3. identity block
+    var idb = el('div', 'bb-id', this.docEl);
+    var h1 = el('h1', 'bb-name', idb);
+    await this.type(h1, pest.name.toUpperCase(), 15, true);
+    var sci = el('div', 'bb-sci', idb);
+    await this.type(sci, pest.sci, 42);
+    if (pest.aka && pest.aka.length) {
+      var aka = el('div', 'bb-aka', idb);
+      await this.type(aka, 'AKA: ' + pest.aka.join(' · '), 70);
+    }
+    var ord = el('div', 'bb-order', idb);
+    await this.type(ord, pest.order, 70);
+
+    // 4. threat meter
+    if (!alive()) return;
+    var tw = el('div', 'bb-threat', this.docEl);
+    tw.innerHTML = '<div class="bb-threatlab">THREAT LEVEL</div><div class="bb-bar"><span></span></div><div class="bb-threattxt"></div>';
+    var bar = tw.querySelector('.bb-bar span');
+    bar.style.width = (pest.threat * 20) + '%';
+    bar.setAttribute('data-lvl', pest.threat);
+    BB.sfx.alarm();
+    await this.pause(260);
+    await this.type(tw.querySelector('.bb-threattxt'), pest.threatLabel, 55, true);
+
+    if (pest.tagline) {
+      var tag = el('div', 'bb-tagline', this.docEl);
+      await this.type(tag, '"' + pest.tagline + '"', 48);
+    }
+
+    // 5. photographic match — the cut to the real thing, which is what makes
+    //    the 3D specimen believable rather than a cartoon
+    if (this.photosFor(pest).length) {
+      BB.sfx.beep(1240, 0.05);
+      var pm = el('div', 'bb-match', this.docEl);
+      await this.type(pm, 'PHOTOGRAPHIC MATCH ON FILE', 60, true);
+      this.showPhoto(true);
+      BB.sfx.whoosh();
+      await this.pause(2600);
+      this.showPhoto(false);
+    }
+
+    // 6. sections
+    var cap = this.itemCap;
+    await this.section('VITAL STATISTICS', pest.vitals.slice(0, Math.max(cap, 4)), 'kv');
+    await this.section('CHARGES', pest.charges.slice(0, cap), 'charge');
+    await this.section('METHOD OF OPERATION', pest.mo.slice(0, cap), 'list');
+    await this.section('EVIDENCE AT THE SCENE', pest.evidence.slice(0, cap), 'list');
+    await this.section('KNOWN HIDEOUTS', pest.hideouts, 'chips');
+    await this.section('OUR VERDICT', [pest.verdict], 'verdict');
+
+    if (!alive()) return;
+
+    // 7. call to action
+    if (this.showCta) {
+      BB.sfx.lock();
+      var B = BB.BRAND;
+      this.ctaEl.innerHTML =
+        '<div class="bb-ctahead">' + B.ctaHead + '</div>' +
+        '<div class="bb-ctaline">' + B.ctaLine + '</div>' +
+        '<div class="bb-ctarow">' +
+        '<a class="bb-ctabtn" href="' + B.phoneHref + '">' + B.phoneLabel + '</a>' +
+        '<a class="bb-ctabtn ghost" href="' + B.bookUrl + '" target="_blank" rel="noopener">' + B.ctaButton + '</a>' +
+        '</div>' +
+        '<div class="bb-ctafoot">' + B.proof + '<br>' + B.guarantee + '<br>' + B.licences + '</div>';
+      this.ctaEl.classList.add('is-in');
+    }
+    this.scrollDown();
+
+    // settle the turntable to a slow, steady rotation
+    var settle = setInterval(function () {
+      if (my !== self.token) return clearInterval(settle);
+      self.spinRate += (0.55 - self.spinRate) * 0.06;
+      if (Math.abs(self.spinRate - 0.55) < 0.01) { self.spinRate = 0.55; clearInterval(settle); }
+    }, 30);
+
+    if (this.loop) {
+      await this.pause(6000);
+      if (alive()) this.play();
+    }
+  };
+
+  Stage.prototype.section = async function (title, items, kind) {
+    var my = this.token, self = this;
+    if (my !== this.token || !items || !items.length) return;
+    this.skip = false;                       // a skip only fast-forwards one section
+    var sec = el('div', 'bb-sec bb-sec-' + kind, this.docEl);
+    var h = el('div', 'bb-sechead', sec);
+    BB.sfx.beep(920, 0.05);
+    await this.type(h, title, 55, true);
+    if (my !== this.token) return;
+
+    if (kind === 'chips') {
+      var box = el('div', 'bb-chipbox', sec);
+      for (var c = 0; c < items.length; c++) {
+        if (my !== this.token) return;
+        var chip = el('span', 'bb-chip', box);
+        await this.type(chip, items[c], 95);
+        await this.pause(40);
+      }
+      await this.pause(240);
+      return;
+    }
+
+    for (var i = 0; i < items.length; i++) {
+      if (my !== this.token) return;
+      var it = items[i];
+      var row = el('div', 'bb-row', sec);
+      if (kind === 'kv') {
+        var k = el('span', 'bb-k', row);
+        var v = el('span', 'bb-v', row);
+        await this.type(k, it[0], 110);
+        await this.type(v, it[1], 78);
+      } else if (kind === 'charge') {
+        var n = el('span', 'bb-n', row);
+        n.textContent = ('0' + (i + 1)).slice(-2);
+        var t = el('span', 'bb-t', row);
+        await this.type(t, it, 70);
+      } else if (kind === 'verdict') {
+        var vt = el('span', 'bb-t', row);
+        await this.type(vt, it, 62);
+      } else {
+        el('span', 'bb-dot', row).textContent = '›';
+        var t2 = el('span', 'bb-t', row);
+        await this.type(t2, it, 78);
+      }
+      await this.pause(90);
+    }
+    await this.pause(260);
+  };
+
+  /* ------------------------------------------------------------------ *
+   * Boot
+   * ------------------------------------------------------------------ */
+  BB.mountDossier = function (mountSel, overrides) {
+    var mount = typeof mountSel === 'string' ? doc.querySelector(mountSel) : mountSel;
+    var o = overrides || {};
+    var opts = {
+      format: o.format || qs('format', 'web'),
+      speed: o.speed || qs('speed'),
+      items: o.items || qs('items'),
+      cta: o.cta !== undefined ? o.cta : qs('cta'),
+      chrome: o.chrome !== undefined ? o.chrome : qs('chrome'),
+      loop: o.loop !== undefined ? o.loop : qs('loop')
+    };
+    var stage = new Stage(mount, opts);
+    var want = o.pest || qs('pest', BB.PESTS[0].id);
+    if (want === 'random') want = BB.PESTS[Math.floor(Math.random() * BB.PESTS.length)].id;
+
+    if (qs('sound') === '1' || o.sound) {
+      if (BB.sfx.enable()) {
+        BB.sfx.drone(true);
+        if (stage.soundBtn) {
+          stage.soundBtn.innerHTML = '&#128266; SOUND: ON';
+          stage.soundBtn.classList.add('is-on');
+        }
+      }
+    }
+    // first real gesture arms audio, the way every browser insists
+    var armed = false;
+    function arm() {
+      if (armed) return;
+      armed = true;
+      if (qs('sound') !== '0' && BB.sfx.enable()) {
+        BB.sfx.drone(true);
+        if (stage.soundBtn) {
+          stage.soundBtn.innerHTML = '&#128266; SOUND: ON';
+          stage.soundBtn.classList.add('is-on');
+        }
+      }
+    }
+    doc.addEventListener('pointerdown', arm, { once: true });
+    doc.addEventListener('keydown', arm, { once: true });
+
+    root.BBStage = stage;
+    stage.load(want, qs('hold') === '1' || o.hold);
+    return stage;
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ---- inlined field photographs ---- */
+window.BB.PHOTO_DATA = {"pantry-moth-1.jpg":"data:image/jpeg;base64,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"};
+
+</script>
+<script>
+function qsPest() {
+  var m = /[?&]pest=([\w-]+)/.exec(location.search);
+  return m ? m[1] : null;
+}
+
+BB.mountDossier('#bb-mount', { pest: qsPest() || "pantry-moth" });
+</script>
+</body>
+</html>

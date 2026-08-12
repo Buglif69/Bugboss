@@ -7,8 +7,9 @@ file on it — species, common name, threat level, what it's guilty of, how it
 operates, what evidence it leaves, where it hides, and how it gets treated —
 with the clatter of the keys under it.
 
-Built for **Slug-A-Bug Pest Control** (Brisbane & Gold Coast). One codebase
-serves three jobs:
+Built for **Slug-A-Bug Pest Control** (Brisbane & Gold Coast). Seventeen
+species, each with a 3D specimen you can spin and a real field photograph to
+match it against. One codebase serves three jobs:
 
 | Job | What you use |
 |---|---|
@@ -16,26 +17,70 @@ serves three jobs:
 | **Social posts / UGC ads** | `node tools/record.mjs` → an MP4 with sound, sized for Reels, TikTok, Shorts or Meta Ads |
 | **In person / on the tools** | Open the same page on a phone or tablet and hand it to the customer |
 
-No 3D files, no stock footage, no CDN, no licensing. Every specimen is
-generated from numbers, every sound is synthesised in the browser, and the
-whole thing ships as a single 105 KB HTML file that works offline.
+No 3D files, no stock footage, no CDN. Every specimen is generated from
+numbers, every sound is synthesised in the browser, and the whole thing ships
+as a single self-contained HTML file that works offline — about 1.7 MB with
+the photographs baked in, or 120 KB if you build without them.
 
 ---
 
-## The eight specimens
+## The seventeen specimens
 
-German cockroach · American cockroach · subterranean termite (soldier) ·
-black house ant · redback spider · bed bug · roof rat · paper wasp
+Cockroaches: German · American · Australian
+Ants: coastal brown (big-headed) · black house
+Termite: subterranean (Coptotermes soldier)
+Spiders: redback · huntsman · white-tailed
+Rodents: roof rat · house mouse
+Biting: bed bug · cat flea
+Wasps: paper · European
+Stored goods: silverfish · pantry moth
 
 Each one carries its own dossier copy, written for South-East Queensland
 conditions, and its own body-plan numbers.
 
+## Real photographs, not just models
+
+The 3D specimen is what turns; a **real field photograph** is what convinces.
+Mid-run the dossier cuts to one — captioned `FIELD PHOTOGRAPH`, with the
+photographer's credit — then returns to the turntable. A toggle on the stage
+switches between them at any time, and every gallery card carries the photo as
+an inset beside the model.
+
+The images come from openly licensed community observations (iNaturalist, ALA)
+listed in `src/photo-sources.json`:
+
+```bash
+node tools/fetch-photos.mjs        # download, crop, compress, index
+node tools/fetch-photos.mjs --recrop   # re-cut crops without re-downloading
+```
+
+**The licence has one condition and the pipeline enforces it.** These are
+CC BY images: the photographer's name has to stay visible wherever the picture
+appears. So a photo with no recorded photographer is never built in — the
+fetcher refuses it rather than guessing. Credits appear under the photo in the
+dossier, at the foot of the gallery, and in `dist/photos/CREDITS.txt`. Keep
+them attached if you reuse the images anywhere else.
+
+Two photos in the source list are downloaded but deliberately switched off:
+the silverfish shot does not read as a silverfish at usable resolution, and
+the only credited flea photo is an extreme micrograph of its head. An ID guide
+that shows a misleading picture is worse than one that shows none. Both are
+one flag away in `src/photo-sources.json` if you find better sources.
+
+**Better still: use your own.** A photo you took on a job beats any of these
+for trust. Drop it in `assets/photos/`, add an entry with
+`"credit": "Slug-A-Bug"`, and re-run the fetcher.
+
 ## Quick start
 
 ```bash
-npm install          # only needed for the video recorder
-node build.js        # writes dist/
+npm install                    # needed for photo processing and video
+node tools/fetch-photos.mjs    # pull the field photographs
+node build.js                  # writes dist/
 ```
+
+`node build.js` works without the photo step — you just get the 3D specimens
+and a warning.
 
 Then open `dist/index.html` in a browser. During development, open
 `index.html` or `dossier.html` from the repo root — they load `src/` directly,
@@ -111,11 +156,13 @@ wording, edit `src/brand.js`. It is the only place those strings exist.
 | `src/core3d.js` | The 3D engine: matrices, mesh primitives, and a painter's-algorithm renderer on canvas 2D. Smooth vertex normals, per-face colour and alpha, weak perspective, ground shadow. ~500 lines, no dependencies. |
 | `src/anatomy.js` | Three body plans — insect, arachnid, rodent — assembled from ellipsoids and swept tubes. Species markings (pronotum stripes, wasp bands, the redback's blaze) are colour functions evaluated per face. |
 | `src/pests.js` | The database: dossier copy plus body-plan numbers. |
+| `src/photo-sources.json` | Where the field photographs come from, with credits and crops. Hand-edited. |
+| `src/photos.js` | Generated index of the prepared photos. Do not hand-edit. |
 | `src/sfx.js` | Every sound, synthesised: key clicks, scan sweep, stamp, alarm, and the low drone under it all. |
 | `src/dossier.js` | The sequence — boot, scan, lock, identity, threat meter, sections, call to action — plus formats, drag-to-rotate and skip. |
 | `src/gallery.js` | The index page of specimens. |
 | `build.js` | Inlines everything into self-contained HTML. Concatenation is the whole build. |
-| `tools/` | Dev and export tools: `shoot.mjs` (contact sheets), `preview.mjs` (screenshots + frame times), `record.mjs` (MP4). |
+| `tools/` | Dev and export tools: `fetch-photos.mjs` (image pipeline), `shoot.mjs` (contact sheets), `preview.mjs` (screenshots + frame times), `record.mjs` (MP4). |
 
 Why canvas 2D and not three.js: the output has to survive being pasted into
 WordPress, opened offline, and rendered by a headless recorder. A dependency-
@@ -126,7 +173,11 @@ free file does all three; 600 KB of WebGL library for eight bugs does not.
 - The specimens are **stylised, not scientific illustration**. They are built
   to be recognisable at a glance and to look good turning — a technician can
   tell a German from an American cockroach in these, but do not use them as
-  an identification key.
+  an identification key. The photographs are there for exactly that reason.
+- The **Australian cockroach has no photograph**: both images for it live on
+  the Atlas of Living Australia, which was unreachable from the build machine.
+  Its entry is otherwise complete, and re-running the fetcher anywhere with
+  normal internet access will pick it up.
 - The dossier copy is marketing copy grounded in the biology. Check anything
   you plan to put a number on in an ad.
 - Older phones will render the turntable closer to 30 fps than 60. It stays
