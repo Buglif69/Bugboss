@@ -61,6 +61,8 @@
         pronotumW: 0.31, pronotumL: 0.22, pronotumH: 0.062,
         headW: 0.15, headH: 0.085, headL: 0.135, headZ: 0.355, headY: 0.085, headPitch: -0.55,
         eye: 0.042, cerci: 0.09,
+        segments: 8, segAmp: 0.06, mottle: 0.045,
+        setae: { count: 130, len: 0.032, thick: 0.0022, color: [178, 140, 92] },
         colors: {
           body: [148, 104, 58], abdomen: [154, 112, 64], thorax: [138, 96, 54],
           pronotum: [212, 176, 112], head: [150, 106, 58], leg: [186, 144, 88],
@@ -121,6 +123,8 @@
         pronotumW: 0.35, pronotumL: 0.24, pronotumH: 0.062,
         headW: 0.16, headH: 0.085, headL: 0.135, headZ: 0.375, headY: 0.088, headPitch: -0.55,
         eye: 0.05, cerci: 0.12,
+        segments: 8, segAmp: 0.06, mottle: 0.045,
+        setae: { count: 130, len: 0.030, thick: 0.0022, color: [128, 70, 40] },
         colors: {
           body: [104, 46, 26], abdomen: [112, 52, 28], thorax: [96, 42, 24],
           pronotum: [86, 36, 20], head: [104, 46, 24], leg: [140, 70, 38],
@@ -136,9 +140,9 @@
     /* ------------------------------------------------------------------ */
     {
       id: 'subterranean-termite',
-      name: 'Subterranean Termite',
+      name: 'Coptotermes Termite',
       sci: 'Coptotermes acinaciformis',
-      aka: ['White ant (wrongly)', 'The silent destroyer'],
+      aka: ['Subterranean termite', 'White ant (wrongly)', 'The silent destroyer'],
       order: 'Blattodea · Rhinotermitidae',
       threat: 5,
       threatLabel: 'CRITICAL — STRUCTURAL DAMAGE IN PROGRESS',
@@ -146,7 +150,8 @@
       tagline: 'Australia\'s most destructive timber pest. Your insurer will not cover it.',
       vitals: [
         ['SIZE', '4–6 mm soldier, pear-shaped head'],
-        ['ID MARK', 'Milky body, orange head, snapping mandibles'],
+        ['ID MARK', 'Pear head, orange-brown, oozes white latex when provoked'],
+        ['DISTRIBUTION', 'All mainland states — the one you meet in Brisbane'],
         ['COLONY', 'Up to a million workers from one nest'],
         ['RANGE', 'Forages up to 100 m from the nest'],
         ['DIET', '24 hours a day, 7 days a week, no dormancy'],
@@ -182,6 +187,8 @@
         pronotum: false,
         headW: 0.20, headH: 0.155, headL: 0.24, headZ: 0.365, headY: 0.135, headPitch: -0.08,
         eye: 0,
+        segments: 10, segAmp: 0.085, mottle: 0.035,
+        setae: { count: 70, len: 0.022, thick: 0.0014 },
         colors: {
           body: [232, 214, 186], abdomen: [236, 220, 194], thorax: [226, 206, 176],
           head: [186, 106, 44], leg: [226, 202, 168], antenna: [214, 188, 152]
@@ -190,6 +197,373 @@
         mandibles: { len: 0.30, thick: 0.030, color: [122, 62, 26] },
         antenna: { len: 0.45, thick: 0.020, segs: 6, splay: 0.5, arch: 0.22, spread: 0.68, reach: 0.72 },
         legs: { thick: 0.028, kneeOut: 0.16, kneeUp: 0.06, footOut: 0.30, attachZ: [0.16, 0.02, -0.14], dirs: [0.65, 1.5, 2.35], scale: [0.78, 0.82, 0.9] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'coptotermes-frenchi',
+      name: 'French\'s Termite',
+      sci: 'Coptotermes frenchi',
+      aka: ['Frenchi', 'Subterranean termite'],
+      order: 'Blattodea · Rhinotermitidae',
+      threat: 4,
+      threatLabel: 'HIGH — STRUCTURAL TIMBER PEST',
+      actualSize: '4–5 mm soldier',
+      tagline: 'Coptotermes\' quieter cousin. Still eats the frame.',
+      vitals: [
+        ['SIZE', '4–5 mm soldier, slightly smaller than acinaciformis'],
+        ['ID MARK', 'Pear-shaped head, milky body; latex from the head pore'],
+        ['DISTRIBUTION', 'Eastern and southern Australia, into SE QLD'],
+        ['NEST', 'Tree stumps, living gum trees, filled ground'],
+        ['COLONY', 'Smaller than acinaciformis — tens of thousands'],
+        ['TIMBER', 'Prefers softer, decayed or damp timber first']
+      ],
+      charges: [
+        'Eats structural pine and hardwood framing from the inside',
+        'Nests in a gum tree next door and forages into your slab',
+        'Attacks damp bathroom and laundry walls first, where you cannot see',
+        'Costs less than acinaciformis only because the colony is smaller',
+        'Not covered by home insurance either'
+      ],
+      mo: [
+        'Builds the nest in a stump or living tree, then forages outward',
+        'Runs mud galleries through soil and up piers',
+        'Targets moist, partly decayed timber before sound framing',
+        'Colonies persist for years, growing slowly and quietly',
+        'Often found where drainage or plumbing has been leaking'
+      ],
+      evidence: [
+        'Mud leads on piers, slab edges and inside wall cavities',
+        'Hollow-sounding skirting near wet areas',
+        'Damaged timber packed with soil and moisture',
+        'A gum tree or stump within 50 m with activity in the base'
+      ],
+      hideouts: ['Gum tree bases', 'Old stumps', 'Damp wall frames', 'Under bathrooms', 'Filled or built-up ground'],
+      verdict: 'Same rule as any Coptotermes — never disturb or spray. Inspection, then baiting or a treated zone that takes the whole colony including the nest tree.',
+      spec: {
+        plan: 'insect', len: 1.85, gloss: 0.34, stand: 0.11, idle: 1.2,
+        abdomenW: 0.195, abdomenH: 0.15, abdomenL: 0.37, abdomenZ: -0.28, abdomenTaper: 0.32, flatBottom: 0.15,
+        thoraxW: 0.17, thoraxH: 0.13, thoraxL: 0.19, thoraxZ: 0.08,
+        pronotum: false,
+        headW: 0.19, headH: 0.15, headL: 0.235, headZ: 0.365, headY: 0.13, headPitch: -0.08,
+        eye: 0,
+        segments: 10, segAmp: 0.085, mottle: 0.035,
+        setae: { count: 70, len: 0.022, thick: 0.0014 },
+        colors: {
+          body: [234, 218, 192], abdomen: [238, 224, 200], thorax: [228, 210, 182],
+          head: [196, 128, 62], leg: [228, 206, 174], antenna: [216, 192, 158]
+        },
+        markings: {},
+        mandibles: { len: 0.27, thick: 0.028, color: [128, 70, 30] },
+        antenna: { len: 0.44, thick: 0.019, segs: 6, splay: 0.5, arch: 0.22, spread: 0.68, reach: 0.72 },
+        legs: { thick: 0.028, kneeOut: 0.16, kneeUp: 0.06, footOut: 0.30, attachZ: [0.16, 0.02, -0.14], dirs: [0.65, 1.5, 2.35], scale: [0.78, 0.82, 0.9] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'schedorhinotermes',
+      name: 'Schedorhinotermes',
+      sci: 'Schedorhinotermes intermedius',
+      aka: ['Two-soldier termite', 'Schedo'],
+      order: 'Blattodea · Rhinotermitidae',
+      threat: 4,
+      threatLabel: 'HIGH — SECOND ONLY TO COPTOTERMES FOR DAMAGE',
+      actualSize: '4–7.5 mm (two soldier sizes)',
+      tagline: 'The one with two different soldiers in the same nest.',
+      vitals: [
+        ['SIZE', 'Major soldier 6–7.5 mm, minor soldier 4–5 mm'],
+        ['ID MARK', 'Two distinct soldier sizes — nothing else in Australia does this'],
+        ['HEAD', 'Major: broad, bulbous, heavy mandibles'],
+        ['DISTRIBUTION', 'Coastal eastern Australia — very common in Brisbane'],
+        ['NEST', 'Tree stumps, root crowns, under buildings, filled ground'],
+        ['TIMBER', 'Decayed and damp timber first, then sound framing']
+      ],
+      charges: [
+        'Second only to Coptotermes for damage to Australian homes',
+        'Works up from stumps and buried timber into the frame',
+        'Hits the damp timber under bathrooms, laundries and leaking taps',
+        'Gets missed because the small soldiers look like a minor species',
+        'Very common in Brisbane back yards with old stumps or fill'
+      ],
+      mo: [
+        'Nests below ground in stumps, root crowns and buried timber',
+        'Fields two soldier castes — big-headed majors and slimmer minors',
+        'Follows moisture: leaking plumbing, poor drainage, damp sub-floor',
+        'Builds heavy mud galleries and packs damaged timber with soil',
+        'Foraging galleries can run tens of metres from the nest'
+      ],
+      evidence: [
+        'Two obviously different soldier sizes when a lead is opened',
+        'Mud packing in damaged timber, wetter than Coptotermes work',
+        'Leads up piers, retaining walls and the sides of stumps',
+        'Damage concentrated around wet areas and old fill'
+      ],
+      hideouts: ['Old stumps and root crowns', 'Buried form-work timber', 'Damp sub-floors', 'Retaining walls', 'Under wet areas'],
+      verdict: 'Correct identification changes the treatment — the two soldier sizes are the giveaway. Baiting works well on this one, but the nest source has to be found first.',
+      spec: {
+        plan: 'insect', len: 2.0, gloss: 0.36, stand: 0.11, idle: 1.2,
+        abdomenW: 0.205, abdomenH: 0.16, abdomenL: 0.36, abdomenZ: -0.30, abdomenTaper: 0.32, flatBottom: 0.15,
+        thoraxW: 0.175, thoraxH: 0.135, thoraxL: 0.17, thoraxZ: 0.06,
+        pronotum: false,
+        headW: 0.245, headH: 0.185, headL: 0.26, headZ: 0.375, headY: 0.15, headPitch: -0.06,
+        eye: 0,
+        segments: 10, segAmp: 0.08, mottle: 0.035,
+        setae: { count: 70, len: 0.022, thick: 0.0014 },
+        colors: {
+          body: [230, 214, 188], abdomen: [234, 220, 196], thorax: [224, 206, 178],
+          head: [174, 106, 52], leg: [224, 202, 170], antenna: [212, 188, 154]
+        },
+        markings: {},
+        mandibles: { len: 0.24, thick: 0.040, color: [104, 54, 24] },
+        antenna: { len: 0.42, thick: 0.020, segs: 6, splay: 0.5, arch: 0.2, spread: 0.7, reach: 0.7 },
+        legs: { thick: 0.029, kneeOut: 0.16, kneeUp: 0.06, footOut: 0.30, attachZ: [0.15, 0.01, -0.15], dirs: [0.65, 1.5, 2.35], scale: [0.78, 0.82, 0.9] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'nasutitermes-exitiosus',
+      name: 'Nasute Termite',
+      sci: 'Nasutitermes exitiosus',
+      aka: ['Mound termite', 'Snouted termite'],
+      order: 'Blattodea · Termitidae',
+      threat: 4,
+      threatLabel: 'HIGH — MOUND-BUILDING TIMBER PEST',
+      actualSize: '4–5 mm soldier',
+      tagline: 'No jaws. It shoots glue out of its face instead.',
+      vitals: [
+        ['SIZE', '4–5 mm soldier'],
+        ['ID MARK', 'Dark pear head drawn out into a pointed snout — no mandibles'],
+        ['DEFENCE', 'Squirts a sticky, sharp-smelling terpene from the point'],
+        ['NEST', 'Dome mound up to 75 cm, hard dark grey outer wall'],
+        ['DISTRIBUTION', 'Southern and eastern Australia, including SE QLD'],
+        ['TIMBER', 'Weathered and structural softwood; also fences and poles']
+      ],
+      charges: [
+        'Eats structural timber, decking, fences and poles',
+        'Builds a hard mound in the yard and forages into the house',
+        'Works into weathered timber that has never been treated',
+        'Survives half-measures because the mound is the real target',
+        'Frequently misidentified, so the wrong treatment gets applied'
+      ],
+      mo: [
+        'Builds a hard-walled dome mound in open ground or against a stump',
+        'Forages under cover of mud galleries out to the timber it wants',
+        'Soldiers defend chemically — a fine glue thread, not a bite',
+        'Active year-round, most obvious after summer rain',
+        'Colonies can run into the hundreds of thousands'
+      ],
+      evidence: [
+        'A hard grey-brown dome mound in the yard or paddock',
+        'Mud galleries along fences, stumps, poles and under decking',
+        'Soldiers with pointed snouts when a lead is broken open',
+        'A sharp piney smell from disturbed soldiers'
+      ],
+      hideouts: ['Mounds in open ground', 'Fence posts and poles', 'Decking bearers', 'Stumps', 'Weathered structural timber'],
+      verdict: 'Find and treat the mound — it is the colony. Perimeter work alone just moves the foraging front somewhere you cannot see.',
+      spec: {
+        plan: 'insect', len: 1.85, gloss: 0.36, stand: 0.11, idle: 1.25,
+        abdomenW: 0.195, abdomenH: 0.155, abdomenL: 0.36, abdomenZ: -0.28, abdomenTaper: 0.32, flatBottom: 0.15,
+        thoraxW: 0.165, thoraxH: 0.125, thoraxL: 0.18, thoraxZ: 0.08,
+        pronotum: false,
+        headW: 0.165, headH: 0.15, headL: 0.19, headZ: 0.34, headY: 0.135, headPitch: -0.05,
+        eye: 0,
+        segments: 10, segAmp: 0.08, mottle: 0.04,
+        setae: { count: 70, len: 0.022, thick: 0.0014 },
+        rostrum: { len: 0.30, thick: 0.048, color: [92, 54, 30], droop: 0.05 },
+        colors: {
+          body: [226, 208, 180], abdomen: [230, 214, 188], thorax: [220, 200, 172],
+          head: [112, 66, 36], leg: [220, 198, 166], antenna: [206, 182, 150]
+        },
+        markings: {},
+        antenna: { len: 0.40, thick: 0.018, segs: 6, splay: 0.55, arch: 0.24, spread: 0.72, reach: 0.6 },
+        legs: { thick: 0.027, kneeOut: 0.16, kneeUp: 0.06, footOut: 0.30, attachZ: [0.16, 0.02, -0.14], dirs: [0.65, 1.5, 2.35], scale: [0.78, 0.82, 0.9] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'nasutitermes-walkeri',
+      name: 'Tree Nasute Termite',
+      sci: 'Nasutitermes walkeri',
+      aka: ['Arboreal nasute', 'Tree termite'],
+      order: 'Blattodea · Termitidae',
+      threat: 3,
+      threatLabel: 'MODERATE — DAMP TIMBER, NEST UP THE TREE',
+      actualSize: '4–5 mm soldier',
+      tagline: 'Nest in the tree, galleries down the trunk, into your deck.',
+      vitals: [
+        ['SIZE', '4–5 mm soldier, snout-headed'],
+        ['ID MARK', 'Same pointed snout as its mound-building cousin'],
+        ['NEST', 'Dark ball-shaped nest in a tree fork or trunk'],
+        ['DISTRIBUTION', 'Coastal QLD and NSW — humid areas'],
+        ['MOISTURE', 'Needs high humidity; goes for damp timber'],
+        ['TIMBER', 'Weathered decking, fences, damp structural timber']
+      ],
+      charges: [
+        'Attacks damp decking, steps, fences and pergolas',
+        'Runs covered galleries down a tree and across to the house',
+        'Hollows out weathered timber that already had a moisture problem',
+        'Builds a large visible nest that owners mistake for a possum drey',
+        'Gets into sub-floors where ventilation is poor'
+      ],
+      mo: [
+        'Nests above ground in a tree fork, trunk hollow or on a branch',
+        'Runs sheeted mud galleries down the trunk and across the ground',
+        'Prefers timber already softened by weather or damp',
+        'Most active in humid coastal conditions',
+        'Soldiers defend with the same glue squirt as exitiosus'
+      ],
+      evidence: [
+        'A dark, rounded carton nest in a tree on or near the property',
+        'Mud sheeting running down a tree trunk or along a fence',
+        'Soft, damp, hollowed decking boards and step treads',
+        'Snouted soldiers when a gallery is opened'
+      ],
+      hideouts: ['Tree forks and trunks', 'Decking and steps', 'Pergolas', 'Damp sub-floors', 'Fence lines'],
+      verdict: 'Treat the nest in the tree, not just the timber it reached. Then fix the moisture and ventilation that made your place attractive in the first place.',
+      spec: {
+        plan: 'insect', len: 1.8, gloss: 0.36, stand: 0.11, idle: 1.25,
+        abdomenW: 0.19, abdomenH: 0.15, abdomenL: 0.35, abdomenZ: -0.28, abdomenTaper: 0.32, flatBottom: 0.15,
+        thoraxW: 0.16, thoraxH: 0.12, thoraxL: 0.18, thoraxZ: 0.08,
+        pronotum: false,
+        headW: 0.16, headH: 0.145, headL: 0.185, headZ: 0.34, headY: 0.13, headPitch: -0.05,
+        eye: 0,
+        segments: 10, segAmp: 0.08, mottle: 0.04,
+        setae: { count: 70, len: 0.022, thick: 0.0014 },
+        rostrum: { len: 0.28, thick: 0.046, color: [76, 44, 26], droop: 0.05 },
+        colors: {
+          body: [218, 198, 168], abdomen: [222, 204, 176], thorax: [212, 190, 160],
+          head: [92, 52, 28], leg: [212, 188, 156], antenna: [198, 172, 140]
+        },
+        markings: {},
+        antenna: { len: 0.40, thick: 0.018, segs: 6, splay: 0.55, arch: 0.24, spread: 0.72, reach: 0.6 },
+        legs: { thick: 0.027, kneeOut: 0.16, kneeUp: 0.06, footOut: 0.30, attachZ: [0.16, 0.02, -0.14], dirs: [0.65, 1.5, 2.35], scale: [0.78, 0.82, 0.9] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'mastotermes',
+      name: 'Giant Northern Termite',
+      sci: 'Mastotermes darwiniensis',
+      aka: ['Mastotermes', 'Darwin termite'],
+      order: 'Blattodea · Mastotermitidae',
+      threat: 5,
+      threatLabel: 'CRITICAL — THE MOST DESTRUCTIVE TERMITE ON EARTH',
+      actualSize: '11–13 mm worker',
+      tagline: 'Eats timber, rubber, plastic, leather and living trees.',
+      vitals: [
+        ['SIZE', '11–13 mm — by far the largest Australian termite'],
+        ['ID MARK', 'Big, dark, cockroach-like; the most primitive termite alive'],
+        ['DISTRIBUTION', 'Northern Australia, roughly above the Tropic of Capricorn'],
+        ['DIET', 'Timber, rubber, plastics, leather, bitumen, living trees, crops'],
+        ['COLONY', 'Over a million, spread across many sub-nests'],
+        ['SPREAD', 'A broken-off fragment can start a whole new colony']
+      ],
+      charges: [
+        'Destroys a building faster than any other termite in Australia',
+        'Chews through rubber tyres, cabling, plastics and leather',
+        'Ringbarks and kills living trees, orchards and crops',
+        'Regrows from a fragment, so half a treatment is no treatment',
+        'Makes northern properties uninsurable against timber damage'
+      ],
+      mo: [
+        'Nests underground in multiple connected sub-nests, hard to pin down',
+        'Forages over long distances through soil and under cover',
+        'Attacks living plants as readily as dead timber',
+        'Populations explode after wet-season rain',
+        'Colonies survive treatment that would finish other species'
+      ],
+      evidence: [
+        'Very large termites, twice the size of anything else you have seen',
+        'Damage to non-timber materials — cable, rubber, plastic',
+        'Dying or ringbarked trees on the property',
+        'Broad mud galleries and rapid, extensive timber loss'
+      ],
+      hideouts: ['Underground sub-nests', 'Living trees', 'Under slabs', 'Buried timber and debris', 'Cane and orchard ground'],
+      verdict: 'A specialist job with a proper baiting program — this one needs the entire colony network taken out, and confirming it is gone matters more than the first treatment.',
+      spec: {
+        plan: 'insect', len: 2.35, gloss: 0.42, stand: 0.10, idle: 1.1,
+        abdomenW: 0.245, abdomenH: 0.165, abdomenL: 0.40, abdomenZ: -0.28, abdomenTaper: 0.30, flatBottom: 0.22,
+        thoraxW: 0.215, thoraxH: 0.135, thoraxL: 0.19, thoraxZ: 0.09,
+        pronotumW: 0.235, pronotumL: 0.14, pronotumH: 0.05,
+        headW: 0.22, headH: 0.16, headL: 0.245, headZ: 0.365, headY: 0.14, headPitch: -0.1,
+        eye: 0.035,
+        segments: 9, segAmp: 0.075, mottle: 0.05,
+        setae: { count: 110, len: 0.032, thick: 0.0022, color: [188, 152, 106] },
+        colors: {
+          body: [206, 176, 132], abdomen: [200, 168, 124], thorax: [186, 150, 106],
+          pronotum: [170, 132, 88], head: [140, 84, 40], leg: [196, 158, 110],
+          antenna: [176, 138, 92], eye: [40, 28, 20]
+        },
+        markings: { abdomenBands: { color: [156, 118, 74], count: 7 } },
+        mandibles: { len: 0.26, thick: 0.038, color: [88, 46, 22] },
+        antenna: { len: 0.52, thick: 0.020, segs: 7, splay: 0.46, arch: 0.24, spread: 0.66, reach: 0.8 },
+        legs: { thick: 0.028, kneeOut: 0.18, kneeUp: 0.07, footOut: 0.32, attachZ: [0.17, 0.03, -0.13], dirs: [0.62, 1.5, 2.38], scale: [0.82, 0.88, 1.0] }
+      }
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: 'heterotermes',
+      name: 'Heterotermes',
+      sci: 'Heterotermes ferox',
+      aka: ['Fence termite', 'Weathered timber termite'],
+      order: 'Blattodea · Rhinotermitidae',
+      threat: 3,
+      threatLabel: 'MODERATE — FENCES, DECKS AND WEATHERED TIMBER',
+      actualSize: '4–5 mm soldier',
+      tagline: 'Starts in the fence and the deck. Sometimes it does not stop there.',
+      vitals: [
+        ['SIZE', '4–5 mm soldier'],
+        ['ID MARK', 'Long rectangular head, slender straight mandibles'],
+        ['DISTRIBUTION', 'Widespread across eastern Australia'],
+        ['NEST', 'Small, diffuse, under buried timber and debris'],
+        ['TIMBER', 'Weathered, damp and partly decayed timber'],
+        ['COLONY', 'Small compared with Coptotermes — thousands']
+      ],
+      charges: [
+        'Eats out fence posts, retaining walls, decking and steps',
+        'Works into door frames and skirtings where timber meets damp ground',
+        'Turns sound-looking outdoor timber into a shell',
+        'Gets written off as "only fence termites" while it moves indoors',
+        'Signals conditions that will attract worse species next'
+      ],
+      mo: [
+        'Nests in and under buried timber, debris and old form-work',
+        'Attacks weathered timber in ground contact first',
+        'Needs damp — thrives where drainage is poor',
+        'Builds thin mud galleries over surfaces it crosses',
+        'Colonies stay small but persist for years'
+      ],
+      evidence: [
+        'Soft, hollow fence posts and deck bearers at ground level',
+        'Thin mud runs across concrete, brickwork and posts',
+        'Small pale termites in weathered outdoor timber',
+        'Timber debris under the house showing galleries'
+      ],
+      hideouts: ['Fence posts', 'Deck bearers and steps', 'Retaining wall timbers', 'Buried off-cuts', 'Garden edging'],
+      verdict: 'Worth treating properly even though it is the mild one — the damp timber and ground contact that suit Heterotermes are exactly what invites Coptotermes in next.',
+      spec: {
+        plan: 'insect', len: 1.75, gloss: 0.34, stand: 0.10, idle: 1.2,
+        abdomenW: 0.185, abdomenH: 0.14, abdomenL: 0.36, abdomenZ: -0.28, abdomenTaper: 0.32, flatBottom: 0.15,
+        thoraxW: 0.155, thoraxH: 0.115, thoraxL: 0.18, thoraxZ: 0.08,
+        pronotum: false,
+        headW: 0.165, headH: 0.135, headL: 0.27, headZ: 0.375, headY: 0.12, headPitch: -0.05,
+        eye: 0,
+        segments: 10, segAmp: 0.08, mottle: 0.035,
+        setae: { count: 70, len: 0.022, thick: 0.0014 },
+        colors: {
+          body: [232, 218, 194], abdomen: [236, 222, 200], thorax: [226, 210, 186],
+          head: [204, 150, 86], leg: [226, 206, 178], antenna: [214, 194, 162]
+        },
+        markings: {},
+        mandibles: { len: 0.32, thick: 0.022, color: [138, 82, 38] },
+        antenna: { len: 0.42, thick: 0.018, segs: 6, splay: 0.5, arch: 0.22, spread: 0.68, reach: 0.72 },
+        legs: { thick: 0.026, kneeOut: 0.16, kneeUp: 0.06, footOut: 0.29, attachZ: [0.16, 0.02, -0.14], dirs: [0.65, 1.5, 2.35], scale: [0.76, 0.8, 0.88] }
       }
     },
 
@@ -297,6 +671,8 @@
         plan: 'arachnid', len: 2.0, gloss: 0.72, stand: 0.34, idle: 0.8,
         abdomenW: 0.30, abdomenH: 0.31, abdomenL: 0.31, abdomenZ: 0.30,
         thoraxW: 0.17, thoraxH: 0.11, thoraxL: 0.20, thoraxZ: 0.16,
+        mottle: 0.06,
+        setae: { count: 120, len: 0.026, thick: 0.002, color: [70, 64, 70] },
         colors: {
           body: [52, 47, 52], abdomen: [48, 43, 48], thorax: [60, 54, 58],
           leg: [56, 50, 54], eye: [10, 8, 10]
@@ -652,6 +1028,8 @@
         plan: 'arachnid', len: 2.5, gloss: 0.42, stand: 0.20, idle: 0.9,
         abdomenW: 0.20, abdomenH: 0.095, abdomenL: 0.25, abdomenZ: 0.20,
         thoraxW: 0.21, thoraxH: 0.085, thoraxL: 0.21, thoraxZ: 0.14,
+        mottle: 0.10,
+        setae: { count: 150, len: 0.032, thick: 0.0022, color: [116, 94, 68] },
         colors: {
           body: [150, 122, 88], abdomen: [140, 114, 82], thorax: [158, 130, 96],
           leg: [146, 116, 82], eye: [16, 12, 10]

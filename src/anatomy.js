@@ -210,10 +210,13 @@
     parts.push({
       name: 'abdomen',
       mesh: M.ellipsoid({
-        rx: abRx, ry: abRy, rz: abRz, su: 22, sv: 13,
+        rx: abRx, ry: abRy, rz: abRz, su: 22, sv: 24,
         flatBottom: p.flatBottom === undefined ? 0.3 : p.flatBottom,
         taperBack: p.abdomenTaper === undefined ? 0.42 : p.abdomenTaper,
         taperFront: p.abdomenTaperFront || 0,
+        segments: p.segments === undefined ? 7 : p.segments,
+        segAmp: p.segAmp === undefined ? 0.055 : p.segAmp,
+        mottle: p.mottle === undefined ? 0.07 : p.mottle,
         color: paletteFor('abdomen', p), gloss: gl,
         matrix: m4.trans(0, abY, abZ)
       })
@@ -245,6 +248,7 @@
       name: 'thorax',
       mesh: M.ellipsoid({
         rx: thRx, ry: thRy, rz: thRz, su: 18, sv: 10, flatBottom: 0.35,
+        mottle: p.mottle === undefined ? 0.07 : p.mottle,
         color: c.thorax || c.body, gloss: gl, matrix: m4.trans(0, thY, thZ)
       })
     });
@@ -257,6 +261,7 @@
         name: 'pronotum',
         mesh: M.ellipsoid({
           rx: prRx, ry: (p.pronotumH || 0.075) * L, rz: prRz, su: 24, sv: 11, flatBottom: 0.75,
+          mottle: (p.mottle === undefined ? 0.07 : p.mottle) * 0.6,
           color: paletteFor('pronotum', p), gloss: gl + 0.15,
           matrix: m4.chain(m4.trans(0, thY + thRy * 0.55, thZ + prRz * 0.04), m4.rotX(-0.06))
         })
@@ -288,6 +293,24 @@
       }
     }
 
+    // setae — the fine hairs along the abdomen and thorax. They catch the rim
+    // light and rough up the silhouette, which is most of the difference
+    // between a specimen and a smooth toy.
+    if (p.setae !== false) {
+      var st = p.setae || {};
+      parts.push({
+        name: 'setae',
+        mesh: M.setae({
+          rx: abRx * 0.98, ry: abRy * 0.98, rz: abRz * 0.98,
+          count: st.count || 90, len: (st.len || 0.035) * L, thick: (st.thick || 0.0022) * L,
+          color: st.color || mix(c.abdomen || c.body, [255, 240, 220], 0.22),
+          minY: st.minY === undefined ? -0.35 : st.minY,
+          cover: st.cover || 1.5, sweep: st.sweep === undefined ? 0.35 : st.sweep,
+          matrix: m4.trans(0, abY, abZ)
+        })
+      });
+    }
+
     // head, tilted down under the pronotum the way roaches carry it
     var hRx = (p.headW || 0.17) * L, hRy = (p.headH || 0.13) * L, hRz = (p.headL || 0.14) * L;
     var hZ = (p.headZ === undefined ? 0.36 : p.headZ) * L;
@@ -308,13 +331,29 @@
         }));
       }
     }
+    // rostrum — the nasute soldier's snout. No mandibles at all: it squirts a
+    // sticky defensive terpene out of the point instead of biting.
+    if (p.rostrum) {
+      var rs = p.rostrum;
+      M.merge(head, M.tube({
+        path: M.curvePath(
+          [0, hRy * 0.1, hRz * 0.55],
+          [0, hRy * 0.02, hRz * 0.55 + rs.len * L * 0.5],
+          [0, -hRy * (rs.droop === undefined ? 0.15 : rs.droop), hRz * 0.55 + rs.len * L], 7),
+        radii: M.taper(8, rs.thick * L, rs.thick * L * 0.1, 1.5),
+        sides: 7, color: rs.color || c.head, gloss: 0.55,
+        matrix: headMat
+      }));
+    }
+
     // mandibles — termite soldiers are basically a pair of these with a bug attached
     if (p.mandibles) {
       var md = p.mandibles;
       for (var mside = -1; mside <= 1; mside += 2) {
-        var mstart = [mside * hRx * 0.55, -hRy * 0.15, hRz * 0.7];
-        var mctrl = [mside * hRx * 1.05, -hRy * 0.2, hRz * 0.7 + md.len * L * 0.55];
-        var mend = [mside * hRx * 0.12, -hRy * 0.12, hRz * 0.7 + md.len * L];
+        // mandibles reach forward and cross slightly, rather than hanging down
+        var mstart = [mside * hRx * 0.55, hRy * 0.02, hRz * 0.7];
+        var mctrl = [mside * hRx * 1.02, -hRy * 0.02, hRz * 0.7 + md.len * L * 0.6];
+        var mend = [mside * hRx * -0.05, -hRy * 0.06, hRz * 0.72 + md.len * L];
         M.merge(head, M.tube({
           path: M.curvePath(mstart, mctrl, mend, 7),
           radii: M.taper(8, md.thick * L, md.thick * L * 0.18, 1.4),
@@ -419,6 +458,7 @@
       name: 'abdomen',
       mesh: M.ellipsoid({
         rx: abRx, ry: abRy, rz: abRz, su: 26, sv: 16,
+        mottle: p.mottle === undefined ? 0.08 : p.mottle,
         color: paletteFor('abdomen', p), gloss: gl,
         matrix: m4.trans(0, abY, abZ)
       })
@@ -439,6 +479,7 @@
     var ctY = stand + ctRy * 0.2, ctZ = (p.thoraxZ === undefined ? 0.12 : p.thoraxZ) * L;
     var ceph = M.ellipsoid({
       rx: ctRx, ry: ctRy, rz: ctRz, su: 18, sv: 12, flatBottom: 0.3,
+      mottle: p.mottle === undefined ? 0.08 : p.mottle,
       color: c.thorax || c.body, gloss: gl + 0.15, matrix: m4.trans(0, ctY, ctZ)
     });
     // eye cluster
@@ -463,6 +504,21 @@
             [ps * ctRx * 1.0, ctY - ctRy * 0.5, ctZ + ctRz * 1.15],
             [ps * ctRx * 0.9, stand * 0.35, ctZ + ctRz * 1.5], 5),
           radii: M.taper(6, L * 0.024, L * 0.014), sides: 5, color: c.leg || c.body, gloss: gl
+        })
+      });
+    }
+
+    if (p.setae !== false) {
+      var ast = p.setae || {};
+      parts.push({
+        name: 'setae',
+        mesh: M.setae({
+          rx: abRx * 0.98, ry: abRy * 0.98, rz: abRz * 0.98,
+          count: ast.count || 110, len: (ast.len || 0.032) * L, thick: (ast.thick || 0.0022) * L,
+          color: ast.color || mix(c.abdomen || c.body, [255, 240, 220], 0.25),
+          minY: ast.minY === undefined ? -0.4 : ast.minY,
+          cover: ast.cover || 1.6, sweep: ast.sweep === undefined ? 0.2 : ast.sweep,
+          matrix: m4.trans(0, abY, abZ)
         })
       });
     }
@@ -511,6 +567,7 @@
       mesh: M.merge(
         M.ellipsoid({
           rx: bRx, ry: bRy, rz: bRz, su: 22, sv: 15, taperFront: 0.30, taperBack: 0.25,
+          mottle: p.mottle === undefined ? 0.09 : p.mottle,
           color: bodyCol, gloss: gl, matrix: m4.trans(0, bY, -bRz * 0.08)
         }),
         M.ellipsoid({

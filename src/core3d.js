@@ -79,7 +79,7 @@
    *             function evaluated at the face centroid in local space.
    * ------------------------------------------------------------------ */
   function emptyMesh() {
-    return { pos: [], face: [], col: [], gloss: [], alpha: [] };
+    return { pos: [], face: [], col: [], gloss: [], alpha: [], unlit: [] };
   }
 
   function pushVert(m, x, y, z) {
@@ -87,11 +87,12 @@
     return m.pos.length / 3 - 1;
   }
 
-  function pushFace(m, a, b, c, color, gloss, alpha) {
+  function pushFace(m, a, b, c, color, gloss, alpha, unlit) {
     m.face.push([a, b, c]);
     m.col.push(color);
     m.gloss.push(gloss === undefined ? 0.35 : gloss);
     m.alpha.push(alpha === undefined ? 1 : alpha);
+    m.unlit.push(unlit ? 1 : 0);
   }
 
   function centroid(m, a, b, c) {
@@ -103,9 +104,27 @@
     ];
   }
 
-  /** Resolve a colour spec that may be a flat [r,g,b] or a fn(localPos). */
-  function resolveCol(spec, pt) {
-    return typeof spec === 'function' ? spec(pt) : spec;
+  /** Deterministic hash of a point → -1..1. Same mesh, same speckle, always. */
+  function hash3(x, y, z) {
+    var h = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453;
+    return (h - Math.floor(h)) * 2 - 1;
+    }
+
+  /**
+   * Resolve a colour spec that may be a flat [r,g,b] or a fn(localPos), then
+   * jitter it slightly per face. Real cuticle is mottled; a single flat value
+   * over a whole abdomen is the main thing that reads as "computer graphic".
+   */
+  function resolveCol(spec, pt, mottle) {
+    var c = typeof spec === 'function' ? spec(pt) : spec;
+    if (!mottle) return c;
+    var n = hash3(pt[0] * 37, pt[1] * 41, pt[2] * 43) * mottle;
+    var m = hash3(pt[2] * 17, pt[0] * 23, pt[1] * 29) * mottle * 0.4;
+    return [
+      Math.max(0, Math.min(255, c[0] * (1 + n))),
+      Math.max(0, Math.min(255, c[1] * (1 + n + m * 0.5))),
+      Math.max(0, Math.min(255, c[2] * (1 + n - m)))
+    ];
   }
 
   function merge(target, src) {
@@ -117,6 +136,7 @@
       target.col.push(src.col[f]);
       target.gloss.push(src.gloss[f]);
       target.alpha.push(src.alpha ? src.alpha[f] : 1);
+      target.unlit.push(src.unlit ? src.unlit[f] : 0);
     }
     return target;
   }
@@ -141,6 +161,8 @@
     var flatBottom = opt.flatBottom === undefined ? 0 : opt.flatBottom;
     var taperFront = opt.taperFront || 0;   // pinch the +z end
     var taperBack = opt.taperBack || 0;     // pinch the -z end
+    var segments = opt.segments || 0;       // visible tergite count
+    var segAmp = opt.segAmp === undefined ? 0.05 : opt.segAmp;
     var m = emptyMesh();
     var grid = [];
     for (var v = 0; v <= sv; v++) {
@@ -155,7 +177,15 @@
         // taper along z so the abdomen narrows toward the tail
         var tz = z > 0 ? 1 - taperFront * z : 1 + taperBack * z;
         var yy = y < 0 ? y * (1 - flatBottom) : y;
-        row.push(pushVert(m, x * rx * tz, yy * ry, z * rz));
+        // segmentation: each tergite is fullest at its leading edge and steps
+        // in at the rear, so the body reads as overlapping plates, not a bean
+        var seg = 1;
+        if (segments) {
+          var along = (z + 1) / 2;                       // 0 tail .. 1 head
+          var f = along * segments;
+          seg = 1 + segAmp * (0.5 - (f - Math.floor(f)));
+        }
+        row.push(pushVert(m, x * rx * tz * seg, yy * ry * seg, z * rz));
       }
       grid.push(row);
     }
@@ -163,8 +193,8 @@
       for (var uu = 0; uu < su; uu++) {
         var a = grid[vv][uu], b = grid[vv][(uu + 1) % su];
         var c = grid[vv + 1][(uu + 1) % su], d = grid[vv + 1][uu];
-        pushFace(m, a, b, c, resolveCol(opt.color, centroid(m, a, b, c)), opt.gloss, opt.alpha);
-        pushFace(m, a, c, d, resolveCol(opt.color, centroid(m, a, c, d)), opt.gloss, opt.alpha);
+        pushFace(m, a, b, c, resolveCol(opt.color, centroid(m, a, b, c), opt.mottle), opt.gloss, opt.alpha, opt.unlit);
+        pushFace(m, a, c, d, resolveCol(opt.color, centroid(m, a, c, d), opt.mottle), opt.gloss, opt.alpha, opt.unlit);
       }
     }
     if (opt.matrix) applyMatrix(m, opt.matrix);
@@ -202,8 +232,8 @@
       for (var k = 0; k < sides; k++) {
         var a1 = rings[r][k], b1 = rings[r][(k + 1) % sides];
         var c1 = rings[r + 1][(k + 1) % sides], d1 = rings[r + 1][k];
-        pushFace(m, a1, b1, c1, resolveCol(opt.color, centroid(m, a1, b1, c1)), opt.gloss, opt.alpha);
-        pushFace(m, a1, c1, d1, resolveCol(opt.color, centroid(m, a1, c1, d1)), opt.gloss, opt.alpha);
+        pushFace(m, a1, b1, c1, resolveCol(opt.color, centroid(m, a1, b1, c1), opt.mottle), opt.gloss, opt.alpha, opt.unlit);
+        pushFace(m, a1, c1, d1, resolveCol(opt.color, centroid(m, a1, c1, d1), opt.mottle), opt.gloss, opt.alpha, opt.unlit);
       }
     }
     // cap the far end so tapered tips do not show a hole from behind
@@ -212,7 +242,7 @@
       var tip = pushVert(m, path[path.length - 1][0], path[path.length - 1][1], path[path.length - 1][2]);
       for (var q = 0; q < sides; q++) {
         pushFace(m, last[q], last[(q + 1) % sides], tip,
-          resolveCol(opt.color, centroid(m, last[q], last[(q + 1) % sides], tip)), opt.gloss, opt.alpha);
+          resolveCol(opt.color, centroid(m, last[q], last[(q + 1) % sides], tip), opt.mottle), opt.gloss, opt.alpha, opt.unlit);
       }
     }
     if (opt.matrix) applyMatrix(m, opt.matrix);
@@ -284,9 +314,46 @@
     return m;
   }
 
+  /**
+   * Scatter fine hairs over an ellipsoid's upper surface. Setae catch the rim
+   * light and break the silhouette, which is most of what separates a real
+   * insect from a smooth toy at reel resolution.
+   */
+  function setae(opt) {
+    var m = emptyMesh();
+    var n = opt.count || 40;
+    var rx = opt.rx, ry = opt.ry, rz = opt.rz;
+    for (var i = 0; i < n; i++) {
+      // low-discrepancy scatter so the hairs never clump
+      var a = i * 2.399963;
+      var v = (i + 0.5) / n;
+      var phi = Math.acos(1 - v * (opt.cover || 1.25));
+      var sx = Math.sin(phi) * Math.cos(a);
+      var sy = Math.cos(phi);
+      var sz = Math.sin(phi) * Math.sin(a);
+      if (sy < (opt.minY === undefined ? -0.15 : opt.minY)) continue;
+      var px = sx * rx, py = sy * ry, pz = sz * rz;
+      var nx = px / (rx * rx), ny = py / (ry * ry), nz = pz / (rz * rz);
+      var nl = Math.hypot(nx, ny, nz) || 1;
+      var len = opt.len * (0.7 + 0.6 * ((Math.sin(i * 12.9898) * 43758.5453) % 1));
+      // setae lie back along the body rather than radiating like a pincushion
+      var sweep = opt.sweep === undefined ? 0.8 : opt.sweep;
+      var tipx = px + (nx / nl) * len * (1 - sweep * 0.35);
+      var tipy = py + (ny / nl) * len * (1 - sweep * 0.45);
+      var tipz = pz + (nz / nl) * len * (1 - sweep * 0.35) - sweep * len * 1.15;
+      merge(m, tube({
+        path: [[px, py, pz], [(px + tipx) / 2, (py + tipy) / 2, (pz + tipz) / 2], [tipx, tipy, tipz]],
+        radii: [opt.thick, opt.thick * 0.5, opt.thick * 0.06],
+        sides: 3, color: opt.color, gloss: 0, unlit: true
+      }));
+    }
+    if (opt.matrix) applyMatrix(m, opt.matrix);
+    return m;
+  }
+
   BB.mesh = {
     empty: emptyMesh, merge: merge, apply: applyMatrix, normals: computeNormals,
-    ellipsoid: ellipsoid, tube: tube, curvePath: curvePath, taper: taper,
+    ellipsoid: ellipsoid, tube: tube, setae: setae, curvePath: curvePath, taper: taper,
     cross: cross, norm: norm
   };
 
@@ -418,7 +485,8 @@
         if (nz < 0) { nx = -nx; ny = -ny; nz = -nz; } // always face the camera
         faces.push([(vz[a] + vz[b] + vz[c]) / 3,
           sx[a], sy[a], sx[b], sy[b], sx[c], sy[c],
-          nx, ny, nz, mesh.col[k], mesh.gloss[k], mesh.alpha ? mesh.alpha[k] : 1]);
+          nx, ny, nz, mesh.col[k], mesh.gloss[k], mesh.alpha ? mesh.alpha[k] : 1,
+          mesh.unlit ? mesh.unlit[k] : 0]);
       }
     }
 
@@ -429,6 +497,22 @@
     var tint = this.tint, ex = this.exposure;
     for (var q2 = 0; q2 < faces.length; q2++) {
       var F = faces[q2];
+      // hairs are sub-pixel cylinders: lighting them just turns them black,
+      // so they carry their own colour straight through
+      if (F[13]) {
+        var uc = F[10];
+        ctx.globalAlpha = F[12];
+        ctx.fillStyle = ctx.strokeStyle = 'rgb(' + (uc[0] | 0) + ',' + (uc[1] | 0) + ',' + (uc[2] | 0) + ')';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(F[1], F[2]);
+        ctx.lineTo(F[3], F[4]);
+        ctx.lineTo(F[5], F[6]);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        continue;
+      }
       var lam = Math.max(0, F[7] * L[0] + F[8] * L[1] + F[9] * L[2]);
       var fl = Math.max(0, F[7] * FI[0] + F[8] * FI[1] + F[9] * FI[2]);
       var rimv = Math.max(0, F[7] * R[0] + F[8] * R[1] + F[9] * R[2]);

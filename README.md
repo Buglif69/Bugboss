@@ -24,16 +24,24 @@ the photographs baked in, or 120 KB if you build without them.
 
 ---
 
-## The seventeen specimens
+## The twenty-three specimens
 
 Cockroaches: German · American · Australian
+**Termites (the full Australian subterranean set):** Coptotermes acinaciformis ·
+Coptotermes frenchi · Schedorhinotermes intermedius · Nasutitermes exitiosus ·
+Nasutitermes walkeri · Mastotermes darwiniensis · Heterotermes ferox
 Ants: coastal brown (big-headed) · black house
-Termite: subterranean (Coptotermes soldier)
 Spiders: redback · huntsman · white-tailed
 Rodents: roof rat · house mouse
 Biting: bed bug · cat flea
 Wasps: paper · European
 Stored goods: silverfish · pantry moth
+
+The termites are modelled on the **soldier caste**, because that is the one
+you identify from: Coptotermes' pear head and curved mandibles, Schedorhinotermes'
+heavy-jawed major, Heterotermes' long rectangular head, Mastotermes' sheer
+size, and the Nasutitermes snout — which has no mandibles at all and squirts
+a defensive terpene out of the point instead.
 
 Each one carries its own dossier copy, written for South-East Queensland
 conditions, and its own body-plan numbers.
@@ -153,8 +161,8 @@ wording, edit `src/brand.js`. It is the only place those strings exist.
 
 | File | Job |
 |---|---|
-| `src/core3d.js` | The 3D engine: matrices, mesh primitives, and a painter's-algorithm renderer on canvas 2D. Smooth vertex normals, per-face colour and alpha, weak perspective, ground shadow. ~500 lines, no dependencies. |
-| `src/anatomy.js` | Three body plans — insect, arachnid, rodent — assembled from ellipsoids and swept tubes. Species markings (pronotum stripes, wasp bands, the redback's blaze) are colour functions evaluated per face. |
+| `src/core3d.js` | The 3D engine: matrices, mesh primitives, and a painter's-algorithm renderer on canvas 2D. Smooth vertex normals, per-face colour, alpha and unlit flags, weak perspective, ground shadow, tergite segmentation, per-face colour mottling, and scattered setae. ~600 lines, no dependencies. |
+| `src/anatomy.js` | Three body plans — insect, arachnid, rodent — assembled from ellipsoids and swept tubes. Species markings (pronotum stripes, wasp bands, the redback's blaze) are colour functions evaluated per face. Soldier features — mandibles, the nasute rostrum — are options. |
 | `src/pests.js` | The database: dossier copy plus body-plan numbers. |
 | `src/photo-sources.json` | Where the field photographs come from, with credits and crops. Hand-edited. |
 | `src/photos.js` | Generated index of the prepared photos. Do not hand-edit. |
@@ -167,6 +175,31 @@ wording, edit `src/brand.js`. It is the only place those strings exist.
 Why canvas 2D and not three.js: the output has to survive being pasted into
 WordPress, opened offline, and rendered by a headless recorder. A dependency-
 free file does all three; 600 KB of WebGL library for eight bugs does not.
+
+## Why the specimens are generated rather than scanned
+
+The obvious question is why not use real scanned 3D models. Short version: the
+tradeoff does not pay off here.
+
+- **Weight.** A photogrammetry or CT-scanned insect runs 5–50 MB each. Twenty-
+  three of those is a slow website and no single-file build.
+- **Licensing.** The good ones are paid, and the free ones are a mix of CC BY,
+  non-commercial and unclear. Non-commercial is useless for advertising.
+- **Quality.** CT scans are grey and dead-looking; photogrammetry of something
+  12 mm long is usually mush. Neither turns nicely on a black stage.
+- **Reach.** They cannot be fetched from this build environment anyway — every
+  3D asset host is blocked by network policy.
+
+What the generated approach buys instead: 3–6 k triangles per specimen, 7 ms a
+frame at 1080×1920, a new species in about thirty lines of data, and correct
+anatomy for the caste that actually matters. The realism comes from segmented
+tergites, per-face colour mottling, fine setae and smooth normals rather than
+from scan data — and the real field photograph sits one tap away for anything
+the model cannot claim.
+
+If you do want a scanned model for a hero pest, buy one good one (roughly
+$20–80 on TurboSquid or CGTrader), and it can be wired in behind a WebGL
+renderer for that species alone.
 
 ## Honest limits
 
