@@ -134,3 +134,22 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# build/dev artefacts
+.shots/
+
+# dist IS the deliverable here — the built HTML is what gets uploaded,
+# so it is tracked; rendered videos are not (too big, regenerate them).
+!dist/
+!dist/**
+dist/video/
+
+# raw photo downloads — the processed versions are what ship
+assets/photos/.cache/
+
+# real 3D models are large third-party binaries — keep them out of git
+assets/models/*.glb
+assets/models/*.gltf
+dist/models/
+
+assets/fits/

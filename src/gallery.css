@@ -1,0 +1,183 @@
+/* gallery.css — the index page that fronts the dossiers. */
+
+.gal {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(22px, 4vw, 54px) clamp(16px, 3vw, 32px) 60px;
+}
+
+.gal-head { text-align: center; margin-bottom: clamp(22px, 3vw, 40px); }
+.gal-unit {
+  color: var(--bb-red);
+  letter-spacing: .28em;
+  font-size: clamp(9px, 1vw, 12px);
+  font-weight: 700;
+}
+.gal-title {
+  font-family: var(--bb-sans);
+  font-size: clamp(28px, 5vw, 58px);
+  line-height: 1.03;
+  margin: 12px 0 10px;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(238, 28, 36, .3);
+}
+.gal-sub {
+  max-width: 62ch;
+  margin: 0 auto;
+  color: var(--bb-mute);
+  font-size: clamp(13px, 1.15vw, 15.5px);
+  line-height: 1.65;
+}
+
+.gal-hint {
+  margin: 14px 0 0;
+  color: var(--bb-red);
+  font-size: clamp(9.5px, .95vw, 11.5px);
+  letter-spacing: .18em;
+}
+
+.gal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  grid-auto-rows: 1fr;                 /* equal card heights, whatever the copy */
+  gap: clamp(12px, 1.6vw, 20px);
+}
+
+.gal-card {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(28, 12, 14, .9), rgba(10, 5, 6, .92));
+  border: 1px solid var(--bb-line);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.gal-card:hover,
+.gal-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--bb-red);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .55), 0 0 0 1px rgba(238, 28, 36, .25);
+  outline: none;
+}
+
+.gal-stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background:
+    radial-gradient(58% 55% at 50% 46%, rgba(238, 28, 36, .16) 0%, rgba(238, 28, 36, 0) 72%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .02) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .02) 0 1px, transparent 1px 34px);
+  border-bottom: 1px solid var(--bb-line);
+}
+.gal-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.gal-spin {
+  position: absolute;
+  left: 10px; top: 8px;                /* the photo inset owns the bottom rail */
+  font-size: 9px;
+  letter-spacing: .18em;
+  color: rgba(232, 226, 223, .35);
+}
+
+.gal-inset {
+  position: absolute;
+  right: 8px; bottom: 8px;
+  width: 34%;
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgba(238, 28, 36, .5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .6);
+  overflow: hidden;
+  background: #0a0506;
+}
+.gal-inset img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gal-inset span {
+  position: absolute;
+  left: 0; bottom: 0;
+  background: rgba(6, 3, 4, .82);
+  color: var(--bb-red);
+  font-size: 8px;
+  letter-spacing: .18em;
+  padding: 2px 5px;
+}
+
+.gal-body { padding: 12px 14px 14px; display: flex; flex-direction: column; flex: 1; }
+.gal-meta { margin-top: auto; }
+.gal-name { font-family: var(--bb-sans); font-size: 17px; color: #fff; }
+.gal-sci { font-style: italic; color: var(--bb-red); font-size: 12.5px; margin-top: 2px; }
+.gal-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 4px 10px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--bb-mute);
+  letter-spacing: .1em;
+}
+.gal-pips { display: inline-flex; gap: 3px; }
+.gal-pips i { width: 14px; height: 5px; background: rgba(255, 255, 255, .14); display: block; }
+.gal-pips i.on { background: var(--bb-red); box-shadow: 0 0 8px rgba(238, 28, 36, .7); }
+.gal-size { margin-left: auto; text-align: right; }
+
+.gal-foot { text-align: center; margin-top: clamp(26px, 4vw, 48px); }
+.gal-cta {
+  display: inline-block;
+  margin: 0 5px 8px;
+  background: var(--bb-red);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: 13px 22px;
+  border: 2px solid var(--bb-red);
+  font-size: 13px;
+}
+.gal-cta.ghost { background: transparent; color: var(--bb-red); }
+.gal-cta:hover { background: #ff2f37; color: #fff; }
+.gal-cta.ghost:hover { background: rgba(238, 28, 36, .12); }
+.gal-credits {
+  max-width: 70ch;
+  margin: 12px auto 0;
+  color: var(--bb-mute);
+  font-size: 10.5px;
+  line-height: 1.7;
+  opacity: .8;
+}
+
+.gal-fine { margin-top: 14px; color: var(--bb-mute); font-size: 11px; line-height: 1.7; letter-spacing: .05em; }
+
+.gal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 2, 3, .96);
+  z-index: 50;
+  display: none;
+  flex-direction: column;
+}
+.gal-overlay.is-open { display: flex; }
+/* the close control gets its own strip: floating it over the dossier lands
+   it on top of the file number in the panel header */
+.gal-bar {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--bb-line);
+  background: #070304;
+}
+.gal-frame { flex: 1 1 auto; width: 100%; border: 0; display: block; min-height: 0; }
+.gal-inline { flex: 1 1 auto; width: 100%; min-height: 0; position: relative; }
+.gal-close {
+  z-index: 2;
+  background: rgba(10, 5, 6, .85);
+  color: var(--bb-text);
+  border: 1px solid var(--bb-red);
+  font-family: var(--bb-mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  padding: 9px 13px;
+  cursor: pointer;
+}
+.gal-close:hover { background: var(--bb-red); color: #fff; }

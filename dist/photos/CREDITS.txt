@@ -1,0 +1,76 @@
+Field photographs used in the Pest Dossier
+=========================================
+
+These images are other people's work, reused under Creative Commons.
+The licence requires the photographer credit to stay with the image
+wherever it appears — including on social posts and in print.
+
+german-cockroach-1.jpg
+  German Cockroach
+  Photo: Terra Occ — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/609862291/large.jpg
+
+american-cockroach-1.jpg
+  American Cockroach
+  Photo: smathichong — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/620180345/large.jpg
+
+coastal-brown-ant-1.jpg
+  Coastal Brown Ant
+  Photo: Zoe Anthony Quested — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/630727037/large.jpg
+
+black-house-ant-1.jpg
+  Black House Ant
+  Photo: Carl Ramirez — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/618544538/large.jpg
+
+subterranean-termite-1.jpg
+  Coptotermes Termite
+  Photo: Scott W. Gavins — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/595585246/large.jpg
+
+redback-spider-1.jpg
+  Redback Spider
+  Photo: Lawrence Hylton — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/605377583/large.jpg
+
+huntsman-spider-1.jpg
+  Huntsman Spider
+  Photo: Noah Kirkland — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/378606600/large.jpg
+
+white-tailed-spider-1.jpg
+  White-Tailed Spider
+  Photo: koalabi — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/703213795/large.jpg
+
+roof-rat-1.jpg
+  Roof Rat
+  Photo: Austen Armstrong — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/608363798/large.jpg
+
+house-mouse-1.jpg
+  House Mouse
+  Photo: Tyler Anthony — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/607768446/large.jpg
+
+bed-bug-1.jpg
+  Bed Bug
+  Photo: Sarah Courchesne — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/617019423/large.jpg
+
+paper-wasp-1.jpg
+  Paper Wasp
+  Photo: Mark Clarke — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/604999316/large.jpg
+
+european-wasp-1.jpg
+  European Wasp
+  Photo: Lukas Clews — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/605301923/large.jpg
+
+pantry-moth-1.jpg
+  Pantry Moth
+  Photo: smathichong — CC BY 4.0 — via iNaturalist
+  https://inaturalist-open-data.s3.amazonaws.com/photos/610859481/large.jpg
