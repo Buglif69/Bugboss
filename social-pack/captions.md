@@ -351,3 +351,6 @@ Publicans & venue managers: cellars, stockrooms and beer gardens are prime pest 
 
 **105 — LinkedIn: zero-fines target**
 Health inspectors don’t reschedule. A documented pest management program is the cheapest compliance line on the P&L — and the difference between a clean audit and a closure notice. Full reporting with every service. (07) 3113 9666 #Compliance #FacilitiesManagement #CommercialPestControl
+
+**106 — GBP: scratching in the roof**
+Rodent control Brisbane — hearing scratching in the roof at night? That’s roof rats, and they don’t leave on their own. They chew wiring (a leading cause of unexplained house fires), contaminate food and breed fast — one pair becomes 200+ in a year. Slug-A-Bug finds the entry points, baits safely with kids and pets accounted for, and seals rodents OUT — not just knocks them down. ✅ Most jobs booked this same week ✅ 30-day guarantee: if they’re back, so are we — free ✅ Family owned, 20+ years, 1,200+ five-star reviews ✅ Fully licensed (QLD PMT 1004307814) 📞 Call (07) 3113 9666 for a free quote — or book online at slugabug.com.au. Servicing North Lakes to Shailer Park and everywhere between.
