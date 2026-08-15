@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slug-A-Bug — Social Pack 01</title>
+<style>
+  @font-face{font-family:'Anton';src:url('fonts/anton-latin-400-normal.woff2') format('woff2');font-weight:400;}
+  @font-face{font-family:'Barlow';src:url('fonts/barlow-latin-400-normal.woff2') format('woff2');font-weight:400;}
+  @font-face{font-family:'Barlow';src:url('fonts/barlow-latin-500-normal.woff2') format('woff2');font-weight:500;}
+  @font-face{font-family:'Barlow';src:url('fonts/barlow-latin-600-normal.woff2') format('woff2');font-weight:600;}
+  @font-face{font-family:'Barlow';src:url('fonts/barlow-latin-700-normal.woff2') format('woff2');font-weight:700;}
+  @font-face{font-family:'Barlow';src:url('fonts/barlow-latin-800-normal.woff2') format('woff2');font-weight:800;}
+  @font-face{font-family:'Barlow Condensed';src:url('fonts/barlow-condensed-latin-500-normal.woff2') format('woff2');font-weight:500;}
+  @font-face{font-family:'Barlow Condensed';src:url('fonts/barlow-condensed-latin-600-normal.woff2') format('woff2');font-weight:600;}
+  @font-face{font-family:'Barlow Condensed';src:url('fonts/barlow-condensed-latin-700-normal.woff2') format('woff2');font-weight:700;}
+
+  :root{
+    --red:#EE1C24;
+    --ink:#150404;
+    --paper:#FFFFFF;
+    --bone:#F5F2ED;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#333;font-family:'Barlow',sans-serif;}
+
+  .slide{
+    width:1080px;height:1350px;position:relative;overflow:hidden;
+    margin:24px auto;background:var(--paper);
+  }
+
+  /* ---------- shared chrome ---------- */
+  .topbar{
+    position:absolute;top:0;left:0;right:0;height:132px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 64px;z-index:20;
+  }
+  .site{
+    font-family:'Barlow Condensed';font-weight:600;font-size:30px;
+    letter-spacing:.22em;text-transform:uppercase;
+  }
+  .logo{ text-align:right;line-height:1; }
+  .logo .l1{
+    font-family:'Anton';font-size:52px;letter-spacing:.01em;
+    color:var(--red);transform:skewX(-6deg);display:inline-block;
+  }
+  .logo .l2{
+    font-family:'Barlow Condensed';font-weight:600;font-size:24.5px;
+    letter-spacing:.415em;text-transform:uppercase;margin-top:8px;
+    display:flex;align-items:center;justify-content:flex-end;gap:0;
+  }
+  .logo .l2 svg{margin:0 2px -1px 3px;}
+
+  .ctazone{position:absolute;left:0;right:0;bottom:0;z-index:20;}
+  .strap{
+    height:96px;display:flex;align-items:center;justify-content:center;
+    font-family:'Barlow';font-weight:600;font-size:34px;letter-spacing:.02em;
+  }
+  .ctabar{
+    height:118px;background:var(--red);color:#fff;
+    display:flex;align-items:center;justify-content:center;gap:26px;
+  }
+  .ctabar .a{font-family:'Barlow Condensed';font-weight:600;font-size:40px;letter-spacing:.12em;text-transform:uppercase;}
+  .ctabar .b{font-family:'Anton';font-size:56px;letter-spacing:.02em;}
+  .microline{
+    height:64px;background:var(--ink);color:rgba(255,255,255,.72);
+    display:flex;align-items:center;justify-content:center;gap:34px;
+    font-family:'Barlow Condensed';font-weight:500;font-size:23px;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .microline b{color:#fff;font-weight:600;}
+
+  .kicker{
+    display:inline-flex;align-items:center;gap:16px;
+    font-family:'Barlow Condensed';font-weight:600;font-size:30px;
+    letter-spacing:.3em;text-transform:uppercase;
+  }
+  .kicker .tag{
+    background:var(--red);color:#fff;padding:10px 22px 8px;letter-spacing:.24em;
+  }
+
+  .display{font-family:'Anton';text-transform:uppercase;}
+
+  /* crosshair visual */
+  .vis{position:absolute;z-index:5;}
+
+  /* tick list */
+  .ticks{list-style:none;}
+  .ticks li{
+    display:flex;align-items:center;gap:24px;
+    font-family:'Barlow';font-weight:500;font-size:37px;line-height:1.25;
+  }
+  .ticks li + li{margin-top:20px;}
+  .ticks .tk{
+    flex:0 0 48px;height:48px;background:var(--red);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .bignum{font-family:'Anton';}
+  .rule{position:absolute;background:var(--ink);}
+</style>
+</head>
+<body>
+<div id="slides"></div>
+
+<script>
+/* =========================================================
+   SLUG-A-BUG SOCIAL PACK 01 — magazine-style post generator
+   ========================================================= */
+
+const RED = '#EE1C24', INK = '#150404', PAPER = '#FFFFFF', BONE = '#F5F2ED';
+
+/* ---------- brand lockup ---------- */
+function crosshairO(color, size){
+  const s = size || 25;
+  return `<svg width="${s}" height="${s}" viewBox="0 0 40 40" fill="none">
+    <circle cx="20" cy="20" r="14" stroke="${color}" stroke-width="5"/>
+    <line x1="20" y1="0" x2="20" y2="9"  stroke="${color}" stroke-width="5"/>
+    <line x1="20" y1="31" x2="20" y2="40" stroke="${color}" stroke-width="5"/>
+    <line x1="0"  y1="20" x2="9"  y2="20" stroke="${color}" stroke-width="5"/>
+    <line x1="31" y1="20" x2="40" y2="20" stroke="${color}" stroke-width="5"/>
+    <circle cx="20" cy="20" r="4.5" fill="${color}"/>
+  </svg>`;
+}
+function logoHTML(sub, l1){ // sub = colour of "PEST CONTROL" line, l1 = wordmark colour
+  return `<div class="logo">
+    <span class="l1" style="color:${l1||RED}">SLUG-A-BUG</span>
+    <span class="l2" style="color:${sub}">PEST&nbsp;C${crosshairO(sub)}NTROL</span>
+  </div>`;
+}
+
+/* ---------- scene backdrops + swappable real-photo slot ----------
+   Drop a real photo at src/photos/post-NNN.jpg (or .png) and it replaces
+   that post's generated scene automatically, under a brand scrim. */
+const GRAIN = `url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22240%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22/><feColorMatrix type=%22saturate%22 values=%220%22/></filter><rect width=%22240%22 height=%22240%22 filter=%22url(%23n)%22 opacity=%220.55%22/></svg>')`;
+function bgLayer(tone, n){
+  const id = 'post-'+String(n).padStart(3,'0');
+  const photo = (window.PHOTOS||{})[id];
+  const scrims = {light:'rgba(245,242,237,.9)', dark:'rgba(21,4,4,.86)', red:'rgba(228,22,30,.88)'};
+  if(photo){
+    return `<div style="position:absolute;inset:0;background:url('photos/${photo}') center/cover"></div>
+      <div style="position:absolute;inset:0;background:${scrims[tone]}"></div>`;
+  }
+  const scenes = {
+    light: `<div style="position:absolute;inset:0;background:linear-gradient(180deg,#F9F6F1 0%,#F3EFE8 56%,#E8E2D7 56.2%,#DBD3C4 100%)"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 900px 620px at 78% 28%, rgba(255,255,255,.75), transparent 62%)"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 1400px 1100px at 50% 45%, transparent 55%, rgba(21,4,4,.10))"></div>`,
+    dark: `<div style="position:absolute;inset:0;background:linear-gradient(180deg,#200909 0%,#150404 55%,#0C0202 100%)"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 820px 700px at 80% 20%, rgba(238,28,36,.15), transparent 62%)"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 1400px 1100px at 50% 45%, transparent 55%, rgba(0,0,0,.5))"></div>`,
+    red: `<div style="position:absolute;inset:0;background:linear-gradient(180deg,#F5343B 0%,#EE1C24 48%,#C8141B 100%)"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 900px 620px at 50% 20%, rgba(255,255,255,.15), transparent 62%)"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 1400px 1100px at 50% 45%, transparent 55%, rgba(80,4,8,.35))"></div>`,
+  };
+  return scenes[tone] + `<div style="position:absolute;inset:0;background:${GRAIN};opacity:${tone==='light'?0.05:0.09}"></div>`;
+}
+
+/* ---------- crosshair target rings ---------- */
+function targetRings(color, size, op){
+  return `<svg width="${size}" height="${size}" viewBox="0 0 400 400" fill="none" style="opacity:${op}">
+    <circle cx="200" cy="200" r="192" stroke="${color}" stroke-width="3"/>
+    <circle cx="200" cy="200" r="148" stroke="${color}" stroke-width="2" stroke-dasharray="10 12"/>
+    <circle cx="200" cy="200" r="104" stroke="${color}" stroke-width="3"/>
+    <line x1="200" y1="0"   x2="200" y2="58"  stroke="${color}" stroke-width="4"/>
+    <line x1="200" y1="342" x2="200" y2="400" stroke="${color}" stroke-width="4"/>
+    <line x1="0"   y1="200" x2="58"  y2="200" stroke="${color}" stroke-width="4"/>
+    <line x1="342" y1="200" x2="400" y2="200" stroke="${color}" stroke-width="4"/>
+  </svg>`;
+}
+
+/* ---------- pest silhouettes (viewBox 0 0 100 100) ---------- */
+const ICONS = {
+cockroach: c => `
+  <g stroke="${c}" fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M42 22 C 30 8, 16 6, 8 12"/><path d="M58 22 C 70 8, 84 6, 92 12"/>
+    <path d="M28 44 L 8 36"/><path d="M26 58 L 6 58"/><path d="M30 72 L 12 84"/>
+    <path d="M72 44 L 92 36"/><path d="M74 58 L 94 58"/><path d="M70 72 L 88 84"/>
+  </g>
+  <ellipse cx="50" cy="60" rx="21" ry="32" fill="${c}"/>
+  <circle cx="50" cy="26" r="11" fill="${c}"/>
+  <path d="M32 52 Q 50 60 68 52" stroke="${PAPER}" stroke-opacity=".0" fill="none"/>
+  <line x1="50" y1="34" x2="50" y2="88" stroke-opacity=".35" stroke="${c==='#FFFFFF'?INK:PAPER}" stroke-width="2"/>`,
+termite: c => `
+  <g stroke="${c}" fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M43 14 C 36 6, 26 4, 20 8"/><path d="M57 14 C 64 6, 74 4, 80 8"/>
+    <path d="M34 40 L 14 34"/><path d="M33 52 L 12 52"/><path d="M36 64 L 16 74"/>
+    <path d="M66 40 L 86 34"/><path d="M67 52 L 88 52"/><path d="M64 64 L 84 74"/>
+    <path d="M44 10 L 39 2"/><path d="M56 10 L 61 2"/>
+  </g>
+  <circle cx="50" cy="20" r="12" fill="${c}"/>
+  <circle cx="50" cy="40" r="10" fill="${c}"/>
+  <ellipse cx="50" cy="70" rx="17" ry="26" fill="${c}"/>`,
+ant: c => `
+  <g stroke="${c}" fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M44 16 C 36 8, 28 6, 22 10"/><path d="M56 16 C 64 8, 72 6, 78 10"/>
+    <path d="M38 44 L 16 36"/><path d="M37 52 L 12 54"/><path d="M40 60 L 20 76"/>
+    <path d="M62 44 L 84 36"/><path d="M63 52 L 88 54"/><path d="M60 60 L 80 76"/>
+  </g>
+  <circle cx="50" cy="24" r="12" fill="${c}"/>
+  <ellipse cx="50" cy="48" rx="9" ry="11" fill="${c}"/>
+  <ellipse cx="50" cy="76" rx="15" ry="18" fill="${c}"/>`,
+spider: c => `
+  <g stroke="${c}" fill="none" stroke-width="4" stroke-linecap="round">
+    <path d="M40 44 C 24 34, 16 24, 14 10"/><path d="M60 44 C 76 34, 84 24, 86 10"/>
+    <path d="M36 52 C 20 48, 10 42, 4 32"/><path d="M64 52 C 80 48, 90 42, 96 32"/>
+    <path d="M36 60 C 20 64, 10 70, 4 80"/><path d="M64 60 C 80 64, 90 70, 96 80"/>
+    <path d="M40 68 C 28 78, 22 86, 20 96"/><path d="M60 68 C 72 78, 78 86, 80 96"/>
+  </g>
+  <circle cx="50" cy="40" r="11" fill="${c}"/>
+  <ellipse cx="50" cy="64" rx="17" ry="20" fill="${c}"/>`,
+rat: c => `
+  <path d="M14 68 C 14 46, 34 32, 54 32 C 74 32, 88 46, 88 62 C 88 70, 82 76, 72 76 L 26 76 C 18 76, 14 73, 14 68 Z" fill="${c}"/>
+  <circle cx="72" cy="34" r="12" fill="${c}"/>
+  <circle cx="83" cy="26" r="7" fill="${c}"/>
+  <g stroke="${c}" fill="none" stroke-width="3.5" stroke-linecap="round">
+    <path d="M26 76 C 12 76, 4 68, 6 56"/>
+    <path d="M88 56 C 96 60, 98 66, 96 72"/>
+    <line x1="34" y1="76" x2="34" y2="88"/><line x1="52" y1="76" x2="52" y2="88"/><line x1="68" y1="76" x2="68" y2="88"/>
+  </g>`,
+wasp: c => `
+  <g stroke="${c}" fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M46 18 C 40 10, 32 6, 26 8"/><path d="M54 18 C 60 10, 68 6, 74 8"/>
+    <path d="M38 46 L 18 42"/><path d="M37 54 L 14 58"/><path d="M62 46 L 82 42"/><path d="M63 54 L 86 58"/>
+  </g>
+  <ellipse cx="24" cy="38" rx="17" ry="8" fill="${c}" opacity=".45" transform="rotate(-30 24 38)"/>
+  <ellipse cx="76" cy="38" rx="17" ry="8" fill="${c}" opacity=".45" transform="rotate(30 76 38)"/>
+  <circle cx="50" cy="24" r="10" fill="${c}"/>
+  <ellipse cx="50" cy="44" rx="11" ry="12" fill="${c}"/>
+  <path d="M50 56 C 62 56, 68 66, 66 76 C 64 88, 56 96, 50 96 C 44 96, 36 88, 34 76 C 32 66, 38 56, 50 56 Z" fill="${c}"/>
+  <g stroke="${c==='#FFFFFF'?INK:PAPER}" stroke-width="4">
+    <line x1="35" y1="70" x2="65" y2="70"/><line x1="37" y1="82" x2="63" y2="82"/>
+  </g>`,
+bedbug: c => `
+  <g stroke="${c}" fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M42 20 C 36 12, 30 10, 24 12"/><path d="M58 20 C 64 12, 70 10, 76 12"/>
+    <path d="M32 42 L 12 36"/><path d="M30 56 L 8 56"/><path d="M33 70 L 14 80"/>
+    <path d="M68 42 L 88 36"/><path d="M70 56 L 92 56"/><path d="M67 70 L 86 80"/>
+  </g>
+  <circle cx="50" cy="24" r="9" fill="${c}"/>
+  <path d="M50 30 C 68 30, 78 44, 78 60 C 78 78, 66 90, 50 90 C 34 90, 22 78, 22 60 C 22 44, 32 30, 50 30 Z" fill="${c}"/>
+  <g stroke="${c==='#FFFFFF'?INK:PAPER}" stroke-width="2.5" opacity=".5" fill="none">
+    <path d="M28 52 L 72 52"/><path d="M27 64 L 73 64"/><path d="M31 76 L 69 76"/>
+  </g>`,
+flea: c => `
+  <path d="M30 78 C 18 70, 14 52, 24 38 C 34 24, 56 20, 70 30 C 82 38, 86 54, 78 66 C 72 76, 60 82, 46 82 Z" fill="${c}"/>
+  <circle cx="74" cy="34" r="9" fill="${c}"/>
+  <g stroke="${c}" fill="none" stroke-width="4" stroke-linecap="round">
+    <path d="M40 82 C 36 90, 30 94, 22 94"/>
+    <path d="M58 82 C 58 92, 52 98, 44 98"/>
+    <path d="M30 60 C 18 62, 12 68, 10 76"/>
+    <path d="M80 42 L 92 38"/>
+  </g>`,
+mosquito: c => `
+  <ellipse cx="38" cy="40" rx="24" ry="9" fill="${c}" opacity=".4" transform="rotate(-18 38 40)"/>
+  <ellipse cx="66" cy="34" rx="24" ry="9" fill="${c}" opacity=".4" transform="rotate(14 66 34)"/>
+  <circle cx="50" cy="26" r="7" fill="${c}"/>
+  <ellipse cx="50" cy="42" rx="9" ry="10" fill="${c}"/>
+  <path d="M50 52 L 58 88 L 50 84 L 46 60 Z" fill="${c}"/>
+  <g stroke="${c}" fill="none" stroke-width="3" stroke-linecap="round">
+    <line x1="50" y1="19" x2="50" y2="2"/>
+    <path d="M42 46 L 20 56"/><path d="M44 52 L 26 70"/><path d="M58 46 L 80 56"/><path d="M56 52 L 74 70"/>
+  </g>`,
+silverfish: c => `
+  <path d="M50 8 C 62 22, 66 44, 62 62 C 59 76, 55 86, 50 94 C 45 86, 41 76, 38 62 C 34 44, 38 22, 50 8 Z" fill="${c}"/>
+  <g stroke="${c}" fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M46 12 C 38 6, 30 4, 22 8"/><path d="M54 12 C 62 6, 70 4, 78 8"/>
+    <path d="M50 94 L 42 108" /><path d="M50 94 L 50 110"/><path d="M50 94 L 58 108"/>
+    <path d="M40 34 L 24 30"/><path d="M38 48 L 22 48"/><path d="M60 34 L 76 30"/><path d="M62 48 L 78 48"/>
+  </g>`,
+shield: c => `
+  <path d="M50 6 L 88 20 C 88 52, 80 80, 50 94 C 20 80, 12 52, 12 20 Z" fill="${c}"/>
+  <path d="M32 48 L 45 61 L 70 34" stroke="${c==='#FFFFFF'?INK:PAPER}" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+star: c => `
+  <path d="M50 6 L 61 36 L 94 37 L 68 57 L 78 90 L 50 71 L 22 90 L 32 57 L 6 37 L 39 36 Z" fill="${c}"/>`,
+house: c => `
+  <path d="M50 10 L 92 46 L 82 46 L 82 90 L 18 90 L 18 46 L 8 46 Z" fill="${c}"/>
+  <rect x="42" y="60" width="16" height="30" fill="${c==='#FFFFFF'?INK:PAPER}"/>`,
+magnify: c => `
+  <circle cx="42" cy="42" r="28" stroke="${c}" stroke-width="9" fill="none"/>
+  <line x1="63" y1="63" x2="92" y2="92" stroke="${c}" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="42" cy="42" r="7" fill="${c}"/>`
+};
+
+function pestVis(icon, ringColor, pestColor, size, op){
+  const inner = Math.round(size*0.46);
+  const pad = Math.round((size-inner)/2);
+  return `<div style="position:relative;width:${size}px;height:${size}px">
+    <div style="position:absolute;inset:0">${targetRings(ringColor,size,op)}</div>
+    <svg width="${inner}" height="${inner}" viewBox="0 0 100 112" fill="none"
+         style="position:absolute;left:${pad}px;top:${pad}px">${ICONS[icon](pestColor)}</svg>
+  </div>`;
+}
+
+/* ---------- shared chrome builders ---------- */
+function topbar(scheme){
+  // scheme: {site, sub, l1, onDark}
+  // If a real logo file is provided (window.LOGO, injected by render.js when
+  // src/logo.png exists), it replaces the written wordmark. On dark/red posts
+  // the logo sits on a white chip so any logo colourway stays readable.
+  let logo;
+  if (window.LOGO) {
+    const img = `<img src="${window.LOGO}" style="height:${scheme.onDark?94:118}px;display:block">`;
+    logo = scheme.onDark
+      ? `<div style="background:#fff;padding:12px 20px;border-radius:12px">${img}</div>`
+      : img;
+  } else {
+    logo = logoHTML(scheme.sub, scheme.l1);
+  }
+  return `<div class="topbar">
+    <div class="site" style="color:${scheme.site}">slugabug.com.au</div>
+    ${logo}
+  </div>`;
+}
+function ctazone(o){
+  // o: {strapBg, strapColor, strap, barBg, barColor, cta}
+  return `<div class="ctazone">
+    <div class="strap" style="background:${o.strapBg};color:${o.strapColor}">${o.strap}</div>
+    <div class="ctabar" style="background:${o.barBg};color:${o.barColor}">
+      <span class="a">${o.cta || 'Call today for a free quote'}</span>
+      <span class="b">(07)&nbsp;3113&nbsp;9666</span>
+    </div>
+    <div class="microline">
+      <span>QLD Pest Lic <b>PMT&nbsp;1004307814</b></span><span>·</span>
+      <span>QBCC <b>1122314</b></span><span>·</span>
+      <span>Family owned · 20+ years</span>
+    </div>
+  </div>`;
+}
+function kicker(text, tag, color){
+  return `<div class="kicker" style="color:${color}">
+    <span class="tag">${tag}</span><span>${text}</span>
+  </div>`;
+}
+
+/* =========================================================
+   LAYOUTS
+   ========================================================= */
+
+/* L1 — COVER LIGHT (clone of reference structure) */
+function coverLight(p, n){
+  return `
+  <div class="slide" style="background:${BONE}">
+    ${bgLayer('light', n)}
+    <div class="vis" style="right:-130px;top:420px">${pestVis(p.icon, RED, INK, 620, .8)}</div>
+    ${topbar({site:INK, sub:INK, onDark:false})}
+    <div style="position:absolute;left:64px;top:186px;bottom:300px;width:960px;z-index:10;display:flex;flex-direction:column">
+      <div>${kicker(p.kick, p.tag, INK)}</div>
+      <div class="display" style="font-size:${p.hSize||140}px;line-height:.95;color:${INK};margin-top:38px;width:${p.hWidth||700}px">${p.head}</div>
+      <div class="display" style="font-size:${p.sSize||60}px;line-height:1.04;color:${RED};margin-top:26px;width:${p.sWidth||620}px">${p.subhead}</div>
+      <div style="font-size:38px;line-height:1.38;font-weight:500;color:${INK};margin-top:auto;padding-top:30px;width:${p.bWidth||560}px">${p.body}</div>
+    </div>
+    ${ctazone({strapBg:PAPER, strapColor:INK, strap:p.strap, barBg:RED, barColor:'#fff', cta:p.cta})}
+  </div>`;
+}
+
+/* L2 — COVER DARK */
+function coverDark(p, n){
+  return `
+  <div class="slide" style="background:${INK}">
+    ${bgLayer('dark', n)}
+    <div class="vis" style="right:-150px;top:150px">${pestVis(p.icon, RED, 'rgba(255,255,255,.25)', 700, .9)}</div>
+    ${topbar({site:'rgba(255,255,255,.85)', sub:'#fff', onDark:true})}
+    <div style="position:absolute;left:64px;top:200px;bottom:310px;width:960px;z-index:10;display:flex;flex-direction:column">
+      <div>${kicker(p.kick, p.tag, 'rgba(255,255,255,.85)')}</div>
+      <div class="display" style="font-size:${p.hSize||120}px;line-height:.95;color:#fff;margin-top:40px;width:${p.hWidth||860}px">${p.head}</div>
+      <div class="display" style="font-size:${p.sSize||60}px;line-height:1.04;color:${RED};margin-top:26px;width:${p.sWidth||760}px">${p.subhead}</div>
+      <div style="font-size:38px;line-height:1.38;font-weight:500;color:rgba(255,255,255,.88);margin-top:auto;padding-top:30px;width:${p.bWidth||760}px">${p.body}</div>
+    </div>
+    ${ctazone({strapBg:RED, strapColor:'#fff', strap:p.strap, barBg:PAPER, barColor:INK, cta:p.cta})}
+  </div>`;
+}
+
+/* L3 — RED POSTER */
+function redPoster(p, n){
+  return `
+  <div class="slide" style="background:${RED}">
+    ${bgLayer('red', n)}
+    ${topbar({site:'#fff', sub:'#fff', l1:'#fff', onDark:true})}
+    <div style="position:absolute;left:64px;right:64px;top:186px;bottom:300px;z-index:10;display:flex;flex-direction:column;align-items:center;text-align:center">
+      <div class="kicker" style="color:#fff;justify-content:center">
+        <span class="tag" style="background:${INK}">${p.tag}</span><span>${p.kick}</span>
+      </div>
+      <div style="margin:20px 0 16px">${pestVis(p.icon, 'rgba(255,255,255,.55)', '#fff', 260, .9)}</div>
+      <div class="display" style="font-size:${p.hSize||100}px;line-height:.96;color:#fff;width:${p.hWidth||920}px">${p.head}</div>
+      <div class="display" style="font-size:${p.sSize||54}px;line-height:1.05;color:${INK};margin-top:20px;width:${p.sWidth||840}px">${p.subhead}</div>
+      <div style="font-size:37px;line-height:1.36;font-weight:500;color:#fff;margin-top:auto;padding-top:20px;width:${p.bWidth||800}px">${p.body}</div>
+    </div>
+    ${ctazone({strapBg:'#fff', strapColor:INK, strap:p.strap, barBg:INK, barColor:'#fff', cta:p.cta})}
+  </div>`;
+}
+
+/* L4 — STAT EDITORIAL */
+function statEd(p, n){
+  return `
+  <div class="slide" style="background:${p.dark?INK:PAPER}">
+    ${bgLayer(p.dark?'dark':'light', n)}
+    ${topbar(p.dark?{site:'rgba(255,255,255,.85)',sub:'#fff',onDark:true}:{site:INK,sub:INK,onDark:false})}
+    <div class="rule" style="left:64px;right:64px;top:150px;height:6px;background:${p.dark?'#fff':INK}"></div>
+    <div style="position:absolute;left:64px;top:196px;z-index:10">
+      ${kicker(p.kick, p.tag, p.dark?'rgba(255,255,255,.85)':INK)}
+    </div>
+    <div class="vis" style="right:44px;top:180px">${pestVis(p.icon, RED, p.dark?'rgba(255,255,255,.9)':INK, 280, .85)}</div>
+    <div style="position:absolute;left:64px;top:370px;bottom:302px;width:952px;z-index:10;display:flex;flex-direction:column">
+      <div class="bignum" style="font-size:${p.nSize||260}px;line-height:.92;color:${RED};letter-spacing:-.01em">${p.stat}</div>
+      <div class="display" style="font-size:${p.hSize||78}px;line-height:1.0;color:${p.dark?'#fff':INK};margin-top:22px;width:940px">${p.head}</div>
+      <div style="font-size:37px;line-height:1.36;font-weight:500;color:${p.dark?'rgba(255,255,255,.88)':INK};margin-top:auto;padding-top:26px;width:900px">${p.body}</div>
+    </div>
+    ${ctazone({strapBg:p.dark?RED:INK, strapColor:'#fff', strap:p.strap, barBg:RED, barColor:'#fff', cta:p.cta})}
+  </div>`;
+}
+
+/* L5 — CHECKLIST SPLIT */
+function checklist(p, n){
+  const items = p.items.map(it=>`
+    <li style="color:${INK};font-size:37px"><span class="tk">
+      <svg width="30" height="30" viewBox="0 0 30 30"><path d="M6 16 L 12 22 L 24 8" stroke="#fff" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span><span>${it}</span></li>`).join('');
+  return `
+  <div class="slide" style="background:${INK}">
+    ${bgLayer('dark', n)}
+    ${topbar({site:'rgba(255,255,255,.85)', sub:'#fff', onDark:true})}
+    <div style="position:absolute;left:64px;top:196px;z-index:10">
+      ${kicker(p.kick, p.tag, 'rgba(255,255,255,.85)')}
+      <div class="display" style="font-size:${p.hSize||92}px;line-height:.96;color:#fff;margin-top:38px;width:940px">${p.head}</div>
+      <div class="display" style="font-size:${p.sSize||50}px;line-height:1.04;color:${RED};margin-top:20px;width:900px">${p.subhead||''}</div>
+    </div>
+    <div class="vis" style="right:44px;top:164px">${pestVis(p.icon, 'rgba(255,255,255,.35)', 'rgba(255,255,255,.22)', 250, .8)}</div>
+    <div style="position:absolute;left:0;right:0;top:640px;bottom:278px;background:${BONE};z-index:8">
+      <div style="padding:40px 64px 0"><ul class="ticks">${items}</ul></div>
+    </div>
+    ${ctazone({strapBg:RED, strapColor:'#fff', strap:p.strap, barBg:PAPER, barColor:INK, cta:p.cta})}
+  </div>`;
+}
+
+/* =========================================================
+   THE 25 POSTS
+   ========================================================= */
+const R = t => `<span style="color:${RED}">${t}</span>`;
+const W = t => `<span style="color:#fff">${t}</span>`;
+
+const POSTS = [
+/* 01 — Termite damage (Did You Know) */
+{layout:coverLight, icon:'termite', tag:'The Pest Files', kick:'No. 01 — Did you know?',
+ head:'DID YOU KNOW?', hSize:140, hWidth:760,
+ subhead:'Termites cause more damage to Aussie homes than fire, storms & floods combined.', sSize:56, sWidth:600,
+ body:'And most home insurance policies won’t cover a cent of it. A yearly inspection is the cheapest protection there is.', bWidth:560,
+ strap:'Book your termite inspection before they find you', cta:'Call today — free quote'},
+
+/* 02 — Cockroach fact (dark) */
+{layout:coverDark, icon:'cockroach', tag:'The Pest Files', kick:'No. 02 — Did you know?',
+ head:'A ROACH CAN LIVE A WEEK WITHOUT ITS HEAD.', hSize:106, hWidth:820,
+ subhead:'Imagine what it can survive under your fridge.', sSize:58, sWidth:700,
+ body:'Cockroaches spread bacteria to benches, dishes and food. If you see one in daylight, there are hundreds you don’t see.', bWidth:740,
+ strap:'One treatment. 30-day guarantee.', cta:'Book a roach treatment'},
+
+/* 03 — Ant trails */
+{layout:coverLight, icon:'ant', tag:'The Pest Files', kick:'No. 03 — Did you know?',
+ head:'SPRAYING ONE ANT DOES NOTHING.', hSize:112, hWidth:700,
+ subhead:'They follow an invisible scent trail — thousands more are already on the way.', sSize:50, sWidth:600,
+ body:'We treat the trail, the nest and the entry points — not just the scouts on your bench.', bWidth:540,
+ strap:'Ants keep coming back? We end the trail.', cta:'Fix my ant problem'},
+
+/* 04 — Redback (dark) */
+{layout:coverDark, icon:'spider', tag:'The Pest Files', kick:'No. 04 — Spider season',
+ head:'REDBACKS LOVE YOUR METER BOX.', hSize:120, hWidth:820,
+ subhead:'And your letterbox. And that pair of gloves in the shed.', sSize:56, sWidth:720,
+ body:'Redback bites spike in warm months. A perimeter web treatment keeps sheds, fences and play equipment clear.', bWidth:740,
+ strap:'Kids and pets outside? Get the yard treated.', cta:'Book a spider treatment'},
+
+/* 05 — Rat gap (stat) */
+{layout:statEd, icon:'rat', dark:false, tag:'The Pest Files', kick:'No. 05 — Rodents',
+ stat:'20mm', nSize:250,
+ head:'That’s all the gap a rat needs to move in.', hSize:76,
+ body:'About the width of your thumb. Rats chew wiring, contaminate food and breed fast — a pair can become 200+ in a year. We find the entry points and close them for good.',
+ strap:'Hearing scratching in the roof at night?', cta:'Book rodent control'},
+
+/* 06 — Bed bugs (dark) */
+{layout:coverDark, icon:'bedbug', tag:'The Pest Files', kick:'No. 06 — Did you know?',
+ head:'BED BUGS CAN WAIT MONTHS BETWEEN MEALS.', hSize:102, hWidth:840,
+ subhead:'Moving house or back from a holiday? They hitchhike in luggage.', sSize:52, sWidth:740,
+ body:'Itchy bites in a line, tiny blood spots on sheets, dark specks on the mattress seam — that’s an infestation, not bad luck.', bWidth:760,
+ strap:'Don’t sleep on it — literally.', cta:'Book a bed bug treatment'},
+
+/* 07 — Fleas 95% (stat) */
+{layout:statEd, icon:'flea', dark:true, tag:'The Pest Files', kick:'No. 07 — Fleas',
+ stat:'95%', nSize:280,
+ head:'of a flea problem isn’t on your pet.', hSize:80,
+ body:'It’s eggs, larvae and pupae in carpet, bedding and floorboard cracks. Treat the dog without treating the house and they’re back in a fortnight.',
+ strap:'Pets scratching? Treat the whole home.', cta:'Book a flea treatment'},
+
+/* 08 — Winter (clone of reference) */
+{layout:coverLight, icon:'rat', tag:'Season Watch', kick:'Brisbane winter',
+ head:'PESTS DON’T TAKE WINTER OFF.', hSize:116, hWidth:700,
+ subhead:'When temperatures drop, they move indoors.', sSize:52, sWidth:560,
+ body:'Rodents, roaches and spiders head indoors for warmth, food and shelter. Protect your home before they settle in.', bWidth:620,
+ strap:'Protect your home before they settle in', cta:'Call today — free quote'},
+
+/* 09 — Flying termites (red alert) */
+{layout:redPoster, icon:'termite', tag:'Season Watch', kick:'Swarm season alert',
+ head:'FLYING ANTS AT DUSK?', hSize:110, hWidth:920,
+ subhead:'That’s probably a termite swarm.', sSize:58, sWidth:840,
+ body:'Spring swarms mean a mature nest is nearby — possibly already in your walls. Don’t spray them. Call us before they disappear.', bWidth:800,
+ strap:'Seen swarmers? Act within 48 hours.', cta:'Book an urgent inspection'},
+
+/* 10 — Storm season ants */
+{layout:coverLight, icon:'ant', tag:'Season Watch', kick:'Brisbane storm season',
+ head:'AFTER THE RAIN, THE ANTS MOVE IN.', hSize:116, hWidth:720,
+ subhead:'Flooded nests send whole colonies looking for higher, drier ground.', sSize:48, sWidth:600,
+ body:'That’s why they appear in your kitchen the day after a downpour. A perimeter treatment keeps them out all season.', bWidth:560,
+ strap:'Storms outside shouldn’t mean ants inside', cta:'Call today — free quote'},
+
+/* 11 — Summer roaches (dark) */
+{layout:coverDark, icon:'cockroach', tag:'Season Watch', kick:'Brisbane summer',
+ head:'HEAT + HUMIDITY = COCKROACH SEASON.', hSize:104, hWidth:860,
+ subhead:'Brisbane summers are a roach’s dream.', sSize:56, sWidth:700,
+ body:'Warmth speeds up breeding — one female and her offspring can produce 30,000 roaches in a year. Get ahead of them early.', bWidth:760,
+ strap:'Summer-proof your home this year.', cta:'Book a summer treatment'},
+
+/* 12 — Termite inspection ($ stat) */
+{layout:statEd, icon:'magnify', dark:false, tag:'Service Spotlight', kick:'Termite inspections',
+ stat:'1 in 3', nSize:240,
+ head:'Queensland homes will be hit by termites.', hSize:74,
+ body:'Termatrac radar detection finds them inside your walls — no drilling, no guesswork. When was your last inspection? Australian Standards recommend one every 12 months.',
+ strap:'20+ years protecting Brisbane homes', cta:'Book my inspection'},
+
+/* 13 — General pest checklist */
+{layout:checklist, icon:'shield', tag:'Service Spotlight', kick:'General pest treatment',
+ head:'ONE VISIT. EVERY PEST.', hSize:96,
+ subhead:'What your general treatment covers:', sSize:50,
+ items:['Cockroaches — gel, dust & surface spray','Spiders — webbing & perimeter treatment','Ants — trails, nests & entry points','Silverfish & wasps — roof void & eaves','30-day guarantee — re-treat free if they’re back'],
+ strap:'Afterpay available — protect now, pay later', cta:'Book a general treatment'},
+
+/* 14 — Rodent signs checklist */
+{layout:checklist, icon:'rat', tag:'Know the Signs', kick:'Rodent check',
+ head:'IS SOMETHING LIVING IN YOUR ROOF?', hSize:88,
+ subhead:'Tick any of these and it’s time to call:', sSize:50,
+ items:['Scratching or scurrying sounds at night','Droppings in the pantry, drawers or garage','Gnaw marks on cables, timber or food packets','A musky smell you can’t find the source of','Pets staring at the ceiling or walls'],
+ strap:'Roof rats multiply fast — don’t wait', cta:'Book rodent control'},
+
+/* 15 — Termite barriers */
+{layout:coverLight, icon:'shield', tag:'Service Spotlight', kick:'Termite protection',
+ head:'A BARRIER THEY CAN’T CROSS.', hSize:118, hWidth:700,
+ subhead:'Sentricon · Trelona ATBS · Australian-Standard chemical barriers.', sSize:48, sWidth:600,
+ body:'The right system for your block, installed by licensed techs — so termites hit a wall before they hit your home.', bWidth:560,
+ strap:'Protection that works while you sleep', cta:'Get a barrier quote'},
+
+/* 16 — Commercial (dark) */
+{layout:coverDark, icon:'shield', tag:'Service Spotlight', kick:'Commercial pest control',
+ head:'ONE ROACH CAN CLOSE A KITCHEN.', hSize:108, hWidth:840,
+ subhead:'Audit-ready pest control for cafés, restaurants & food businesses.', sSize:50, sWidth:740,
+ body:'Scheduled treatments, full reporting and compliance documentation — so health inspectors find nothing and neither do your customers.', bWidth:780,
+ strap:'Protect your licence and your reputation.', cta:'Get a commercial quote'},
+
+/* 17 — Pre-purchase (red) */
+{layout:redPoster, icon:'house', tag:'Service Spotlight', kick:'Buying a home?',
+ head:'DON’T BUY THEIR TERMITES.', hSize:104, hWidth:920,
+ subhead:'Get a pre-purchase pest inspection first.', sSize:54, sWidth:840,
+ body:'Termatrac radar detection, full written report, plain-English advice — before you sign. It’s the cheapest insurance in the deal.', bWidth:800,
+ strap:'Know exactly what you’re buying.', cta:'Book pre-purchase inspection'},
+
+/* 18 — Reviews (stat) */
+{layout:statEd, icon:'star', dark:true, tag:'Why Slug-A-Bug', kick:'Rated by Brisbane',
+ stat:'1,200+', nSize:250,
+ head:'five-star reviews. And counting.', hSize:80,
+ body:'Family owned, 20+ years in Brisbane, fully licensed and insured. Locals don’t leave reviews like that for average work.',
+ strap:'See why Brisbane keeps calling us back', cta:'Call today — free quote'},
+
+/* 19 — Guarantee (red) */
+{layout:redPoster, icon:'shield', tag:'Why Slug-A-Bug', kick:'Our 30-day guarantee',
+ head:'NOT HAPPY? WE RE-TREAT FREE.', hSize:98, hWidth:920,
+ subhead:'Still not happy? Full refund + $25 for your trouble.', sSize:52, sWidth:840,
+ body:'That’s how confident we are in every treatment. No fine print, no hoops — just pest control that has to work.', bWidth:780,
+ strap:'The strongest guarantee in Brisbane.', cta:'Call today — free quote'},
+
+/* 20 — Family owned */
+{layout:coverLight, icon:'slugmark', tag:'Why Slug-A-Bug', kick:'Meet your local team',
+ head:'FAMILY OWNED. BRISBANE GROWN.', hSize:112, hWidth:740,
+ subhead:'20+ years keeping local homes pest-free.', sSize:54, sWidth:600,
+ body:'No call centres, no franchises. The techs who quote your job are the ones who turn up — licensed, insured and local.', bWidth:560,
+ strap:'Real people. Real guarantees.', cta:'Call today — free quote'},
+
+/* 21 — Licensed + Afterpay (dark) */
+{layout:coverDark, icon:'shield', tag:'Why Slug-A-Bug', kick:'Licensed & insured',
+ head:'FULLY LICENSED. FULLY INSURED. FULLY GUARANTEED.', hSize:92, hWidth:880,
+ subhead:'And yes — Afterpay is available.', sSize:56, sWidth:700,
+ body:'QLD Pest Licence PMT 1004307814 and QBCC 1122314. Protect your home now, pay it off in instalments.', bWidth:760,
+ strap:'Pest control shouldn’t wait for payday.', cta:'Call today — free quote'},
+
+/* 22 — Myth bust (red) */
+{layout:redPoster, icon:'termite', tag:'Myth vs Fact', kick:'Pest myths, busted',
+ head:'MYTH: “SURFACE SPRAY KILLS TERMITES.”', hSize:86, hWidth:940,
+ subhead:'Fact: it just makes them harder to find.', sSize:54, sWidth:840,
+ body:'Disturbed termites abandon the area — then quietly tunnel somewhere else in your home. Never spray. Call a licensed tech.', bWidth:800,
+ strap:'Found termites? Don’t touch them.', cta:'Call us first — free advice'},
+
+/* 23 — Termite signs checklist */
+{layout:checklist, icon:'termite', tag:'Know the Signs', kick:'Termite check',
+ head:'5 SIGNS TERMITES ARE ALREADY HOME.', hSize:86,
+ subhead:'Spotted one? Don’t disturb it — call.', sSize:50,
+ items:['Mud tubes on walls, piers or foundations','Doors and windows that suddenly stick','Timber that sounds hollow when tapped','Blistering or bubbling paint on walls','Discarded wings on sills after warm evenings'],
+ strap:'Early detection saves thousands', cta:'Book an inspection'},
+
+/* 24 — DIY vs Pro (dark) */
+{layout:coverDark, icon:'cockroach', tag:'Myth vs Fact', kick:'DIY vs professional',
+ head:'SUPERMARKET SPRAYS KILL THE ONES YOU SEE.', hSize:94, hWidth:880,
+ subhead:'We stop the thousands you don’t.', sSize:56, sWidth:760,
+ body:'Nests, egg cases, trails and entry points — a professional treatment breaks the breeding cycle instead of the surface.', bWidth:780,
+ strap:'Stop repeat-buying spray cans.', cta:'Book a real treatment'},
+
+/* 25 — Prevention checklist */
+{layout:checklist, icon:'house', tag:'Pro Tips', kick:'Prevention 101',
+ head:'MAKE YOUR HOME BORING TO PESTS.', hSize:88,
+ subhead:'Five free habits that actually help:', sSize:50,
+ items:['Seal gaps around pipes, doors and weep holes','Keep tree branches off the roofline','Fix leaking taps — pests follow water','Store food and pet food in sealed containers','Book one professional treatment a year'],
+ strap:'Do the five — we’ll handle the rest', cta:'Call today — free quote'},
+/* ======== POSTS 26–100 ======== */
+
+/* --- Did You Know, round 2 (26–37) --- */
+{layout:statEd, icon:'termite', dark:true, tag:'The Pest Files', kick:'No. 26 — Termites', title:'Termite queen: 30,000 eggs a day',
+ stat:'30,000', nSize:220, head:'eggs a day. One termite queen.', hSize:76,
+ body:'A mature colony numbers in the millions — and she keeps laying for decades. The only way to know if one is pointed at your home is an annual inspection.',
+ strap:'When was your last termite inspection?', cta:'Book an inspection',
+ caption:'One termite queen lays up to 30,000 eggs a DAY — and keeps going for decades. 🤯 An annual inspection is the only early-warning system there is. 📞 (07) 3113 9666 #Termites #BrisbanePestControl #SlugABug'},
+
+{layout:coverLight, icon:'ant', tag:'The Pest Files', kick:'No. 27 — Did you know?', title:'Ants lift 20x their weight',
+ head:'ANTS LIFT 20× THEIR OWN WEIGHT.', hSize:112, hWidth:720,
+ subhead:'Unfortunately, that includes your picnic.', sSize:52, sWidth:600,
+ body:'A single colony can number half a million. When the scouts find your kitchen, the rest follow the trail — so we treat the trail and the nest.', bWidth:560,
+ strap:'Strong little thieves. Stronger treatment.', cta:'Fix my ant problem',
+ caption:'Ants can lift 20x their own body weight — and a colony can number 500,000. 💪 When scouts find your kitchen, the rest are coming. We treat the trail AND the nest. 📞 (07) 3113 9666 #AntControl #BrisbanePestControl #SlugABug'},
+
+{layout:coverDark, icon:'mosquito', tag:'The Pest Files', kick:'No. 28 — Mosquitoes', title:'Mozzies hunt by your breath',
+ head:'MOZZIES HUNT YOU BY YOUR BREATH.', hSize:104, hWidth:860,
+ subhead:'CO₂, body heat and dark clothing — that’s their radar.', sSize:52, sWidth:740,
+ body:'And they breed in a bottle-cap of standing water. A yard treatment plus tipping out containers cuts bites dramatically.', bWidth:760,
+ strap:'Take your backyard back this summer.', cta:'Book a mozzie treatment',
+ caption:'Mosquitoes find you by tracking your breath — CO₂, body heat and dark clothing. 🦟 And they breed in a bottle-cap of water. A yard treatment changes your whole summer. 📞 (07) 3113 9666 #Mosquitoes #BrisbaneBackyards #SlugABug'},
+
+{layout:statEd, icon:'rat', dark:false, tag:'The Pest Files', kick:'No. 29 — Rodents', title:'Rodent teeth never stop growing',
+ stat:'24/7', nSize:230, head:'Rodent teeth never stop growing.', hSize:74,
+ body:'That’s why they gnaw constantly — wiring, pipes, timber. Rodent damage to electrical cables is a leading cause of unexplained house fires. Get them out before they chew something expensive.',
+ strap:'Hearing gnawing? That’s your cue.', cta:'Book rodent control',
+ caption:'Rodent teeth never stop growing — so they never stop chewing. Wiring, pipes, timber… rodent-damaged cables are a leading cause of unexplained house fires. 🔥 📞 (07) 3113 9666 #RodentControl #BrisbanePestControl #SlugABug'},
+
+{layout:coverDark, icon:'silverfish', tag:'The Pest Files', kick:'No. 30 — Silverfish', title:'Silverfish go a year without food',
+ head:'SILVERFISH CAN GO A YEAR WITHOUT FOOD.', hSize:100, hWidth:860,
+ subhead:'But why would they? Your bookshelf is a buffet.', sSize:52, sWidth:740,
+ body:'Books, photos, wallpaper, clothes — anything with starch or paper. A roof-void and wardrobe treatment shuts the restaurant.', bWidth:760,
+ strap:'Protect the things you can’t replace.', cta:'Book a treatment',
+ caption:'Silverfish can survive a YEAR without eating — but with your books, photos and clothes on the menu, they don’t have to. 📚 📞 (07) 3113 9666 #Silverfish #BrisbanePestControl #SlugABug'},
+
+{layout:coverLight, icon:'wasp', tag:'The Pest Files', kick:'No. 31 — Wasps', title:'One nest, 6,000 wasps',
+ head:'ONE NEST. 6,000 WASPS.', hSize:124, hWidth:720,
+ subhead:'That’s a late-summer nest under your eaves.', sSize:52, sWidth:600,
+ body:'Knocking it down with a broom is how emergency rooms meet new people. We remove nests safely, and treat so they don’t rebuild.', bWidth:560,
+ strap:'See a nest? Step away, phone up.', cta:'Book nest removal',
+ caption:'By late summer a single wasp nest can hold 6,000 residents. 🐝 Please don’t introduce it to your broom — we remove nests safely and stop the rebuild. 📞 (07) 3113 9666 #WaspRemoval #BrisbanePestControl #SlugABug'},
+
+{layout:redPoster, icon:'cockroach', tag:'The Pest Files', kick:'No. 32 — Cockroaches', title:'Roaches run 5km/h',
+ head:'ROACHES CAN RUN 5KM/H.', hSize:104, hWidth:920,
+ subhead:'You will not win the chase.', sSize:56, sWidth:840,
+ body:'Relative to size, that’s a human sprinting at 300km/h. Stop chasing them with a thong — a gel-and-dust treatment gets the whole family, seen and unseen.', bWidth:800,
+ strap:'Retire the thong. Call the pros.', cta:'Book a roach treatment',
+ caption:'A cockroach can hit 5km/h — scaled to our size, that’s sprinting at 300km/h. 🏃 You won’t win with a thong. One treatment gets the whole family. 📞 (07) 3113 9666 #CockroachControl #BrisbanePestControl #SlugABug'},
+
+{layout:statEd, icon:'bedbug', dark:true, tag:'The Pest Files', kick:'No. 33 — Bed bugs', title:'500 eggs per bed bug female',
+ stat:'500', nSize:250, head:'eggs from one female bed bug.', hSize:78,
+ body:'That’s why a few bites become an infestation in weeks. Caught early, treatment is quick and contained — caught late, it’s every room. Don’t wait it out.',
+ strap:'Bites in a line? Call the same day.', cta:'Book a bed bug treatment',
+ caption:'One female bed bug can lay 500 eggs in her lifetime — a few bites becomes every-room-in-the-house within weeks. Early treatment is everything. 📞 (07) 3113 9666 #BedBugs #BrisbanePestControl #SlugABug'},
+
+{layout:coverDark, icon:'spider', tag:'The Pest Files', kick:'No. 34 — Spiders', title:'Never far from a spider',
+ head:'YOU’RE NEVER FAR FROM A SPIDER.', hSize:106, hWidth:860,
+ subhead:'Most are harmless. The exceptions love Brisbane.', sSize:52, sWidth:740,
+ body:'Redbacks in the yard, white-tails inside on warm nights. A perimeter and web treatment keeps the risky ones out of reach of little hands.', bWidth:760,
+ strap:'Sleep better. Get the perimeter done.', cta:'Book a spider treatment',
+ caption:'Wherever you’re reading this — you’re not far from a spider. 🕷️ Most are harmless; redbacks and white-tails are the Brisbane exceptions. A perimeter treatment keeps them out of reach. 📞 (07) 3113 9666 #SpiderControl #Brisbane #SlugABug'},
+
+{layout:redPoster, icon:'termite', tag:'The Pest Files', kick:'No. 35 — Termites', title:'Termites never sleep',
+ head:'TERMITES DON’T SLEEP.', hSize:100, hWidth:920,
+ subhead:'They eat 24 hours a day, 7 days a week.', sSize:54, sWidth:840,
+ body:'No weekends, no holidays — just constant, silent chewing. An annual inspection catches them first.', bWidth:820,
+ strap:'They never stop. Neither do we.', cta:'Book an inspection',
+ caption:'Termites never sleep — they eat 24/7, no weekends, no public holidays. 😳 The only defence is catching them early. 📞 (07) 3113 9666 #Termites #TermiteInspection #SlugABug'},
+
+{layout:statEd, icon:'flea', dark:false, tag:'The Pest Files', kick:'No. 36 — Fleas', title:'Fleas jump 150x their height',
+ stat:'150×', nSize:230, head:'its own height — one flea jump.', hSize:74,
+ body:'That’s how they board your pet from the lawn, and your ankles from the carpet. Treat the yard, the house and the pet in the same week or they cycle straight back.',
+ strap:'Break the cycle, not just the bites.', cta:'Book a flea treatment',
+ caption:'A flea can jump 150 times its own height — straight from the lawn onto your pet, and from the carpet onto you. Treat yard + house + pet the same week. 📞 (07) 3113 9666 #FleaTreatment #BrisbanePets #SlugABug'},
+
+{layout:coverLight, icon:'spider', tag:'The Pest Files', kick:'No. 37 — Spiders', title:'Huntsmen: the good guys, mostly',
+ head:'HUNTSMEN ARE THE GOOD GUYS. MOSTLY.', hSize:100, hWidth:740,
+ subhead:'They eat roaches — but guests should be invited.', sSize:50, sWidth:620,
+ body:'If eight hairy legs on the sun visor isn’t your thing, a general treatment keeps them (and their dinner) outside where they belong.', bWidth:560,
+ strap:'Appreciate them. From a distance.', cta:'Call today — free quote',
+ caption:'Huntsmen actually eat cockroaches — nature’s pest control. But if eight legs on the sun visor isn’t your vibe, we’ll keep them (and their dinner) outdoors. 🕷️ 📞 (07) 3113 9666 #Huntsman #BrisbanePestControl #SlugABug'},
+
+/* --- Local Areas (38–47) --- */
+{layout:coverLight, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: North Lakes',
+ head:'NORTH LAKES', hSize:150, hWidth:800,
+ subhead:'Your local pest control team — minutes away.', sSize:52, sWidth:620,
+ body:'New estates backing onto bushland mean termite pressure from day one. We inspect, protect and treat across North Lakes and Mango Hill.', bWidth:580,
+ strap:'North Lakes locals — free quotes', cta:'Call today — free quote',
+ caption:'North Lakes! 🏡 New estates + bushland edges = termite pressure from day one. Your local team covers North Lakes & Mango Hill — inspections, barriers, treatments. 📞 (07) 3113 9666 #NorthLakes #BrisbanePestControl #SlugABug'},
+
+{layout:coverDark, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Chermside',
+ head:'CHERMSIDE', hSize:150, hWidth:860,
+ subhead:'Apartments, townhouses & family homes covered.', sSize:52, sWidth:740,
+ body:'High-density living spreads roaches and ants fast between neighbours. We treat units and whole complexes — body corporate friendly.', bWidth:760,
+ strap:'Chermside & northside locals', cta:'Call today — free quote',
+ caption:'Chermside! Units and townhouses share more than walls — roaches and ants travel between neighbours fast. We treat single units or whole complexes. 📞 (07) 3113 9666 #Chermside #BrisbanePestControl #SlugABug'},
+
+{layout:coverLight, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Redcliffe Peninsula',
+ head:'REDCLIFFE PENINSULA', hSize:118, hWidth:740,
+ subhead:'From Scarborough to Clontarf.', sSize:54, sWidth:620,
+ body:'Sea breezes, older Queenslanders and sandy soil — a perfect storm for termites and roaches. Local techs who know the peninsula’s quirks.', bWidth:580,
+ strap:'Peninsula locals — free quotes', cta:'Call today — free quote',
+ caption:'Redcliffe Peninsula — Scarborough to Clontarf! 🌊 Older Queenslanders + coastal conditions are exactly what termites like. Local techs who know the peninsula. 📞 (07) 3113 9666 #Redcliffe #PeninsulaLocals #SlugABug'},
+
+{layout:coverDark, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Strathpine',
+ head:'STRATHPINE', hSize:144, hWidth:860,
+ subhead:'Strathpine, Bray Park & Warner.', sSize:52, sWidth:740,
+ body:'Leafy blocks mean spiders on the fence line and rodents in the roof come winter. A yearly general treatment keeps the whole block calm.', bWidth:760,
+ strap:'Pine Rivers locals — free quotes', cta:'Call today — free quote',
+ caption:'Strathpine, Bray Park & Warner! 🌳 Leafy blocks bring spiders to the fence line and rodents to the roof each winter. One yearly treatment keeps it all calm. 📞 (07) 3113 9666 #Strathpine #PineRivers #SlugABug'},
+
+{layout:coverLight, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Caboolture',
+ head:'CABOOLTURE', hSize:144, hWidth:800,
+ subhead:'Acreage, sheds and everything in between.', sSize:50, sWidth:620,
+ body:'Big blocks mean big pest territory — rodents in sheds, wasps in eaves, termites in fence posts. We cover Caboolture and Morayfield.', bWidth:580,
+ strap:'Caboolture locals — free quotes', cta:'Call today — free quote',
+ caption:'Caboolture & Morayfield! 🚜 Acreage and sheds are prime pest territory — rodents, wasps, termites in the fence posts. We handle the lot. 📞 (07) 3113 9666 #Caboolture #Morayfield #SlugABug'},
+
+{layout:coverDark, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Logan & Springwood',
+ head:'LOGAN & SPRINGWOOD', hSize:116, hWidth:880,
+ subhead:'Fast-growing suburbs, fast-moving pests.', sSize:52, sWidth:740,
+ body:'Construction stirs up displaced pests — they move into established homes next door. If your street’s been busy with builders, book a check.', bWidth:760,
+ strap:'Logan locals — free quotes', cta:'Call today — free quote',
+ caption:'Logan & Springwood! 🏗️ Every new development displaces pests into the established homes next door. Builders on your street? Book a check. 📞 (07) 3113 9666 #Logan #Springwood #SlugABug'},
+
+{layout:coverLight, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Capalaba',
+ head:'CAPALABA', hSize:150, hWidth:800,
+ subhead:'Redlands humidity is a pest’s best friend.', sSize:50, sWidth:620,
+ body:'Bayside moisture keeps roaches, ants and termites active nearly year-round. Regular treatment matters more here than most suburbs.', bWidth:580,
+ strap:'Redlands locals — free quotes', cta:'Call today — free quote',
+ caption:'Capalaba & the Redlands! Bayside humidity keeps pests active basically year-round — regular treatment matters more here than most places. 📞 (07) 3113 9666 #Capalaba #Redlands #SlugABug'},
+
+{layout:coverDark, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Wynnum & Bayside',
+ head:'WYNNUM & BAYSIDE', hSize:122, hWidth:880,
+ subhead:'Manly, Wynnum, Lota — the whole waterfront.', sSize:52, sWidth:740,
+ body:'Salt air doesn’t bother termites one bit. Older bayside timber homes are exactly what they’re looking for — annual inspections are essential here.', bWidth:760,
+ strap:'Bayside locals — free quotes', cta:'Call today — free quote',
+ caption:'Wynnum, Manly & Lota! ⚓ Salt air doesn’t slow termites down — older bayside timber homes are their favourite menu. Annual inspections are essential. 📞 (07) 3113 9666 #Wynnum #Bayside #SlugABug'},
+
+{layout:coverLight, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Sunnybank',
+ head:'SUNNYBANK', hSize:144, hWidth:800,
+ subhead:'Homes and restaurants — both covered.', sSize:52, sWidth:620,
+ body:'One of Brisbane’s best food scenes deserves audit-ready commercial pest control — and the homes around it deserve the same standard.', bWidth:580,
+ strap:'Sunnybank locals — free quotes', cta:'Call today — free quote',
+ caption:'Sunnybank! 🥟 Brisbane’s best food scene deserves audit-ready pest control — and the homes around it get the same standard. 📞 (07) 3113 9666 #Sunnybank #BrisbaneFood #SlugABug'},
+
+{layout:coverDark, icon:'house', tag:'Local Areas', kick:'Servicing your suburb', title:'Suburb: Shailer Park',
+ head:'SHAILER PARK', hSize:136, hWidth:860,
+ subhead:'Cornubia, Daisy Hill & surrounds too.', sSize:52, sWidth:740,
+ body:'Bushland reserves on your doorstep are beautiful — and busy with wildlife that brings ticks, spiders and rodents to the yard. We keep the line drawn.', bWidth:760,
+ strap:'Shailer Park locals — free quotes', cta:'Call today — free quote',
+ caption:'Shailer Park, Cornubia & Daisy Hill! 🌿 Bushland on the doorstep is beautiful — and busy. We keep the wildlife’s hangers-on out of your yard. 📞 (07) 3113 9666 #ShailerPark #LoganPestControl #SlugABug'},
+
+/* --- Industry Watch (48–57) --- */
+{layout:checklist, icon:'shield', tag:'Industry Watch', kick:'Childcare centres', title:'Commercial: childcare centres',
+ head:'PEST CONTROL FOR CHILDCARE.', hSize:90,
+ subhead:'Safe, compliant, documented:', sSize:50,
+ items:['After-hours, low-odour treatments only','Child-safe products & lockable bait stations','Full compliance reporting for audits','Scheduled visits — nothing slips','Licensed, insured, blue-card friendly techs'],
+ strap:'Directors: get audit-ready this term', cta:'Get a childcare quote',
+ caption:'Childcare directors: pest control should be invisible to the kids and obvious to the auditor. After-hours treatments, child-safe products, full documentation. 📞 (07) 3113 9666 #Childcare #CompliantPestControl #SlugABug'},
+
+{layout:coverDark, icon:'shield', tag:'Industry Watch', kick:'Aged care', title:'Commercial: aged care',
+ head:'AGED CARE DESERVES ZERO PESTS.', hSize:104, hWidth:860,
+ subhead:'Vulnerable residents. Zero-tolerance standards.', sSize:50, sWidth:740,
+ body:'Discreet scheduled treatments, sensitive-environment products and the documentation your accreditation requires. We work around care routines, not through them.', bWidth:770,
+ strap:'Facility managers — let’s talk.', cta:'Get an aged care quote',
+ caption:'Aged care facilities run on zero-tolerance standards — so do we. Discreet scheduled treatments, sensitive-environment products, accreditation-ready docs. 📞 (07) 3113 9666 #AgedCare #FacilityManagement #SlugABug'},
+
+{layout:coverLight, icon:'shield', tag:'Industry Watch', kick:'Schools', title:'Commercial: schools',
+ head:'PEST-FREE CLASSROOMS. FULL STOP.', hSize:104, hWidth:740,
+ subhead:'Holiday-period treatments, term-time peace.', sSize:50, sWidth:620,
+ body:'We schedule major work in the holidays, keep records your admin will love, and respond fast when a wasp nest appears near the oval.', bWidth:580,
+ strap:'Principals & BMs — free site walk', cta:'Book a school assessment',
+ caption:'Schools: major pest work in the holidays, rapid response during term (looking at you, oval wasp nest 🐝), and records your admin will love. 📞 (07) 3113 9666 #Schools #FacilitiesManagement #SlugABug'},
+
+{layout:redPoster, icon:'cockroach', tag:'Industry Watch', kick:'Cafés & restaurants', title:'Commercial: hospitality reviews',
+ head:'YOUR REVIEWS SHOULDN’T MENTION ROACHES.', hSize:86, hWidth:940,
+ subhead:'One sighting near a table is a headline.', sSize:52, sWidth:840,
+ body:'Scheduled service, gel-and-monitor programs invisible to diners, and audit-ready reports for the health inspector. Protect the stars you’ve earned.', bWidth:800,
+ strap:'Hospitality operators — priority booking.', cta:'Get a hospitality quote',
+ caption:'Hospitality friends: one roach near a table becomes a Google review headline. Scheduled programs invisible to diners, audit-ready for inspectors. ⭐ 📞 (07) 3113 9666 #BrisbaneCafes #Hospitality #SlugABug'},
+
+{layout:coverDark, icon:'rat', tag:'Industry Watch', kick:'Warehouses & logistics', title:'Commercial: warehouses',
+ head:'RODENTS LOVE A WAREHOUSE.', hSize:110, hWidth:860,
+ subhead:'Pallets, cardboard, quiet corners — paradise.', sSize:52, sWidth:740,
+ body:'Stock damage, contaminated goods and chewed forklift wiring all cost more than a baiting program. Mapped stations, monitored monthly, reported clearly.', bWidth:770,
+ strap:'Ops managers — site survey free.', cta:'Get a warehouse quote',
+ caption:'Warehouse managers: pallets + cardboard + quiet corners = rodent paradise. A mapped, monitored baiting program costs less than one contaminated consignment. 📞 (07) 3113 9666 #Warehouse #Logistics #SlugABug'},
+
+{layout:coverLight, icon:'ant', tag:'Industry Watch', kick:'Offices', title:'Commercial: office kitchens',
+ head:'THE OFFICE KITCHEN: ANT HQ.', hSize:108, hWidth:740,
+ subhead:'Crumbs by Friday, trails by Monday.', sSize:52, sWidth:620,
+ body:'After-hours treatments that don’t disrupt your team, plus roach and rodent prevention for bin rooms and kitchenettes. Your office manager’s easiest win.', bWidth:580,
+ strap:'Office managers — quick quotes', cta:'Get an office quote',
+ caption:'Office kitchens: crumbs by Friday, ant trails by Monday. 🐜 After-hours treatments your team never notices — easiest facilities win of the quarter. 📞 (07) 3113 9666 #OfficeLife #FacilitiesManagement #SlugABug'},
+
+{layout:checklist, icon:'house', tag:'Industry Watch', kick:'Strata & body corporate', title:'Commercial: strata plans',
+ head:'STRATA & BODY CORP PEST PLANS.', hSize:88,
+ subhead:'One contact. Whole complex covered:', sSize:50,
+ items:['Common-area schedules set and kept','Bulk unit pricing residents appreciate','Committee-ready compliance reports','Termite inspections for the whole block','One invoice, one contact, zero chasing'],
+ strap:'Committees & managers — let’s plan it', cta:'Get a strata quote',
+ caption:'Strata committees: one contact, one invoice, whole complex covered — common areas, bulk unit pricing, termite inspections for the block, committee-ready reports. 📞 (07) 3113 9666 #Strata #BodyCorporate #SlugABug'},
+
+{layout:coverDark, icon:'silverfish', tag:'Industry Watch', kick:'Gyms & fitness', title:'Commercial: gyms',
+ head:'SWEAT. STEAM. SILVERFISH.', hSize:112, hWidth:860,
+ subhead:'Humid change rooms are an open invitation.', sSize:52, sWidth:740,
+ body:'Gyms run warm and damp — perfect for silverfish, roaches and drain flies. Early-morning or overnight service keeps your floor open and your members happy.', bWidth:770,
+ strap:'Gym owners — overnight service.', cta:'Get a gym quote',
+ caption:'Gym owners: warm + damp change rooms are an open invitation for silverfish, roaches and drain flies. Overnight service keeps your floor open. 🏋️ 📞 (07) 3113 9666 #GymLife #BrisbaneFitness #SlugABug'},
+
+{layout:coverLight, icon:'shield', tag:'Industry Watch', kick:'Medical & clinics', title:'Commercial: medical clinics',
+ head:'CLINICS NEED CLINICAL PEST CONTROL.', hSize:98, hWidth:740,
+ subhead:'Precise, documented, discreet.', sSize:54, sWidth:620,
+ body:'Sensitive-environment products, treatments scheduled around patient hours, and documentation that stands up to any inspection. Exactly what a practice manager needs.', bWidth:580,
+ strap:'Practice managers — priority booking', cta:'Get a clinic quote',
+ caption:'Medical clinics need pest control that’s as precise as they are — sensitive products, after-hours scheduling, inspection-proof documentation. 📞 (07) 3113 9666 #MedicalClinic #PracticeManagement #SlugABug'},
+
+{layout:redPoster, icon:'rat', tag:'Industry Watch', kick:'Retail & supermarkets', title:'Commercial: retail stock loss',
+ head:'STOCK LOSS HAS SIX LEGS.', hSize:104, hWidth:920,
+ subhead:'Sometimes four, and a tail.', sSize:56, sWidth:840,
+ body:'Gnawed packaging, contaminated shelves, failed audits — retail pest problems compound daily. Scheduled programs with mapped monitoring stop the bleed.', bWidth:800,
+ strap:'Retail managers — free site survey.', cta:'Get a retail quote',
+ caption:'Retail managers: stock loss sometimes has six legs (or four, and a tail 🐀). Gnawed packaging and failed audits compound daily — scheduled monitoring stops the bleed. 📞 (07) 3113 9666 #Retail #StockLoss #SlugABug'},
+
+/* --- Season Watch, round 2 (58–63) --- */
+{layout:checklist, icon:'magnify', tag:'Season Watch', kick:'Spring reset', title:'Spring clean + pest check',
+ head:'SPRING CLEAN? ADD A PEST CHECK.', hSize:88,
+ subhead:'While everything’s moved anyway:', sSize:50,
+ items:['Check behind fridges & under sinks','Look for droppings in cupboards you rarely open','Clear webs and check the eaves','Inspect timber for mud tubes','Finish with a professional treatment — done for the year'],
+ strap:'One spring visit covers the year', cta:'Book a spring treatment',
+ caption:'Doing the big spring clean? While everything’s pulled out anyway — check behind the fridge, under sinks, and finish with a professional treatment. One visit covers the year. 🌸 📞 (07) 3113 9666 #SpringClean #BrisbaneHomes #SlugABug'},
+
+{layout:coverDark, icon:'rat', tag:'Season Watch', kick:'Silly season', title:'Rodents love Christmas',
+ head:'RODENTS LOVE CHRISTMAS TOO.', hSize:106, hWidth:860,
+ subhead:'A stocked pantry is their favourite present.', sSize:52, sWidth:740,
+ body:'Hampers, chocolates, bulk baking supplies — December pantries are a rodent jackpot. Get the house sealed and treated before the relatives (and the rats) arrive.', bWidth:770,
+ strap:'Book before the December rush.', cta:'Book rodent control',
+ caption:'Rodents love Christmas too — a December pantry full of hampers and baking supplies is their jackpot. 🎄 Get sealed and treated before the relatives arrive. 📞 (07) 3113 9666 #Christmas #BrisbaneHomes #SlugABug'},
+
+{layout:coverLight, icon:'ant', tag:'Season Watch', kick:'Back to school', title:'Lunchbox season = ant season',
+ head:'LUNCHBOX SEASON = ANT SEASON.', hSize:100, hWidth:740,
+ subhead:'Crumbs in bags, wrappers in cars, trails in kitchens.', sSize:48, sWidth:620,
+ body:'The first weeks of term are peak ant season indoors. A quick perimeter treatment now saves a term of kitchen invasions.', bWidth:580,
+ strap:'Start the term ant-free', cta:'Call today — free quote',
+ caption:'Back to school = lunchbox crumbs = ant trails by week 2. 🎒 A quick perimeter treatment now saves the whole term. 📞 (07) 3113 9666 #BackToSchool #AntControl #SlugABug'},
+
+{layout:statEd, icon:'shield', dark:true, tag:'Season Watch', kick:'EOFY for business', title:'EOFY: contracts are deductible',
+ stat:'EOFY', nSize:210, head:'Commercial pest contracts are deductible.', hSize:70,
+ body:'If your premises need a pest program, locking it in before June 30 puts it in this year’s books. Scheduled service, audit-ready reporting, one clean invoice.',
+ strap:'Talk to your accountant, then us.', cta:'Get a commercial quote',
+ caption:'Business owners: commercial pest programs are a deductible operating expense. Lock yours in before June 30 and start the new FY protected. 📊 📞 (07) 3113 9666 #EOFY #BrisbaneBusiness #SlugABug'},
+
+{layout:redPoster, icon:'wasp', tag:'Season Watch', kick:'BBQ season', title:'Wasps at the BBQ',
+ head:'DON’T SHARE YOUR BBQ WITH WASPS.', hSize:92, hWidth:940,
+ subhead:'They love your snags as much as you do.', sSize:54, sWidth:840,
+ body:'Wasps get bold around food and drink cans in the warm months. If they keep showing up, there’s a nest close by — we’ll find it and remove it safely.', bWidth:800,
+ strap:'Check the eaves before the guests arrive.', cta:'Book nest removal',
+ caption:'Wasps circling the BBQ? They’re not visiting — there’s a nest nearby. 🍺🐝 We find it and remove it safely before your next cook-up. 📞 (07) 3113 9666 #BBQSeason #WaspRemoval #SlugABug'},
+
+{layout:coverLight, icon:'house', tag:'Season Watch', kick:'Holiday prep', title:'Going away? Pests aren’t',
+ head:'GOING AWAY? PESTS AREN’T.', hSize:112, hWidth:740,
+ subhead:'An empty, quiet house is their dream rental.', sSize:50, sWidth:620,
+ body:'No footsteps, no vacuuming, crumbs left in a hurry — holidays are when infestations settle in. A pre-trip treatment means you come home to your house, not theirs.', bWidth:580,
+ strap:'Treat before you travel', cta:'Book a pre-holiday treatment',
+ caption:'Heading away these holidays? An empty, quiet house is a pest’s dream Airbnb. 🧳 A pre-trip treatment means you come home to YOUR house — not theirs. 📞 (07) 3113 9666 #HolidayPrep #BrisbaneHomes #SlugABug'},
+
+/* --- Myth vs Fact, round 2 (64–70) --- */
+{layout:redPoster, icon:'cockroach', tag:'Myth vs Fact', kick:'Pest myths, busted', title:'Myth: clean homes don’t get pests',
+ head:'MYTH: “CLEAN HOMES DON’T GET PESTS.”', hSize:84, hWidth:940,
+ subhead:'Fact: pests want water and shelter, not mess.', sSize:52, sWidth:840,
+ body:'The tidiest home in Brisbane still has warmth, moisture and entry points. Cleanliness helps — it just isn’t a force field.', bWidth:800,
+ strap:'It’s not you. It’s Brisbane.', cta:'Call today — free quote',
+ caption:'MYTH: “Clean homes don’t get pests.” FACT: pests come for warmth, water and shelter — not mess. The tidiest home in Brisbane still qualifies. 📞 (07) 3113 9666 #MythBusted #BrisbanePestControl #SlugABug'},
+
+{layout:coverDark, icon:'rat', tag:'Myth vs Fact', kick:'Pest myths, busted', title:'Myth: the cat will handle it',
+ head:'MYTH: “THE CAT WILL HANDLE IT.”', hSize:100, hWidth:860,
+ subhead:'Fact: rodents breed faster than cats hunt.', sSize:52, sWidth:740,
+ body:'One pair of rats can produce hundreds of descendants a year. Mittens is doing her best — she’s just outnumbered. Sealing entry points wins.', bWidth:770,
+ strap:'Help the cat out. Call us.', cta:'Book rodent control',
+ caption:'MYTH: “The cat will handle it.” FACT: one pair of rats can produce 200+ descendants a year. Mittens is doing her best — she’s outnumbered. 🐱 📞 (07) 3113 9666 #MythBusted #RodentControl #SlugABug'},
+
+{layout:statEd, icon:'magnify', dark:false, tag:'Myth vs Fact', kick:'Pest myths, busted', title:'Myth: ultrasonic repellers',
+ stat:'0', nSize:260, head:'solid evidence that plug-in repellers work.', hSize:70,
+ body:'Independent testing keeps reaching the same conclusion: pests get used to them fast, if they react at all. Put the money toward treatment that’s actually guaranteed.',
+ strap:'Spend once, on what works.', cta:'Call today — free quote',
+ caption:'Those plug-in ultrasonic pest repellers? Independent testing keeps finding the same thing: pests ignore them. Put the money toward a treatment with a written guarantee. 📞 (07) 3113 9666 #MythBusted #PestControl #SlugABug'},
+
+{layout:coverLight, icon:'termite', tag:'Myth vs Fact', kick:'Pest myths, busted', title:'Myth: termites only eat old homes',
+ head:'MYTH: “TERMITES ONLY EAT OLD HOMES.”', hSize:92, hWidth:740,
+ subhead:'Fact: new estates are on the menu too.', sSize:52, sWidth:620,
+ body:'Fresh builds on recently cleared land face some of the highest termite pressure in Queensland. Your builder’s barrier has a lifespan — know yours.', bWidth:580,
+ strap:'New home? Check your barrier date.', cta:'Book an inspection',
+ caption:'MYTH: “Termites only eat old homes.” FACT: new builds on cleared land face some of the highest termite pressure in QLD — and builders’ barriers expire. Know your dates. 📞 (07) 3113 9666 #MythBusted #Termites #SlugABug'},
+
+{layout:coverDark, icon:'spider', tag:'Myth vs Fact', kick:'Pest myths, busted', title:'Myth: daddy long-legs deadly',
+ head:'MYTH: “DADDY LONG-LEGS ARE DEADLY.”', hSize:94, hWidth:860,
+ subhead:'Fact: they’re basically harmless to humans.', sSize:52, sWidth:740,
+ body:'The schoolyard legend refuses to die. The spiders worth respecting in Brisbane are redbacks and white-tails — and that’s what perimeter treatments are for.', bWidth:770,
+ strap:'Respect the right spiders.', cta:'Book a spider treatment',
+ caption:'MYTH: “Daddy long-legs are the deadliest spider.” FACT: schoolyard legend — they’re harmless to humans. Redbacks and white-tails are the ones worth respecting. 📞 (07) 3113 9666 #MythBusted #SpiderFacts #SlugABug'},
+
+{layout:redPoster, icon:'ant', tag:'Myth vs Fact', kick:'Pest myths, busted', title:'Myth: coffee grounds stop ants',
+ head:'MYTH: “COFFEE GROUNDS STOP ANTS.”', hSize:88, hWidth:940,
+ subhead:'Fact: they walk around them. Politely.', sSize:54, sWidth:840,
+ body:'Home remedies shift trails a few centimetres; the colony keeps working. Treating the nest and entry points is what actually ends it.', bWidth:800,
+ strap:'Save the coffee for yourself.', cta:'Fix my ant problem',
+ caption:'MYTH: “Coffee grounds keep ants away.” FACT: they detour around them — politely. ☕ Treat the nest and entry points; keep the coffee for yourself. 📞 (07) 3113 9666 #MythBusted #AntControl #SlugABug'},
+
+{layout:coverLight, icon:'shield', tag:'Myth vs Fact', kick:'Pest myths, busted', title:'Myth: one spray lasts forever',
+ head:'MYTH: “ONE SPRAY LASTS FOREVER.”', hSize:96, hWidth:740,
+ subhead:'Fact: protection has a service schedule.', sSize:52, sWidth:620,
+ body:'Weather, sunlight and time break every treatment down. That’s why ours comes with a 30-day guarantee and a 12-month rhythm — protection you can set a reminder by.', bWidth:580,
+ strap:'Once a year keeps it that way.', cta:'Call today — free quote',
+ caption:'MYTH: “One spray lasts forever.” FACT: weather and time wear every treatment down — that’s why protection runs on a yearly rhythm, backed by our 30-day guarantee. 📞 (07) 3113 9666 #MythBusted #PestControl #SlugABug'},
+
+/* --- Pro Tips, round 2 (71–78) --- */
+{layout:checklist, icon:'silverfish', tag:'Pro Tips', kick:'Pantry patrol', title:'Pantry moth eviction checklist',
+ head:'PANTRY MOTHS: EVICTION NOTICE.', hSize:88,
+ subhead:'Serve it in five steps:', sSize:50,
+ items:['Bin infested flour, cereal & dry goods — don’t sniff-test','Decant everything into airtight containers','Wipe shelves down with vinegar, corners included','Freeze new bulk buys for 48 hours before shelving','Still fluttering? Call for a targeted treatment'],
+ strap:'Webbing in the flour? That’s them.', cta:'Call today — free quote',
+ caption:'Little moths flying out of the pantry? Webbing in the flour? Eviction time: bin it, airtight everything, vinegar-wipe, freeze new bulk buys. Still fluttering — call us. 📞 (07) 3113 9666 #PantryMoths #KitchenTips #SlugABug'},
+
+{layout:checklist, icon:'house', tag:'Pro Tips', kick:'Yard defence', title:'Pest-proof yard in 5 moves',
+ head:'A PEST-PROOF YARD IN 5 MOVES.', hSize:88,
+ subhead:'Free upgrades, big difference:', sSize:50,
+ items:['Tip out anything holding standing water','Stack firewood off the ground, away from walls','Mow regularly — long grass hides everyone','Keep bins sealed, clean and off the fence line','Pull mulch back from the house perimeter'],
+ strap:'Do the five, then let us seal it', cta:'Call today — free quote',
+ caption:'Five free yard upgrades that genuinely cut pests: no standing water, firewood off the ground, regular mowing, sealed bins, mulch pulled back from walls. Then we seal the rest. 🌱 📞 (07) 3113 9666 #YardTips #BrisbaneGardens #SlugABug'},
+
+{layout:coverLight, icon:'flea', tag:'Pro Tips', kick:'End of lease', title:'Bond back, fleas gone',
+ head:'BOND BACK. FLEAS GONE.', hSize:118, hWidth:740,
+ subhead:'Had pets? Most leases require a flea treatment.', sSize:48, sWidth:640,
+ body:'We do end-of-lease flea treatments with the receipt your property manager wants to see — fast turnaround for settlement week.', bWidth:580,
+ strap:'Moving out? Sorted in one visit.', cta:'Book end-of-lease treatment',
+ caption:'Moving out with pets? Most leases require a professional flea treatment — we do fast end-of-lease visits with the receipt your property manager wants. 🏡 📞 (07) 3113 9666 #EndOfLease #BrisbaneRentals #SlugABug'},
+
+{layout:checklist, icon:'house', tag:'Pro Tips', kick:'Moving day', title:'Moving house? Don’t pack pests',
+ head:'MOVING HOUSE? DON’T PACK PESTS.', hSize:86,
+ subhead:'Before the boxes go in:', sSize:50,
+ items:['Inspect boxes — roaches love cardboard hotels','Treat the new place before furniture arrives','Check secondhand furniture seams for bed bugs','Book back-to-back treatments: old place & new','Keep receipts — agents and buyers ask'],
+ strap:'Fresh start means actually fresh', cta:'Book a moving treatment',
+ caption:'Moving house? Roaches ride in cardboard and bed bugs ride in secondhand couches. Treat the new place BEFORE the furniture arrives — fresh start, actually fresh. 📦 📞 (07) 3113 9666 #MovingHouse #BrisbaneMoves #SlugABug'},
+
+{layout:coverDark, icon:'shield', tag:'Pro Tips', kick:'Pets at home', title:'Tough on pests, soft on paws',
+ head:'TOUGH ON PESTS. SOFT ON PAWS.', hSize:102, hWidth:860,
+ subhead:'Treatments planned around your animals.', sSize:52, sWidth:740,
+ body:'We schedule around feeding areas, tanks and cages, use pet-considerate products, and tell you exactly when floors are dry and safe. Ask us anything before we start.', bWidth:770,
+ strap:'Your vet would approve of the plan.', cta:'Call today — free quote',
+ caption:'Pet households: we plan every treatment around feeding areas, tanks and cages, and tell you exactly when floors are dry. Tough on pests, soft on paws. 🐾 📞 (07) 3113 9666 #PetFriendly #BrisbanePets #SlugABug'},
+
+{layout:checklist, icon:'rat', tag:'Pro Tips', kick:'Garage audit', title:'Your garage is a pest hotel',
+ head:'YOUR GARAGE IS A PEST HOTEL.', hSize:88,
+ subhead:'Time for checkout:', sSize:50,
+ items:['Break down cardboard — it’s bedding and food','Seal the roller-door gaps and side entries','Swap open shelves of stuff for lidded tubs','Pull storage away from walls once a season','Add the garage to your yearly treatment'],
+ strap:'Five-minute audit this weekend', cta:'Call today — free quote',
+ caption:'Your garage is running a pest hotel: cardboard bedding, roller-door entry, undisturbed corners. Five-minute audit this weekend — then add it to the yearly treatment. 🚗 📞 (07) 3113 9666 #GarageGoals #BrisbaneHomes #SlugABug'},
+
+{layout:checklist, icon:'mosquito', tag:'Pro Tips', kick:'Backyard defence', title:'Mozzie-proof your backyard',
+ head:'MOZZIE-PROOF YOUR BACKYARD.', hSize:88,
+ subhead:'Before the next warm evening:', sSize:50,
+ items:['Tip out standing water weekly — pots, toys, trays','Clean gutters so they drain properly','Screen rainwater tanks and water features','Run a fan where you sit — mozzies hate wind','Book a barrier treatment for the season'],
+ strap:'Entertain outside again', cta:'Book a mozzie treatment',
+ caption:'Want your backyard back on warm evenings? Weekly water tip-outs, clean gutters, screened tanks, a fan where you sit — and a seasonal barrier treatment does the rest. 🌇 📞 (07) 3113 9666 #MozzieSeason #BrisbaneBackyards #SlugABug'},
+
+{layout:coverLight, icon:'house', tag:'Pro Tips', kick:'Up top', title:'Gutters are a pest highway',
+ head:'YOUR GUTTERS ARE A PEST HIGHWAY.', hSize:96, hWidth:740,
+ subhead:'Leaves + moisture + roof access = jackpot.', sSize:50, sWidth:620,
+ body:'Blocked gutters feed termites moisture, breed mosquitoes and hand rodents a bridge to your roof void. Clean gutters are pest control you can do with a ladder.', bWidth:580,
+ strap:'Clean up top, treat down below', cta:'Call today — free quote',
+ caption:'Blocked gutters: moisture for termites, nurseries for mozzies, and a rodent bridge straight into the roof void. Clean gutters are DIY pest control — we handle the rest. 🪜 📞 (07) 3113 9666 #HomeMaintenance #BrisbaneHomes #SlugABug'},
+
+/* --- Why Slug-A-Bug, round 2 (79–88) --- */
+{layout:redPoster, icon:'shield', tag:'Why Slug-A-Bug', kick:'Afterpay available', title:'Protect now, pay later',
+ head:'PROTECT NOW. PAY LATER.', hSize:106, hWidth:920,
+ subhead:'Afterpay on every treatment.', sSize:56, sWidth:840,
+ body:'Pests don’t wait for payday, so protection shouldn’t either. Book now, split the payments, sleep fine — with the same 30-day guarantee as always.', bWidth:800,
+ strap:'Four instalments. Zero pests.', cta:'Call today — free quote',
+ caption:'Pests don’t wait for payday — so protection doesn’t have to either. Afterpay available on every treatment, same 30-day guarantee. 📞 (07) 3113 9666 #Afterpay #BrisbanePestControl #SlugABug'},
+
+{layout:statEd, icon:'magnify', dark:false, tag:'Why Slug-A-Bug', kick:'Our tech', title:'Termatrac radar detection',
+ stat:'RADAR', nSize:190, head:'Termatrac sees termites through your walls.', hSize:70,
+ body:'No drilling, no guesswork, no “let’s open it up and see”. Movement radar, thermal and moisture sensors find activity behind surfaces — before the damage spreads.',
+ strap:'Detection first. Drama never.', cta:'Book an inspection',
+ caption:'Our Termatrac radar literally sees termite movement through walls — no drilling, no guesswork, no “open it up and see”. Detection first, drama never. 📡 📞 (07) 3113 9666 #Termatrac #TermiteInspection #SlugABug'},
+
+{layout:coverDark, icon:'shield', tag:'Why Slug-A-Bug', kick:'Fast response', title:'Booked this week',
+ head:'BOOKED THIS WEEK. NOT NEXT MONTH.', hSize:98, hWidth:860,
+ subhead:'Local techs, local schedule, real answers.', sSize:52, sWidth:740,
+ body:'When you call, a local answers — and books you in days, not weeks. Urgent jobs like swarms, wasp nests and rodents get priority slots.', bWidth:770,
+ strap:'Call before lunch, often seen this week.', cta:'Call (07) 3113 9666',
+ caption:'When you call us, a Brisbane local answers — and books you in days, not weeks. Urgent swarms, wasp nests and rodent jobs get priority. ⚡ 📞 (07) 3113 9666 #FastService #BrisbanePestControl #SlugABug'},
+
+{layout:coverLight, icon:'star', tag:'Why Slug-A-Bug', kick:'No pressure', title:'Free quotes, straight answers',
+ head:'FREE QUOTES. STRAIGHT ANSWERS.', hSize:100, hWidth:740,
+ subhead:'No inspection-to-upsell pipeline here.', sSize:50, sWidth:620,
+ body:'We’ll tell you what you need, what you don’t, and what it costs — before we start. If a cheaper option does the job, you’ll hear about it from us first.', bWidth:580,
+ strap:'Ask us anything. It costs nothing.', cta:'Call today — free quote',
+ caption:'Free quotes, straight answers. We’ll tell you what you need, what you DON’T, and the price before we start. If a cheaper option does the job — you’ll hear it from us first. 📞 (07) 3113 9666 #StraightShooters #BrisbanePestControl #SlugABug'},
+
+{layout:coverDark, icon:'shield', tag:'Why Slug-A-Bug', kick:'Family-safe', title:'Family-safe by design',
+ head:'KIDS. PETS. PLANTS. PROTECTED.', hSize:98, hWidth:860,
+ subhead:'Family-safe products, clearly explained.', sSize:52, sWidth:740,
+ body:'We walk you through what we’re using, where, and when it’s dry — before we start. Twenty years of treating family homes means zero-surprise service.', bWidth:770,
+ strap:'Questions welcome. Always.', cta:'Call today — free quote',
+ caption:'Kids, pets, veggie patch — all accounted for. We explain what we use, where it goes and when it’s dry, before we start. 20+ years of family homes. 👨‍👩‍👧 📞 (07) 3113 9666 #FamilySafe #BrisbaneFamilies #SlugABug'},
+
+{layout:coverLight, icon:'house', tag:'Why Slug-A-Bug', kick:'Coverage', title:'North Brisbane to Shailer Park',
+ head:'NORTH BRISBANE TO SHAILER PARK.', hSize:96, hWidth:740,
+ subhead:'One local team, the whole corridor.', sSize:52, sWidth:620,
+ body:'From North Lakes and Redcliffe down through the CBD, bayside and Logan — if you’re in the corridor, you’re in our run. Same techs, same standards, everywhere.', bWidth:580,
+ strap:'Your suburb? Almost certainly yes.', cta:'Call today — free quote',
+ caption:'From North Lakes and Redcliffe, through the CBD and bayside, down to Shailer Park — one local team covers the whole corridor. Your suburb? Almost certainly yes. 🗺️ 📞 (07) 3113 9666 #Brisbane #LocalBusiness #SlugABug'},
+
+{layout:statEd, icon:'star', dark:true, tag:'Why Slug-A-Bug', kick:'The standard', title:'5 stars, every job',
+ stat:'5★', nSize:250, head:'the only rating we chase. Every job.', hSize:76,
+ body:'1,200+ reviews didn’t come from cutting corners. They came from turning up on time, doing it properly, and honouring the guarantee when asked. That’s the whole trick.',
+ strap:'Read the reviews, then call.', cta:'Call today — free quote',
+ caption:'5 stars is the only rating we chase — 1,200+ reviews came from turning up on time, doing it properly, and honouring the guarantee. That’s the whole trick. ⭐ 📞 (07) 3113 9666 #FiveStars #BrisbanePestControl #SlugABug'},
+
+{layout:coverDark, icon:'slugmark', tag:'Why Slug-A-Bug', kick:'Local knowledge', title:'20+ years of Brisbane backyards',
+ head:'20+ YEARS OF BRISBANE BACKYARDS.', hSize:96, hWidth:860,
+ subhead:'We know what’s under your house. Literally.', sSize:52, sWidth:740,
+ body:'Two decades in the same suburbs teaches you where termites press hardest, which streets flood ants after storms, and what a Queenslander’s subfloor hides.', bWidth:770,
+ strap:'Experience you can’t google.', cta:'Call today — free quote',
+ caption:'20+ years in the same Brisbane suburbs teaches you things you can’t google — where termites press hardest, which streets get ants after storms, what a Queenslander subfloor hides. 📞 (07) 3113 9666 #LocalKnowledge #Brisbane #SlugABug'},
+
+{layout:coverLight, icon:'shield', tag:'Why Slug-A-Bug', kick:'Credentials', title:'Every tech licensed & insured',
+ head:'EVERY TECH LICENSED. EVERY JOB INSURED.', hSize:88, hWidth:760,
+ subhead:'QLD Pest PMT 1004307814 · QBCC 1122314.', sSize:46, sWidth:640,
+ body:'No subcontracted mystery guests — the person at your door is trained, licensed and covered. Ask to see the licence; our techs love that question.', bWidth:580,
+ strap:'Credentials on request, proudly.', cta:'Call today — free quote',
+ caption:'Every tech licensed, every job insured — no subcontracted mystery guests. Ask to see the licence at the door; our techs love that question. 📋 📞 (07) 3113 9666 #Licensed #BrisbanePestControl #SlugABug'},
+
+{layout:redPoster, icon:'shield', tag:'Why Slug-A-Bug', kick:'The promise', title:'If they come back, so do we',
+ head:'IF THEY COME BACK, SO DO WE. FREE.', hSize:92, hWidth:940,
+ subhead:'30 days, no questions, no fine print.', sSize:54, sWidth:840,
+ body:'Pests return within 30 days? We re-treat at no charge. Still unhappy? Refund plus $25 for the hassle. We can only offer that because it almost never happens.', bWidth:800,
+ strap:'The guarantee that does the talking.', cta:'Call today — free quote',
+ caption:'Our promise: pests back within 30 days → we re-treat FREE. Still unhappy → refund + $25. We can only offer that because it almost never happens. 📞 (07) 3113 9666 #Guarantee #BrisbanePestControl #SlugABug'},
+
+/* --- Ask Slug-A-Bug (89–94) --- */
+{layout:statEd, icon:'magnify', dark:false, tag:'Ask Slug-A-Bug', kick:'You asked, we answered', title:'Q&A: how often?',
+ stat:'12', nSize:260, head:'months between treatments. That’s the rhythm.', hSize:70,
+ body:'“How often do I actually need pest control?” For most Brisbane homes: a general treatment and termite inspection every 12 months. High-pressure areas or past problems? We’ll tell you straight if it’s different.',
+ strap:'Set and forget — we’ll remind you.', cta:'Call today — free quote',
+ caption:'“How often do I actually need pest control?” For most Brisbane homes: once every 12 months — general treatment + termite inspection. We’ll remind you when it’s due. 🗓️ 📞 (07) 3113 9666 #AskSlugABug #PestControl101 #SlugABug'},
+
+{layout:coverLight, icon:'shield', tag:'Ask Slug-A-Bug', kick:'You asked, we answered', title:'Q&A: safe for pets?',
+ head:'“IS IT SAFE FOR MY PETS?”', hSize:106, hWidth:740,
+ subhead:'Yes — and here’s how we make sure.', sSize:52, sWidth:620,
+ body:'Pet-considerate products, feeding bowls and tanks covered or moved, and clear drying times before paws hit the floor. Tell us about your animals when you book.', bWidth:580,
+ strap:'Bring us your pet questions', cta:'Call today — free quote',
+ caption:'“Is it safe for my pets?” Yes — pet-considerate products, bowls and tanks covered, and clear drying times before paws hit floors. Tell us about your crew when you book. 🐕 📞 (07) 3113 9666 #AskSlugABug #PetSafe #SlugABug'},
+
+{layout:statEd, icon:'house', dark:true, tag:'Ask Slug-A-Bug', kick:'You asked, we answered', title:'Q&A: how long does it take?',
+ stat:'~2hrs', nSize:210, head:'for a full home treatment, in and out.', hSize:74,
+ body:'“How long will it take?” Most general treatments run one to two hours depending on home size — inside, outside, roof void and perimeter. Minimal disruption, maximum coverage.',
+ strap:'Book it in a lunch break.', cta:'Call today — free quote',
+ caption:'“How long does a treatment take?” Most homes: about 1–2 hours, in and out — inside, outside, roof void, perimeter. Book it in a lunch break. ⏱️ 📞 (07) 3113 9666 #AskSlugABug #PestControl101 #SlugABug'},
+
+{layout:coverDark, icon:'house', tag:'Ask Slug-A-Bug', kick:'You asked, we answered', title:'Q&A: do I need to leave?',
+ head:'“DO WE NEED TO LEAVE THE HOUSE?”', hSize:94, hWidth:860,
+ subhead:'Usually not — and we’ll tell you if so.', sSize:52, sWidth:740,
+ body:'Modern low-odour treatments mean most families stay home. Where a product needs clear time, we schedule around school runs and nap times and give you exact windows.', bWidth:770,
+ strap:'Zero-surprise scheduling.', cta:'Call today — free quote',
+ caption:'“Do we need to leave during treatment?” Usually not — modern low-odour products mean most families stay home. If clear time is needed, we schedule around naps and school runs. 📞 (07) 3113 9666 #AskSlugABug #FamilyFriendly #SlugABug'},
+
+{layout:checklist, icon:'shield', tag:'Ask Slug-A-Bug', kick:'Before we arrive', title:'Q&A: prep checklist',
+ head:'BEFORE WE ARRIVE: QUICK PREP.', hSize:88,
+ subhead:'Five minutes, tops:', sSize:50,
+ items:['Clear kitchen benches and the sink area','Pop kids’ toys and pet bowls away','Secure pets in one room or the yard','Unlock access — roof void, sides, garage','Note where you’ve been seeing the pests'],
+ strap:'That’s it — we handle the rest', cta:'Call today — free quote',
+ caption:'Booked in? Prep takes five minutes: clear benches, stash toys and pet bowls, secure pets, unlock access, note where you’ve seen the action. We do the rest. ✅ 📞 (07) 3113 9666 #AskSlugABug #PestControl101 #SlugABug'},
+
+{layout:checklist, icon:'magnify', tag:'Ask Slug-A-Bug', kick:'What actually happens', title:'Q&A: inspection step-by-step',
+ head:'YOUR TERMITE INSPECTION, STEP BY STEP.', hSize:80,
+ subhead:'No mysteries, no drilling:', sSize:50,
+ items:['Full interior, exterior and fence-line check','Termatrac radar plus moisture readings','Roof void and subfloor where accessible','Written report with photos — same day','Plain-English advice on what (if anything) to do'],
+ strap:'Around two hours, zero drama', cta:'Book an inspection',
+ caption:'What actually happens in a termite inspection? Full interior + exterior, Termatrac radar and moisture readings, roof void and subfloor, same-day written report with photos, plain-English advice. 📞 (07) 3113 9666 #TermiteInspection #AskSlugABug #SlugABug'},
+
+/* --- Big numbers finale (95–100) --- */
+{layout:statEd, icon:'termite', dark:false, tag:'The Pest Files', kick:'The maths', title:'$10k+ average termite repair',
+ stat:'$10k+', nSize:230, head:'the average termite repair bill in Australia.', hSize:70,
+ body:'Against a few hundred dollars for an annual inspection, the maths does its own marketing. Insurance won’t cover it — early detection has to.',
+ strap:'Cheap insurance exists. It’s an inspection.', cta:'Book an inspection',
+ caption:'Average termite repair bill in Australia: $10,000+. Annual inspection: a few hundred. Insurance covers neither the damage nor the maths. 🧮 📞 (07) 3113 9666 #Termites #BrisbaneHomes #SlugABug'},
+
+{layout:coverDark, icon:'cockroach', tag:'The Pest Files', kick:'Health watch', title:'Roaches trigger asthma',
+ head:'ROACHES TRIGGER ASTHMA & ALLERGIES.', hSize:92, hWidth:880,
+ subhead:'It’s not just gross. It’s airborne.', sSize:54, sWidth:740,
+ body:'Droppings and shed skins break down into airborne allergens — a recognised asthma trigger, especially for kids. A roach-free home breathes easier, literally.', bWidth:770,
+ strap:'Breathe easier this year.', cta:'Book a roach treatment',
+ caption:'Cockroaches aren’t just gross — droppings and shed skins become airborne allergens and a recognised asthma trigger, especially for kids. A roach-free home literally breathes easier. 📞 (07) 3113 9666 #AsthmaAwareness #HealthyHome #SlugABug'},
+
+{layout:redPoster, icon:'termite', tag:'The Pest Files', kick:'Read your policy', title:'Insurance won’t save you',
+ head:'INSURANCE WON’T SAVE YOUR HOME FROM TERMITES.', hSize:78, hWidth:940,
+ subhead:'Prevention is the only cover you can buy.', sSize:52, sWidth:840,
+ body:'Almost every Australian home policy excludes termite damage. The fine print is brutal — the fix is simple: inspect yearly, treat early, barrier where needed.', bWidth:800,
+ strap:'Check your PDS. Then check your home.', cta:'Book an inspection',
+ caption:'Read your home insurance PDS: termite damage is almost always excluded. Prevention is the only cover you can actually buy. 📄 📞 (07) 3113 9666 #Termites #HomeInsurance #SlugABug'},
+
+{layout:statEd, icon:'cockroach', dark:true, tag:'The Pest Files', kick:'No off-season', title:'365 days of pest activity',
+ stat:'365', nSize:250, head:'days a year pests stay active in Brisbane.', hSize:72,
+ body:'Subtropical climate means no winter die-off, no off-season, no free months. The upside: year-round protection here actually works year-round too.',
+ strap:'No off-season for them — or us.', cta:'Call today — free quote',
+ caption:'Brisbane’s subtropical climate means pests get no winter die-off — 365 days of activity a year. The upside? Year-round protection works year-round too. 🌏 📞 (07) 3113 9666 #Brisbane #PestControl #SlugABug'},
+
+{layout:coverDark, icon:'mosquito', tag:'The Pest Files', kick:'Perspective', title:'Deadliest animal: the mozzie',
+ head:'EARTH’S DEADLIEST ANIMAL? THE MOZZIE.', hSize:92, hWidth:880,
+ subhead:'Not sharks. Not snakes. The thing in your ear at 2am.', sSize:48, sWidth:760,
+ body:'Mosquitoes spread more disease than any creature on the planet. In Queensland that includes Ross River virus — one more reason the backyard barrier matters.', bWidth:770,
+ strap:'Small pest. Serious reasons.', cta:'Book a mozzie treatment',
+ caption:'The deadliest animal on Earth isn’t a shark or a snake — it’s the mosquito, spreader of more disease than anything alive. In QLD that includes Ross River virus. 🦟 📞 (07) 3113 9666 #Mosquitoes #QLDHealth #SlugABug'},
+
+{layout:redPoster, icon:'slugmark', tag:'Why Slug-A-Bug', kick:'Post No. 100', title:'Finale: one number to remember',
+ head:'STILL SCROLLING? PESTS AREN’T.', hSize:96, hWidth:940,
+ subhead:'100 posts in — one number to remember.', sSize:54, sWidth:840,
+ body:'Whatever’s crawling, scurrying, swarming or silently chewing — one call sorts it. Family owned, 20+ years, guaranteed in writing.', bWidth:800,
+ strap:'Save the number. Use it once a year.', cta:'Call (07) 3113 9666',
+ caption:'Post #100! 🎉 Whatever’s crawling, scurrying, swarming or silently chewing — one call sorts it. Save the number, use it once a year. 📞 (07) 3113 9666 #SlugABug #BrisbanePestControl #FamilyOwned'},
+
+/* ======== LINKEDIN COMMERCIAL SET (101+) — B2B tone ======== */
+
+{layout:statEd, icon:'shield', dark:false, tag:'Commercial Partners', kick:'Strata & body corporate', title:'LinkedIn: strata one-contract',
+ stat:'ONE', nSize:230, head:'contract. One invoice. Every lot covered.', hSize:74,
+ body:'Common-area schedules, bulk unit rates, termite inspections for the whole scheme and committee-ready compliance reports. Strata managers get one contact who actually answers — and nothing to chase at AGM time.',
+ strap:'Committee meeting coming up? Bring a better quote.', cta:'Get a strata proposal',
+ caption:'Strata managers & committees: one contract, one invoice, every lot and common area covered — with the compliance reporting your AGM actually wants to see. Bulk unit rates across the scheme. (07) 3113 9666 · info@slugabug.com.au #Strata #BodyCorporate #FacilitiesManagement'},
+
+{layout:coverLight, icon:'house', tag:'Commercial Partners', kick:'Real estate & property managers', title:'LinkedIn: property managers',
+ head:'END-OF-LEASE PEST WORK, HANDLED.', hSize:92, hWidth:760,
+ subhead:'Flea treatments, receipts and reports — same week.', sSize:48, sWidth:640,
+ body:'Entry-notice-friendly scheduling, documentation that satisfies landlords and tenants, invoices straight to the agency. Add us to your trades list and stop chasing pest receipts.', bWidth:580,
+ strap:'One less thing on the rent roll.', cta:'Partner with Slug-A-Bug',
+ caption:'Property managers: end-of-lease flea treatments with the receipt in your inbox the same week. Entry-notice-friendly scheduling, landlord-ready reports, invoiced straight to the agency. Add us to the trades list. (07) 3113 9666 #PropertyManagement #RealEstate #BrisbaneRentals'},
+
+{layout:coverDark, icon:'cockroach', tag:'Commercial Partners', kick:'Restaurants & cafés', title:'LinkedIn: audit-ready kitchens',
+ head:'AUDIT-READY. EVERY SINGLE SERVICE.', hSize:96, hWidth:860,
+ subhead:'Pest control built for commercial kitchens.', sSize:52, sWidth:740,
+ body:'Scheduled gel-and-monitor programs invisible to diners, HACCP-aligned documentation on file, and priority call-outs when something appears mid-service.', bWidth:770,
+ strap:'Before the inspector books a table.', cta:'Get a hospitality quote',
+ caption:'For commercial kitchens, pest control is a compliance document — not a spray can under the sink. Scheduled programs invisible to diners, HACCP-aligned reporting, priority response. (07) 3113 9666 #Hospitality #FoodSafety #BrisbaneRestaurants'},
+
+{layout:redPoster, icon:'rat', tag:'Commercial Partners', kick:'Pubs, clubs & venues', title:'LinkedIn: pubs & clubs',
+ head:'NO PESTS ON TAP.', hSize:112, hWidth:920,
+ subhead:'Cellars, kitchens, beer gardens — covered.', sSize:54, sWidth:840,
+ body:'Rodents love a cellar and a stockroom. Discreet early-morning service keeps your licence, your reviews and your beer lines clean — without interrupting trade.', bWidth:800,
+ strap:'Publicans: free site walk-through.', cta:'Book a venue assessment',
+ caption:'Publicans & venue managers: cellars, stockrooms and beer gardens are prime pest territory. Discreet early-morning service protects the licence, the reviews and the beer lines — without interrupting trade. (07) 3113 9666 #Pubs #Hospitality #VenueManagement'},
+
+{layout:statEd, icon:'shield', dark:true, tag:'Commercial Partners', kick:'Industry watch — compliance', title:'LinkedIn: zero-fines target',
+ stat:'$0', nSize:250, head:'in fines, closure notices or lost stock.', hSize:74,
+ body:'Health and food-safety inspections don’t reschedule. A documented pest program is the cheapest compliance line on the P&L — and the difference between a clean audit and a very public closure.',
+ strap:'Facilities & ops managers — let’s talk.', cta:'Get a commercial quote',
+ caption:'Health inspectors don’t reschedule. A documented pest management program is the cheapest compliance line on the P&L — and the difference between a clean audit and a closure notice. Full reporting with every service. (07) 3113 9666 #Compliance #FacilitiesManagement #CommercialPestControl'},
+
+/* 106 — GBP conversion post: rodents */
+{layout:coverDark, icon:'rat', tag:'Know the Signs', kick:'Rodent control Brisbane', title:'GBP: scratching in the roof',
+ head:'HEARD SCRATCHING IN THE ROOF LAST NIGHT?', hSize:96, hWidth:880,
+ subhead:'That’s not the house settling. That’s tenants.', sSize:52, sWidth:760,
+ body:'Rats chew wiring, breed fast and don’t leave on their own. We find the entry points, bait safely and seal them out — most jobs booked this week, backed by our 30-day guarantee.', bWidth:780,
+ strap:'Same-week rodent control. Guaranteed.', cta:'Call now — free quote',
+ caption:'Rodent control Brisbane — hearing scratching in the roof at night? That’s roof rats, and they don’t leave on their own. They chew wiring (a leading cause of unexplained house fires), contaminate food and breed fast — one pair becomes 200+ in a year. Slug-A-Bug finds the entry points, baits safely with kids and pets accounted for, and seals rodents OUT — not just knocks them down. ✅ Most jobs booked this same week ✅ 30-day guarantee: if they’re back, so are we — free ✅ Family owned, 20+ years, 1,200+ five-star reviews ✅ Fully licensed (QLD PMT 1004307814) 📞 Call (07) 3113 9666 for a free quote — or book online at slugabug.com.au. Servicing North Lakes to Shailer Park and everywhere between.'},
+];
+
+/* slug mascot mark for post 20 */
+ICONS.slugmark = c => `
+  <path d="M14 78 C 10 64, 20 50, 36 46 C 52 42, 62 34, 64 22 C 66 14, 74 12, 78 18 C 84 28, 82 44, 70 56 C 58 68, 44 72, 34 76 C 46 74, 60 72, 72 74 C 80 76, 80 84, 72 86 C 54 90, 28 90, 14 78 Z" fill="${c}"/>
+  <g stroke="${c}" stroke-width="3.5" fill="none" stroke-linecap="round">
+    <path d="M70 18 C 72 10, 76 6, 82 4"/><path d="M76 22 C 80 16, 86 12, 92 12"/>
+  </g>
+  <circle cx="83" cy="3" r="4" fill="${c}"/><circle cx="93" cy="11" r="4" fill="${c}"/>`;
+
+const toneOf = p => p.layout===redPoster ? 'red'
+  : p.layout===coverLight ? 'light'
+  : p.layout===statEd ? (p.dark?'dark':'light')
+  : 'dark';
+document.getElementById('slides').innerHTML =
+  POSTS.map((p,i)=>p.layout(p, i+1).replace('class="slide"',
+    `class="slide" id="post-${String(i+1).padStart(3,'0')}" data-tone="${toneOf(p)}"`)).join('');
+</script>
+</body>
+</html>
